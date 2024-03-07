@@ -1,9 +1,16 @@
 [tool.poetry]
 name = "function2widgets"
-version = "0.1.0"
+version = "0.1.1"
 description = ""
 authors = ["zimolab <zimolab@aliyun.com>"]
 readme = "README.md"
+license = "GPL-3.0"
+packages = [
+    {include="function2widgets"}
+]
+homepage = "https://github.com/zimolab/function2widgets"
+repository = "https://github.com/zimolab/function2widgets"
+documentation = "https://github.com/zimolab/function2widgets"
 
 [tool.poetry.dependencies]
 python = ">=3.10,<3.11"

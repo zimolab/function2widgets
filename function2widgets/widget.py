@@ -13,6 +13,15 @@ class BaseParameterWidget(QWidget):
     def __init__(self, default: Any, parent: QWidget | None):
         super().__init__(parent)
         self._default = default
+        self._parameter_name: str | None = None
+
+    @property
+    def parameter_name(self) -> str | None:
+        return self._parameter_name
+
+    @parameter_name.setter
+    def parameter_name(self, parameter_name: str | None):
+        self._parameter_name = parameter_name
 
     @abc.abstractmethod
     def get_value(self, *args, **kwargs) -> Any:

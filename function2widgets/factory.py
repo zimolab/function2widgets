@@ -42,12 +42,12 @@ class ParameterWidgetFactory(object):
         widget_class = self.get_widget_class(widget_type)
         return widget_class(**kwargs)
 
-    def create_widget_from_description(self, description: ParameterDescription) -> BaseParameterWidget:
-        widget_description = description.widget
+    def create_widget_from_description(self, param_description: ParameterDescription) -> BaseParameterWidget:
+        widget_description = param_description.widget
 
         if not widget_description:
-            widget_type = description.type
-            widget_label = description.name
+            widget_type = param_description.type
+            widget_label = param_description.name
             widget_docstring = ""
             show_label = True
             show_docstring = True
@@ -60,14 +60,15 @@ class ParameterWidgetFactory(object):
             widget_docstring = widget_description.docstring
             widget_init_args = widget_description.init_args
 
-        widget_type = widget_type or description.type
+        widget_type = widget_type or param_description.type
 
         args = {
-            "default": description.default,
+            "default": param_description.default,
             "parent": None,
             **widget_init_args
         }
         widget = self.create_widget(widget_type, **args)
+        widget.parameter_name = param_description.name
         widget.set_label(widget_label or "")
         widget.set_docstring(widget_docstring or "")
         widget.show_label(show_label)
