@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "function2widgets"
+version = "0.1.0"
+description = ""
+authors = ["zimolab <zimolab@aliyun.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = ">=3.10,<3.11"
+pyqt6 = "^6.6.1"
+pyqt6-qscintilla = "^2.14.1"
+docstring-parser = "^0.15"
+tomli = "^2.0.1"
+tomli-w = "^1.0.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

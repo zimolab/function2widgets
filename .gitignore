@@ -1,0 +1,16 @@
+.venv/
+.idea/
+poetry.lock
+build/
+dist/
+*.pyc
+*.pyo
+*.pyd
+*.so
+*.egg
+*.egg-info
+*.bak
+*.swp
+*.log
+*.tmp
+*.tmp.*
