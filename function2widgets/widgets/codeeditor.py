@@ -168,7 +168,7 @@ class UniversalSourceCodeEditor(BaseSourceCodeEditor):
         return dialog
 
 
-JsonTopLevelTypes = (dict, list, tuple, int, str, float, NoneType)
+JsonTopLevelTypes = (dict, list, tuple, int, str, float, bool, NoneType)
 
 
 class JsonEditDialog(BaseSourceCodeEditDialog):
