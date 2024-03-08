@@ -1,6 +1,7 @@
 from typing import Iterable, List, OrderedDict, Any
 
-from PyQt6.QtWidgets import QWidget, QComboBox, QVBoxLayout, QGridLayout, QRadioButton, QButtonGroup, QCheckBox
+from PyQt6.QtWidgets import QWidget, QComboBox, QVBoxLayout, QGridLayout, QRadioButton, QButtonGroup, QCheckBox, \
+    QApplication
 
 from function2widgets.widget import InvalidValueError
 from function2widgets.widgets.base import CommonParameterWidget
@@ -17,7 +18,7 @@ class ComboBox(CommonParameterWidget):
         self._items = [item for item in items]
 
         if default not in self._items and default is not None:
-            raise InvalidValueError(f"invalid default value: {default}")
+            raise InvalidValueError(QApplication.tr(f"invalid default value: {default}"))
 
         super().__init__(default=default, parent=parent)
 
@@ -41,7 +42,9 @@ class ComboBox(CommonParameterWidget):
 
     def set_value(self, value: str | None, *args, **kwargs):
         if value is not None and value not in self._items:
-            raise InvalidValueError(f"invalid value: '{value}' is not in combobox items")
+            raise InvalidValueError(self.tr(
+                f"invalid value: '{value}' is not in combobox items"
+            ))
         if not self._pre_set_value(value):
             return
         self._value_widget.setCurrentText(value)
@@ -82,13 +85,17 @@ class RadioButtonGroup(CommonParameterWidget):
         self._button_group: QButtonGroup | None = None
 
         if column_count < 1:
-            raise InvalidValueError(f"invalid column count: {column_count} must be greater than 0")
+            raise InvalidValueError(self.tr(
+                f"invalid column count: {column_count} must be greater than 0"
+            ))
         self._column_count = column_count
 
         self._items = list(OrderedDict.fromkeys(items))
 
         if default not in self._items and default is not None:
-            raise InvalidValueError(f"invalid default value: '{default}'")
+            raise InvalidValueError(
+                self.tr(f"invalid default value: '{default}'")
+            )
 
         super().__init__(default, parent)
 
@@ -122,11 +129,12 @@ class RadioButtonGroup(CommonParameterWidget):
 
     def set_value(self, value: str | None, *args, **kwargs):
         if value is not None and value not in self._items:
-            raise InvalidValueError(f"invalid value: '{value}' is not in combobox items")
+            raise InvalidValueError(
+                self.tr(f"invalid value: '{value}' is not in combobox items")
+            )
         if not self._pre_set_value(value):
             return
         radio_btn = self._get_radio_button(value)
-        assert radio_btn is not None, "radio button not found, typically it cannot happen, cause we just checked before"
         radio_btn.setChecked(True)
 
     def _get_radio_button(self, item: str | None) -> QRadioButton | None:
@@ -145,7 +153,9 @@ class CheckBoxGroup(CommonParameterWidget):
         self._checkbox_buttons = []
 
         if column_count < 1:
-            raise InvalidValueError(f"invalid column count: {column_count} must be greater than 0")
+            raise InvalidValueError(
+                QApplication.tr(f"invalid column count: {column_count} must be greater than 0")
+            )
         self._column_count = column_count
 
         self._items = list(OrderedDict.fromkeys(items))
@@ -185,8 +195,8 @@ class CheckBoxGroup(CommonParameterWidget):
 
 
 class CheckBox(CommonParameterWidget):
-    def __init__(self, text: str = "ENABLE", default: bool | None = None, parent: QWidget | None = None):
-        self._text = text or "ENABLE"
+    def __init__(self, text: str = None, default: bool | None = None, parent: QWidget | None = None):
+        self._text = text or QApplication.tr("ENABLE")
         self._checkbox: QCheckBox | None = None
         super().__init__(default=default, parent=parent)
         self.set_value(default)

@@ -4,7 +4,7 @@ from types import NoneType
 from typing import Any
 
 from PyQt6.QtWidgets import QVBoxLayout, QWidget, QPushButton, QHBoxLayout, QSpacerItem, QSizePolicy, \
-    QDialog, QMessageBox
+    QDialog, QMessageBox, QApplication
 
 from function2widgets.widget import InvalidValueError
 from function2widgets.widgets._sourcecodeedit import _SourceCodeEdit, DEFAULT_CONFIGS
@@ -106,8 +106,8 @@ class BaseSourceCodeEditor(CommonParameterWidget):
         self._current_value = default
 
         self._configs = configs
-        self._edit_button_edit = edit_button_text or self.tr("Edit Source Code")
-        self._window_title = window_title or self.tr("Source Code Editor")
+        self._edit_button_edit = edit_button_text or QApplication.tr("Edit/View")
+        self._window_title = window_title or QApplication.tr("Source Code Editor")
 
         super().__init__(default=default, parent=parent)
 
@@ -159,7 +159,7 @@ class UniversalSourceCodeEditor(BaseSourceCodeEditor):
 
     def set_value(self, value: str | None, *args, **kwargs):
         if value is not None and not isinstance(value, str):
-            raise TypeError("value must be None or str")
+            raise TypeError(self.tr("value must be None or str"))
         super().set_value(value, *args, **kwargs)
 
     def source_code_dialog(self) -> UniversalSourceCodeEditDialog:
@@ -179,7 +179,7 @@ class JsonEditDialog(BaseSourceCodeEditDialog):
 
     def set_value(self, value: Any, indent=4, ensure_ascii=False, *args, **kwargs):
         if not isinstance(value, JsonTopLevelTypes):
-            raise InvalidValueError(f"value '{value}' is not  one of the following types: {JsonTopLevelTypes}")
+            raise InvalidValueError(self.tr(f"value '{value}' is not  one of the following types: {JsonTopLevelTypes}"))
 
         try:
             json_str = json.dumps(value, indent=indent, ensure_ascii=ensure_ascii, *args, **kwargs)
@@ -193,9 +193,9 @@ class JsonEditDialog(BaseSourceCodeEditDialog):
         try:
             obj = json.loads(text, *args, **kwargs)
         except BaseException as e:
-            raise InvalidValueError(f"json deserialization error: {e}")
+            raise InvalidValueError(self.tr(f"json deserialization error: {e}"))
         if not isinstance(obj, JsonTopLevelTypes):
-            raise InvalidValueError(f"current source is not one of the following types: {JsonTopLevelTypes}")
+            raise InvalidValueError(self.tr(f"current source is not one of the following types: {JsonTopLevelTypes}"))
         self._current_value = obj
         return obj
 
@@ -222,7 +222,9 @@ class JsonEditor(BaseSourceCodeEditor):
         configs["Lexer"] = "JSON"
 
         if not isinstance(default, JsonTopLevelTypes):
-            raise InvalidValueError(f"default '{default}' is not one of the following types: {JsonTopLevelTypes}")
+            raise InvalidValueError(
+                QApplication.tr(f"default value '{default}' is not one of the following types: {JsonTopLevelTypes}")
+            )
 
         super().__init__(configs=configs, edit_button_text=edit_button_text, window_title=window_title,
                          default=default, parent=parent)
@@ -250,7 +252,9 @@ class RestrictedJsonEditDialog(JsonEditDialog):
 
     def set_value(self, value: Any, indent=4, ensure_ascii=False, *args, **kwargs):
         if not isinstance(value, self._type_restrictions):
-            raise InvalidValueError(f"value '{value}' is not one of the following types: {self._type_restrictions}")
+            raise InvalidValueError(self.tr(
+                f"value '{value}' is not one of the following types: {self._type_restrictions}"
+            ))
         return super().set_value(value, indent, ensure_ascii, *args, **kwargs)
 
     def get_value(self, *args, **kwargs) -> Any:
@@ -258,10 +262,13 @@ class RestrictedJsonEditDialog(JsonEditDialog):
         try:
             value = json.loads(text, *args, **kwargs)
         except BaseException as e:
-            raise InvalidValueError(f"json deserialization error: {e}")
+            raise InvalidValueError(self.tr(
+                f"json deserialization error: {e}"
+            ))
         if not isinstance(value, self._type_restrictions):
             raise InvalidValueError(
-                f"current value '{value}' is not one of the following types: {self._type_restrictions}")
+                self.tr(f"current value '{value}' is not one of the following types: {self._type_restrictions}")
+            )
         self._current_value = value
         return value
 
@@ -272,7 +279,10 @@ class RestrictedJsonEditor(JsonEditor):
     def __init__(self, configs: dict = None, edit_button_text: str = None, window_title: str = None,
                  default: Any = None, parent: QWidget | None = None):
         if not isinstance(default, self.TYPE_RESTRICTIONS):
-            raise InvalidValueError(f"default '{default}' is not one of the following types: {self.TYPE_RESTRICTIONS}")
+            raise InvalidValueError(
+                QApplication.tr(
+                    f"default value '{default}' is not one of the following types: {self.TYPE_RESTRICTIONS}")
+            )
 
         super().__init__(configs=configs, edit_button_text=edit_button_text, window_title=window_title,
                          default=default, parent=parent)
@@ -317,7 +327,9 @@ class TupleEditor(ListEditor):
         elif isinstance(value, tuple):
             return value
         else:
-            raise InvalidValueError(f"value '{value}' is not one of the following types: {self.TYPE_RESTRICTIONS}")
+            raise InvalidValueError(
+                self.tr(f"value '{value}' is not one of the following types: {self.TYPE_RESTRICTIONS}")
+            )
 
 
 class DictEditor(RestrictedJsonEditor):

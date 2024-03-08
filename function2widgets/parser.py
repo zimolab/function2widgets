@@ -8,6 +8,7 @@ from typing import Any, Callable, List
 
 import docstring_parser
 import tomli
+from PyQt6.QtWidgets import QApplication
 from docstring_parser import Docstring, DocstringParam
 
 from function2widgets.common import safe_pop
@@ -23,7 +24,9 @@ def dict_to_widget_descriptions(raw: dict[str, Any]) -> WidgetDescription | None
         return None
     # 检查WidgetDescription.type字段
     if "type" not in raw:
-        warnings.warn(f"invalid widget description: {raw}")
+        warnings.warn(
+            QApplication.tr(f"invalid widget description: {raw}")
+        )
         return None
     widget_type = raw["type"]
     # 获取WidgetDescription.label字段
@@ -50,7 +53,9 @@ def parse_toml_metadata(metadata: str) -> dict:
     try:
         return tomli.loads(metadata)
     except BaseException as e:
-        warnings.warn(f"failed to parse metadata: {e}")
+        warnings.warn(
+            QApplication.tr(f"failed to parse metadata: {e}")
+        )
         return {}
 
 
@@ -160,7 +165,9 @@ class DocstringInfoParser(object):
         try:
             return docstring_parser.parse(docstring)
         except BaseException as e:
-            warnings.warn(f"docstring parse error: {e}")
+            warnings.warn(QApplication.tr(
+                f"docstring parse error: {e}"
+            ))
             return Docstring()
 
     def parse(self, docstring: str) -> _DocstringInfo:
@@ -174,7 +181,9 @@ class DocstringInfoParser(object):
             try:
                 raw_metadata = self._metadata_parser(metadata_in_docstring)
             except BaseException as e:
-                warnings.warn(f"metadata parse error: {e}")
+                warnings.warn(
+                    QApplication.tr(f"metadata parse error: {e}")
+                )
                 raw_metadata = {}
         func_docstring_obj = self._parse_docstring(docstring_without_metadata)
         param_widgets_descriptions = self._process_metadata(raw_metadata)
@@ -209,7 +218,9 @@ class _FunctionInfo(object):
 
     def get_parameter(self, param_name: str) -> _ParameterInfo:
         if not self.has_parameter(param_name):
-            raise ValueError(f"parameter {param_name} not found")
+            raise ValueError(QApplication.tr(
+                f"parameter {param_name} not found"
+            ))
         return self._parameters[param_name]
 
     def has_parameter(self, param_name: str) -> bool:
@@ -220,12 +231,16 @@ class _FunctionInfo(object):
 
     def get_parameter_typename(self, param_name: str) -> str:
         if not self.has_parameter(param_name):
-            raise ValueError(f"parameter {param_name} not found")
+            raise ValueError(
+                QApplication.tr(f"parameter {param_name} not found")
+            )
         return self._parameters[param_name].typename
 
     def get_parameter_default(self, param_name: str) -> Any:
         if not self.has_parameter(param_name):
-            raise ValueError(f"parameter {param_name} not found")
+            raise ValueError(
+                QApplication.tr(f"parameter {param_name} not found")
+            )
         return self._parameters[param_name].default
 
     def add_parameter(self, param_name: str, func_param: _ParameterInfo):
@@ -286,7 +301,9 @@ class FunctionInfoParser(object):
     def _param_typename(self, param: inspect.Parameter) -> (str | None, Any):
         # 不支持仅通过位置传递的参数
         if param.kind == inspect.Parameter.POSITIONAL_ONLY:
-            raise TypeError(f"positional only parameter is not supported: '{param.name}'")
+            raise TypeError(
+                QApplication.tr(f"positional only parameter is not supported: '{param.name}'")
+            )
         # 可变位置参数
         if param.kind == inspect.Parameter.VAR_POSITIONAL:
             return self.TYPENAME_FOR_VARARGS, None
@@ -452,13 +469,14 @@ class FunctionDescriptionParser(object):
 
     def parse(self, func: Any, parse_class: bool = True, ignore_self_param: bool = True) -> FunctionDescription:
         if not parse_class and inspect.isclass(func):
-            raise TypeError(f"func must be a function or method, but got {func}")
+            raise TypeError(QApplication.tr(f"func must be a function or method, but got {func}"))
 
         if inspect.isclass(func):
+            # noinspection PyTypeChecker
             func = func.__init__
 
         if not inspect.isfunction(func) and not inspect.ismethod(func):
-            raise TypeError(f"func must be a function or method, but got {func}")
+            raise TypeError(QApplication.tr(f"func must be a function or method, but got {func}"))
 
         func_docstring = self._docstring_info_parser.parse(func.__doc__ or "")
         func_info = self._func_info_parser.parse(func, ignore_self_param)

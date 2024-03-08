@@ -1,5 +1,7 @@
 from typing import Type
 
+from PyQt6.QtWidgets import QApplication
+
 from function2widgets.common import AlreadyRegisteredError, NotRegisteredError
 from function2widgets.description import ParameterDescription
 from function2widgets.widget import BaseParameterWidget
@@ -15,7 +17,9 @@ class ParameterWidgetFactory(object):
 
     def register(self, widget_type: str, widget_class: Type[BaseParameterWidget]):
         if widget_type in self._widget_classes:
-            raise AlreadyRegisteredError(f"widget type {widget_type} already registered")
+            raise AlreadyRegisteredError(
+                QApplication.tr(f"widget type {widget_type} already registered")
+            )
         self._widget_classes[widget_type] = widget_class
 
     def register_all(self, widgets: dict[str, Type[BaseParameterWidget]]):
@@ -24,7 +28,9 @@ class ParameterWidgetFactory(object):
 
     def unregister(self, widget_type: str):
         if widget_type not in self._widget_classes:
-            raise NotRegisteredError(f"widget type {widget_type} not registered")
+            raise NotRegisteredError(
+                QApplication.tr(f"widget type {widget_type} not registered")
+            )
         del self._widget_classes[widget_type]
 
     def is_registered(self, widget_type: str) -> bool:
@@ -32,7 +38,9 @@ class ParameterWidgetFactory(object):
 
     def get_widget_class(self, widget_type: str) -> Type[BaseParameterWidget]:
         if not self.is_registered(widget_type):
-            raise NotRegisteredError(f"widget type {widget_type} not registered")
+            raise NotRegisteredError(QApplication.tr(
+                f"widget type {widget_type} not registered"
+            ))
         return self._widget_classes[widget_type]
 
     def clear(self):
