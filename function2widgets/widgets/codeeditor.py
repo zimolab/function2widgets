@@ -99,13 +99,14 @@ class UniversalSourceCodeEditDialog(BaseSourceCodeEditDialog):
 
 class BaseSourceCodeEditor(CommonParameterWidget):
     def __init__(self, configs: dict = None, edit_button_text: str = None, window_title: str = None,
-                 default: Any = None, parent: QWidget | None = None):
+                 display_current_value: bool = True, default: Any = None, parent: QWidget | None = None):
 
         if configs is None:
             configs = DEFAULT_CONFIGS.copy()
 
         self._value_widget: QPushButton | None = None
         self._display_widget: QPlainTextEdit | None = None
+        self._display_current_value = display_current_value
 
         self._current_value = default
 
@@ -124,12 +125,25 @@ class BaseSourceCodeEditor(CommonParameterWidget):
 
         self._display_widget = QPlainTextEdit(parent=center_widget)
         self._display_widget.setReadOnly(True)
+        if self._display_current_value:
+            self._display_widget.show()
+        else:
+            self._display_widget.hide()
 
         self._value_widget = QPushButton(self._edit_button_text, parent=center_widget)
         self._value_widget.clicked.connect(self.open_edit_dialog)
 
         center_widget_layout.addWidget(self._display_widget)
         center_widget_layout.addWidget(self._value_widget)
+
+    def _on_use_default_checkbox_toggled(self, checked):
+        super()._on_use_default_checkbox_toggled(checked)
+        if checked:
+            self._update_current_value_display(self.default)
+
+    def _update_current_value_display(self, value):
+        self._display_widget.setPlainText(f"value: {value}\n"
+                                          f"type: {type(value)}")
 
     def get_value(self, *args, **kwargs) -> Any:
         if self._is_use_default():
@@ -138,8 +152,7 @@ class BaseSourceCodeEditor(CommonParameterWidget):
             return self._current_value
 
     def set_value(self, value: Any, *args, **kwargs):
-        self._display_widget.setPlainText(f"value: {value}\n"
-                                          f"type: {type(value)}")
+        self._update_current_value_display(value)
         if not self._pre_set_value(value):
             return
         self._current_value = value
@@ -162,9 +175,9 @@ class BaseSourceCodeEditor(CommonParameterWidget):
 
 class UniversalSourceCodeEditor(BaseSourceCodeEditor):
     def __init__(self, configs: dict = None, edit_button_text: str = None, window_title: str = None,
-                 default: str | None = None, parent: QWidget | None = None):
+                 display_current_value: bool = True, default: str | None = None, parent: QWidget | None = None):
         super().__init__(configs=configs, edit_button_text=edit_button_text, window_title=window_title,
-                         default=default, parent=parent)
+                         display_current_value=display_current_value, default=default, parent=parent)
 
     def get_value(self, *args, **kwargs) -> str | None:
         return super().get_value(*args, **kwargs)
@@ -231,7 +244,7 @@ class JsonEditDialog(BaseSourceCodeEditDialog):
 
 class JsonEditor(BaseSourceCodeEditor):
     def __init__(self, top_level_types: tuple = JsonTopLevelTypes, configs: dict = None, edit_button_text: str = None,
-                 window_title: str = None,
+                 window_title: str = None, display_current_value: bool = True,
                  default: Any = None, parent: QWidget | None = None):
 
         if configs is None:
@@ -249,7 +262,7 @@ class JsonEditor(BaseSourceCodeEditor):
             )
 
         super().__init__(configs=configs, edit_button_text=edit_button_text, window_title=window_title,
-                         default=default, parent=parent)
+                         display_current_value=display_current_value, default=default, parent=parent)
 
     def source_code_dialog(self) -> JsonEditDialog:
         dialog = JsonEditDialog(top_level_types=self._top_level_types,
@@ -271,11 +284,12 @@ class ListEditor(JsonEditor):
     TYPE_RESTRICTIONS = (list, NoneType)
 
     def __init__(self, configs: dict = None, edit_button_text: str = None, window_title: str = None,
-                 default: list = None, parent: QWidget | None = None):
+                 display_current_value: bool = True, default: list = None, parent: QWidget | None = None):
         super().__init__(top_level_types=self.TYPE_RESTRICTIONS,
                          configs=configs,
                          edit_button_text=edit_button_text,
                          window_title=window_title,
+                         display_current_value=display_current_value,
                          default=default,
                          parent=parent)
 
@@ -288,14 +302,15 @@ class ListEditor(JsonEditor):
         super().set_value(value, *args, **kwargs)
 
 
-class TupleEditor(ListEditor):
+class TupleEditor(JsonEditor):
     TYPE_RESTRICTIONS = (list, tuple, NoneType)
 
     def __init__(self, configs: dict = None, edit_button_text: str = None, window_title: str = None,
-                 default: tuple = None, parent: QWidget | None = None):
+                 display_current_value: bool = True, default: tuple = None, parent: QWidget | None = None):
         super().__init__(configs=configs,
                          edit_button_text=edit_button_text,
                          window_title=window_title,
+                         display_current_value=display_current_value,
                          default=default,
                          parent=parent)
 
@@ -322,11 +337,12 @@ class DictEditor(JsonEditor):
     TYPE_RESTRICTIONS = (dict, NoneType)
 
     def __init__(self, configs: dict = None, edit_button_text: str = None, window_title: str = None,
-                 default: dict = None, parent: QWidget | None = None):
+                 display_current_value: bool = True, default: dict = None, parent: QWidget | None = None):
         super().__init__(top_level_types=self.TYPE_RESTRICTIONS,
                          configs=configs,
                          edit_button_text=edit_button_text,
                          window_title=window_title,
+                         display_current_value=display_current_value,
                          default=default, parent=parent)
 
     def get_value(self, *args, **kwargs) -> dict | None:
@@ -347,10 +363,10 @@ def __test_main():
     source_code_editor = UniversalSourceCodeEditor(parent=wind, default=None)
     source_code_editor.set_label("UniversalSourceCodeEditor")
 
-    json_editor = JsonEditor(parent=wind, default=None)
+    json_editor = JsonEditor(parent=wind, default=None, display_current_value=False)
     json_editor.set_label("JsonEditor")
 
-    json_editor2 = ListEditor(parent=wind, default=[])
+    json_editor2 = ListEditor(parent=wind, default=[], display_current_value=False)
     json_editor2.set_label("ListEditor")
 
     json_editor3 = DictEditor(parent=wind, default=None)
