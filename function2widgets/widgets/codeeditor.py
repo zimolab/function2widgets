@@ -4,7 +4,7 @@ from types import NoneType
 from typing import Any
 
 from PyQt6.QtWidgets import QVBoxLayout, QWidget, QPushButton, QHBoxLayout, QSpacerItem, QSizePolicy, \
-    QDialog, QMessageBox, QApplication
+    QDialog, QMessageBox, QApplication, QPlainTextEdit
 
 from function2widgets.common import remove_tuple_element
 from function2widgets.widget import InvalidValueError
@@ -105,11 +105,12 @@ class BaseSourceCodeEditor(CommonParameterWidget):
             configs = DEFAULT_CONFIGS.copy()
 
         self._value_widget: QPushButton | None = None
+        self._display_widget: QPlainTextEdit | None = None
 
         self._current_value = default
 
         self._configs = configs
-        self._edit_button_edit = edit_button_text or QApplication.tr("Edit/View")
+        self._edit_button_text = edit_button_text or QApplication.tr("Edit/View")
         self._window_title = window_title or QApplication.tr("Code Editor")
 
         super().__init__(default=default, parent=parent)
@@ -120,8 +121,14 @@ class BaseSourceCodeEditor(CommonParameterWidget):
     def setup_center_widget(self, center_widget: QWidget):
         center_widget_layout = QVBoxLayout(center_widget)
         center_widget_layout.setContentsMargins(0, 0, 0, 0)
-        self._value_widget = QPushButton(self._edit_button_edit, parent=center_widget)
+
+        self._display_widget = QPlainTextEdit(parent=center_widget)
+        self._display_widget.setReadOnly(True)
+
+        self._value_widget = QPushButton(self._edit_button_text, parent=center_widget)
         self._value_widget.clicked.connect(self.open_edit_dialog)
+
+        center_widget_layout.addWidget(self._display_widget)
         center_widget_layout.addWidget(self._value_widget)
 
     def get_value(self, *args, **kwargs) -> Any:
@@ -131,6 +138,8 @@ class BaseSourceCodeEditor(CommonParameterWidget):
             return self._current_value
 
     def set_value(self, value: Any, *args, **kwargs):
+        self._display_widget.setPlainText(f"value: {value}\n"
+                                          f"type: {type(value)}")
         if not self._pre_set_value(value):
             return
         self._current_value = value
@@ -264,7 +273,7 @@ class ListEditor(JsonEditor):
     def __init__(self, configs: dict = None, edit_button_text: str = None, window_title: str = None,
                  default: list = None, parent: QWidget | None = None):
         super().__init__(top_level_types=self.TYPE_RESTRICTIONS,
-                         configs = configs,
+                         configs=configs,
                          edit_button_text=edit_button_text,
                          window_title=window_title,
                          default=default,
@@ -274,6 +283,8 @@ class ListEditor(JsonEditor):
         return super().get_value(*args, **kwargs)
 
     def set_value(self, value: list | None, *args, **kwargs):
+        if isinstance(value, (tuple, set)):
+            value = list(value)
         super().set_value(value, *args, **kwargs)
 
 
@@ -289,12 +300,14 @@ class TupleEditor(ListEditor):
                          parent=parent)
 
     def set_value(self, value: tuple | None, *args, **kwargs):
+        if isinstance(value, list):
+            value = tuple(value)
         super().set_value(value, *args, **kwargs)
 
     def get_value(self, *args, **kwargs) -> tuple | None:
         value = super().get_value(*args, **kwargs)
         if value is None:
-            return value
+            return None
         elif isinstance(value, list):
             return tuple(value)
         elif isinstance(value, tuple):
@@ -345,7 +358,6 @@ def __test_main():
 
     json_editor4 = TupleEditor(parent=wind, default=(1, 2, 3))
     json_editor4.set_label("TupleEditor")
-    print(json_editor4.get_value())
 
     layout.addWidget(source_code_editor)
     layout.addWidget(json_editor)
