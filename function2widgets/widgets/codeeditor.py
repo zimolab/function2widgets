@@ -1,4 +1,5 @@
 import abc
+import copy
 import json
 from types import NoneType
 from typing import Any
@@ -210,7 +211,7 @@ class JsonEditDialog(BaseSourceCodeEditDialog):
             json_str = json.dumps(value, indent=indent, ensure_ascii=ensure_ascii, *args, **kwargs)
         except BaseException as e:
             raise InvalidValueError() from e
-        self._current_value = value
+        self._current_value = copy.deepcopy(value)
         self._code_edit.setText(json_str)
 
     def get_value(self, *args, **kwargs) -> Any:
