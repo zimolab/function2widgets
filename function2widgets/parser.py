@@ -166,7 +166,7 @@ class DocstringInfoParser(object):
             return docstring_parser.parse(docstring)
         except BaseException as e:
             warnings.warn(QApplication.tr(
-                f"docstring parse error: {e}"
+                f"docstring parsing error: {e}"
             ))
             return Docstring()
 
@@ -182,7 +182,7 @@ class DocstringInfoParser(object):
                 raw_metadata = self._metadata_parser(metadata_in_docstring)
             except BaseException as e:
                 warnings.warn(
-                    QApplication.tr(f"metadata parse error: {e}")
+                    QApplication.tr(f"metadata parsing error: {e}")
                 )
                 raw_metadata = {}
         func_docstring_obj = self._parse_docstring(docstring_without_metadata)

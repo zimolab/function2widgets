@@ -17,10 +17,20 @@ PATH_DELIMITER = ";"
 
 class PathEdit(CommonParameterWidget):
 
-    def __init__(self, default: str | None = None, select_button_text: str = None,
-                 path_type: int = PATH_TYPE_OPEN_FILE, filters: str = FILTER_ALL_FILES, init_filter: str = None,
-                 start_path: str = None, path_delimiter: str = PATH_DELIMITER, placeholder: str = None,
-                 clear_button: bool = False, dialog_title: str = None, parent: QWidget | None = None):
+    def __init__(
+        self,
+        default: str | None = None,
+        select_button_text: str = None,
+        path_type: int = PATH_TYPE_OPEN_FILE,
+        filters: str = FILTER_ALL_FILES,
+        init_filter: str = None,
+        start_path: str = None,
+        path_delimiter: str = PATH_DELIMITER,
+        placeholder: str = None,
+        clear_button: bool = False,
+        dialog_title: str = None,
+        parent: QWidget | None = None,
+    ):
 
         self._value_widget: QLineEdit | None = None
         self._select_button: QPushButton | None = None
@@ -87,34 +97,50 @@ class PathEdit(CommonParameterWidget):
         self.set_value(path)
 
     def _get_open_file_path(self) -> str:
-        path, _ = QFileDialog.getOpenFileName(caption=self._dialog_title, directory=self._start_path,
-                                              filter=self._filters, initialFilter=self._init_filter)
+        path, _ = QFileDialog.getOpenFileName(
+            caption=self._dialog_title,
+            directory=self._start_path,
+            filter=self._filters,
+            initialFilter=self._init_filter,
+        )
         if not path:
             return ""
         return os.path.abspath(path)
 
     def _get_save_file_path(self) -> str | None:
-        path, _ = QFileDialog.getSaveFileName(caption=self._dialog_title, directory=self._start_path,
-                                              filter=self._filters, initialFilter=self._init_filter)
+        path, _ = QFileDialog.getSaveFileName(
+            caption=self._dialog_title,
+            directory=self._start_path,
+            filter=self._filters,
+            initialFilter=self._init_filter,
+        )
         if not path:
             return None
         return os.path.abspath(path)
 
     def _get_open_dir_path(self) -> str | None:
-        path = QFileDialog.getExistingDirectory(caption=self._dialog_title, directory=self._start_path)
+        path = QFileDialog.getExistingDirectory(
+            caption=self._dialog_title, directory=self._start_path
+        )
         if not path:
             return None
         return os.path.abspath(path)
 
     def _get_open_files_path(self) -> str | None:
-        paths, _ = QFileDialog.getOpenFileNames(caption=self._dialog_title, directory=self._start_path,
-                                                filter=self._filters, initialFilter=self._init_filter)
+        paths, _ = QFileDialog.getOpenFileNames(
+            caption=self._dialog_title,
+            directory=self._start_path,
+            filter=self._filters,
+            initialFilter=self._init_filter,
+        )
         if not paths:
             return None
         return self._path_delimiter.join((os.path.abspath(path) for path in paths))
 
     def _get_save_dir_path(self) -> str | None:
-        path = QFileDialog.getExistingDirectory(caption=self._dialog_title, directory=self._start_path)
+        path = QFileDialog.getExistingDirectory(
+            caption=self._dialog_title, directory=self._start_path
+        )
         if not path:
             return None
         return os.path.abspath(path)
@@ -122,11 +148,21 @@ class PathEdit(CommonParameterWidget):
 
 class FilePathEdit(PathEdit):
 
-    def __init__(self, default: str | None = None, select_button_text: str = None,
-                 save_file: bool = False, multiple_path: bool = False, filters: str = FILTER_ALL_FILES,
-                 init_filter: str = None, start_path: str = None, path_delimiter: str = PATH_DELIMITER,
-                 placeholder: str = None, clear_button: bool = False, dialog_title: str = None,
-                 parent: QWidget | None = None):
+    def __init__(
+        self,
+        default: str | None = None,
+        select_button_text: str = None,
+        save_file: bool = False,
+        multiple_path: bool = False,
+        filters: str = FILTER_ALL_FILES,
+        init_filter: str = None,
+        start_path: str = None,
+        path_delimiter: str = PATH_DELIMITER,
+        placeholder: str = None,
+        clear_button: bool = False,
+        dialog_title: str = None,
+        parent: QWidget | None = None,
+    ):
         if save_file:
             path_type = PATH_TYPE_SAVE_FILE
         elif multiple_path:
@@ -134,23 +170,51 @@ class FilePathEdit(PathEdit):
         else:
             path_type = PATH_TYPE_OPEN_FILE
 
-        super().__init__(default=default, select_button_text=select_button_text, path_type=path_type, filters=filters,
-                         init_filter=init_filter, start_path=start_path, path_delimiter=path_delimiter,
-                         placeholder=placeholder, clear_button=clear_button, dialog_title=dialog_title, parent=parent)
+        super().__init__(
+            default=default,
+            select_button_text=select_button_text,
+            path_type=path_type,
+            filters=filters,
+            init_filter=init_filter,
+            start_path=start_path,
+            path_delimiter=path_delimiter,
+            placeholder=placeholder,
+            clear_button=clear_button,
+            dialog_title=dialog_title,
+            parent=parent,
+        )
 
 
 class DirPathEdit(PathEdit):
-    def __init__(self, default: str | None = None, select_button_text: str = None,
-                 save_dir: bool = False, start_path: str = None, placeholder: str = None, clear_button: bool = False,
-                 dialog_title: str = None, parent: QWidget | None = None):
+    def __init__(
+        self,
+        default: str | None = None,
+        select_button_text: str = None,
+        save_dir: bool = False,
+        start_path: str = None,
+        placeholder: str = None,
+        clear_button: bool = False,
+        dialog_title: str = None,
+        parent: QWidget | None = None,
+    ):
         if save_dir:
             path_type = PATH_TYPE_SAVE_DIR
         else:
             path_type = PATH_TYPE_OPEN_DIR
 
-        super().__init__(default=default, select_button_text=select_button_text, path_type=path_type, filters="",
-                         init_filter=None, start_path=start_path, path_delimiter="",
-                         placeholder=placeholder, clear_button=clear_button, dialog_title=dialog_title, parent=parent)
+        super().__init__(
+            default=default,
+            select_button_text=select_button_text,
+            path_type=path_type,
+            filters="",
+            init_filter=None,
+            start_path=start_path,
+            path_delimiter="",
+            placeholder=placeholder,
+            clear_button=clear_button,
+            dialog_title=dialog_title,
+            parent=parent,
+        )
 
 
 def __test_main():
@@ -164,16 +228,22 @@ def __test_main():
     path_edit = PathEdit(parent=win, default=None, placeholder="select path")
     path_edit.set_label("PathEdit")
 
-    file_path_edit = FilePathEdit(parent=win, default=None, placeholder="select file path", save_file=True)
+    file_path_edit = FilePathEdit(
+        parent=win, default=None, placeholder="select file path", save_file=True
+    )
     file_path_edit.set_label("FilePathEdit")
 
-    files_path_edit = FilePathEdit(parent=win, default=None, placeholder="select files path", multiple_path=True)
+    files_path_edit = FilePathEdit(
+        parent=win, default=None, placeholder="select files path", multiple_path=True
+    )
     files_path_edit.set_label("FilesPathEdit")
 
     dir_path_edit = DirPathEdit(parent=win, default=None, placeholder="select dir path")
     dir_path_edit.set_label("DirPathEdit")
 
-    save_dir_path_edit = DirPathEdit(parent=win, default=None, placeholder="select save dir path", save_dir=True)
+    save_dir_path_edit = DirPathEdit(
+        parent=win, default=None, placeholder="select save dir path", save_dir=True
+    )
     save_dir_path_edit.set_label("DirPathEdit")
 
     layout.addWidget(path_edit)
@@ -186,5 +256,5 @@ def __test_main():
     app.exec()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     __test_main()

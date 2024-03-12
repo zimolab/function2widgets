@@ -2,6 +2,8 @@ import dataclasses
 import warnings
 from typing import Any, OrderedDict
 
+from PyQt6.QtWidgets import QApplication
+
 
 @dataclasses.dataclass
 class WidgetDescription(object):
@@ -31,7 +33,9 @@ class WidgetDescription(object):
             if type(new_value) is expected_type:
                 setattr(self, key, new_value)
             else:
-                warnings.warn(f"unexpected type for field '{key}': expected {expected_type}, got{type(new_value)}")
+                warnings.warn(
+                    QApplication.tr(f"unexpected type for field '{key}': expected {expected_type}, got{type(new_value)}")
+                )
 
     def update_init_args(self, new_args: dict):
         if not isinstance(new_args, dict):
@@ -64,7 +68,9 @@ class WidgetDescription(object):
             expected_type = cls.__annotations__[key]
             if type(value) is not expected_type:
                 # 若为已定义的字段，但类型不匹配，则警告
-                warnings.warn(f"unexpected type for field '{key}': expected {expected_type}, got {type(value)}")
+                warnings.warn(
+                    QApplication.tr(f"unexpected type for field '{key}': expected {expected_type}, got {type(value)}")
+                )
                 continue
             else:
                 # 已定义的字段，且类型匹配，则收集该字段

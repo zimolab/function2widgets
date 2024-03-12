@@ -1,9 +1,21 @@
 import typing
 
-from function2widgets.widgets.codeeditor import UniversalSourceCodeEditor, JsonEditor, ListEditor, TupleEditor, DictEditor
+from function2widgets.widgets.codeeditor import (
+    UniversalSourceCodeEditor,
+    JsonEditor,
+    ListEditor,
+    TupleEditor,
+    DictEditor,
+)
 from function2widgets.widgets.lineedit import LineEdit, IntLineEdit, FloatLineEdit
 from function2widgets.widgets.textedit import PlainTextEdit, SourceCodeEdit
-from function2widgets.widgets.selectwidget import ComboBox, ComboBoxEdit, RadioButtonGroup, CheckBoxGroup, CheckBox
+from function2widgets.widgets.selectwidget import (
+    ComboBox,
+    ComboBoxEdit,
+    RadioButtonGroup,
+    CheckBoxGroup,
+    CheckBox,
+)
 from function2widgets.widgets.numberedit import IntSpinBox, FloatSpinBox, Dial, Slider
 from function2widgets.widgets.pathedit import PathEdit, FilePathEdit, DirPathEdit
 
@@ -29,5 +41,5 @@ BASIC_PARAMETER_WIDGETS = {
     IntSpinBox.__name__: IntSpinBox,
     FloatSpinBox.__name__: FloatSpinBox,
     Dial.__name__: Dial,
-    Slider.__name__: Slider
+    Slider.__name__: Slider,
 }

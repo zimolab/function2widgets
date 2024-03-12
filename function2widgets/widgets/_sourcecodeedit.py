@@ -29,7 +29,7 @@ DEFAULT_CONFIGS = {
     "AutoCompletionThreshold": 3,
     "Folding": FOLD_STYLE,
     "Font": "Consolas",
-    "_FontSize": FONT_SIZE
+    "_FontSize": FONT_SIZE,
 }
 
 
@@ -70,7 +70,7 @@ AutoCompletionSources = {
     "None": QsciScintilla.AutoCompletionSource.AcsNone,
     "All": QsciScintilla.AutoCompletionSource.AcsAll,
     "Document": QsciScintilla.AutoCompletionSource.AcsDocument,
-    "APIs": QsciScintilla.AutoCompletionSource.AcsAPIs
+    "APIs": QsciScintilla.AutoCompletionSource.AcsAPIs,
 }
 
 Lexers = _all_lexers()
@@ -88,7 +88,7 @@ class _CodeEditConfigurator(object):
             "Lexer": self.map_lexer,
             "Folding": self.map_folding,
             "Font": self.map_font,
-            "AutoCompletionSource": self.map_acs
+            "AutoCompletionSource": self.map_acs,
         }
 
     def apply_configs(self, configs: dict[str, Any]):
@@ -115,10 +115,14 @@ class _CodeEditConfigurator(object):
             return
         config_func(configvalue)
 
-    def map_eol_mode(self, raw_value: str, configs: dict = None) -> QsciScintilla.EolMode:
+    def map_eol_mode(
+        self, raw_value: str, configs: dict = None
+    ) -> QsciScintilla.EolMode:
         return EolModes.get(raw_value, None)
 
-    def map_wrap_mode(self, raw_value: str, configs: dict = None) -> QsciScintilla.WrapMode:
+    def map_wrap_mode(
+        self, raw_value: str, configs: dict = None
+    ) -> QsciScintilla.WrapMode:
         return WrapModes.get(raw_value, None)
 
     def map_lexer(self, raw_value: str, configs: dict = None) -> QsciLexer | None:
@@ -127,14 +131,18 @@ class _CodeEditConfigurator(object):
             return None
         return lexer(parent=self._target)
 
-    def map_folding(self, raw_value: str, configs: dict = None) -> QsciScintilla.FoldStyle:
+    def map_folding(
+        self, raw_value: str, configs: dict = None
+    ) -> QsciScintilla.FoldStyle:
         return FoldStyles.get(raw_value, None)
 
     def map_font(self, raw_value: str, configs: dict = None) -> QFont:
         font_size = configs.get("_FontSize", 12)
         return QFont(raw_value, font_size)
 
-    def map_acs(self, raw_value: str, configs: dict = None) -> QsciScintilla.AutoCompletionSource:
+    def map_acs(
+        self, raw_value: str, configs: dict = None
+    ) -> QsciScintilla.AutoCompletionSource:
         return AutoCompletionSources.get(raw_value, None)
 
 
@@ -171,5 +179,5 @@ def __test_main():
     app.exec()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     __test_main()

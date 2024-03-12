@@ -17,8 +17,16 @@ ECHO_MODES = {
 
 class LineEdit(CommonParameterWidget):
 
-    def __init__(self, default: str | None = None, placeholder: str = "", clear_button: bool = False,
-                 echo_mode: str = "Normal", regex: str = None, input_mask: str = None, parent: QWidget | None = None):
+    def __init__(
+        self,
+        default: str | None = None,
+        placeholder: str = "",
+        clear_button: bool = False,
+        echo_mode: str = "Normal",
+        regex: str = None,
+        input_mask: str = None,
+        parent: QWidget | None = None,
+    ):
         self._value_widget: QLineEdit | None = None
 
         super().__init__(default=default, parent=parent)
@@ -26,7 +34,9 @@ class LineEdit(CommonParameterWidget):
         if placeholder:
             self._value_widget.setPlaceholderText(placeholder)
         self._value_widget.setClearButtonEnabled(clear_button)
-        self._value_widget.setEchoMode(ECHO_MODES.get(echo_mode.capitalize(), QLineEdit.EchoMode.Normal))
+        self._value_widget.setEchoMode(
+            ECHO_MODES.get(echo_mode.capitalize(), QLineEdit.EchoMode.Normal)
+        )
         if regex:
             regex_validator = QRegularExpressionValidator(regex)
             regex_validator.setParent(self)
@@ -60,10 +70,23 @@ class LineEdit(CommonParameterWidget):
 
 
 class IntLineEdit(LineEdit):
-    def __init__(self, default: int | None = None, max_value: int = None, min_value: int = None,
-                 placeholder: str = "", parent: QWidget | None = None):
-        super().__init__(default=default, placeholder=placeholder, clear_button=False,
-                         echo_mode="Normal", regex=None, input_mask=None, parent=parent)
+    def __init__(
+        self,
+        default: int | None = None,
+        max_value: int = None,
+        min_value: int = None,
+        placeholder: str = "",
+        parent: QWidget | None = None,
+    ):
+        super().__init__(
+            default=default,
+            placeholder=placeholder,
+            clear_button=False,
+            echo_mode="Normal",
+            regex=None,
+            input_mask=None,
+            parent=parent,
+        )
 
         edit_validator = QIntValidator(self._value_widget)
         if min_value is not None:
@@ -72,7 +95,9 @@ class IntLineEdit(LineEdit):
             edit_validator.setTop(max_value)
         self._value_widget.setValidator(edit_validator)
 
-    def get_value(self, empty_value_as_none: bool = True, *args, **kwargs) -> int | None:
+    def get_value(
+        self, empty_value_as_none: bool = True, *args, **kwargs
+    ) -> int | None:
         raw_value = super().get_value()
 
         if raw_value is None:
@@ -83,7 +108,9 @@ class IntLineEdit(LineEdit):
         try:
             return int(raw_value)
         except (TypeError, ValueError) as e:
-            raise InvalidValueError(self.tr(f"invalid value: value must be int (value={raw_value})")) from e
+            raise InvalidValueError(
+                self.tr(f"invalid value: value must be int (value={raw_value})")
+            ) from e
 
     def set_value(self, value: int | None, strict: bool = False, *args, **kwargs):
 
@@ -97,11 +124,25 @@ class IntLineEdit(LineEdit):
 
 
 class FloatLineEdit(LineEdit):
-    def __init__(self, default: float | None = None, max_value: float = None, min_value: float = None,
-                 decimals: float = None, scientific_notation: bool = False, placeholder: str = "",
-                 parent: QWidget | None = None):
-        super().__init__(default=default, placeholder=placeholder, clear_button=False,
-                         echo_mode="Normal", regex=None, input_mask=None, parent=parent)
+    def __init__(
+        self,
+        default: float | None = None,
+        max_value: float = None,
+        min_value: float = None,
+        decimals: float = None,
+        scientific_notation: bool = False,
+        placeholder: str = "",
+        parent: QWidget | None = None,
+    ):
+        super().__init__(
+            default=default,
+            placeholder=placeholder,
+            clear_button=False,
+            echo_mode="Normal",
+            regex=None,
+            input_mask=None,
+            parent=parent,
+        )
 
         edit_validator = QDoubleValidator(self._value_widget)
         if min_value is not None:
@@ -114,7 +155,9 @@ class FloatLineEdit(LineEdit):
             edit_validator.setNotation(QDoubleValidator.Notation.ScientificNotation)
         self._value_widget.setValidator(edit_validator)
 
-    def get_value(self, empty_value_as_none: bool = True, *args, **kwargs) -> float | None:
+    def get_value(
+        self, empty_value_as_none: bool = True, *args, **kwargs
+    ) -> float | None:
         raw_value = super().get_value()
         if empty_value_as_none and raw_value == "":
             return None
@@ -202,5 +245,5 @@ def __test_main():
     app.exec()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     __test_main()

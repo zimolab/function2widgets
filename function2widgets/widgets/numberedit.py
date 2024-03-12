@@ -3,15 +3,30 @@
 """
 
 from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import QSpinBox, QWidget, QVBoxLayout, QDoubleSpinBox, QDial, QLabel, QSlider
+from PyQt6.QtWidgets import (
+    QSpinBox,
+    QWidget,
+    QVBoxLayout,
+    QDoubleSpinBox,
+    QDial,
+    QLabel,
+    QSlider,
+)
 
 from function2widgets.widgets.base import CommonParameterWidget
 
 
 class IntSpinBox(CommonParameterWidget):
-    def __init__(self, min_value: int = None, max_value: int = None, step: int = None,
-                 prefix: str = None, suffix: str = None, default: int | None = None,
-                 parent: QWidget | None = None):
+    def __init__(
+        self,
+        min_value: int = None,
+        max_value: int = None,
+        step: int = None,
+        prefix: str = None,
+        suffix: str = None,
+        default: int | None = None,
+        parent: QWidget | None = None,
+    ):
 
         self._value_widget: QSpinBox | None = None
         self._min_value = min_value
@@ -55,9 +70,18 @@ class IntSpinBox(CommonParameterWidget):
 
 
 class FloatSpinBox(CommonParameterWidget):
-    def __init__(self, min_value: float = None, max_value: float = None, step: float = None, decimals: int = None,
-                 prefix: str = None, suffix: str = None, accelerated: bool = False,
-                 default: float | None = None, parent: QWidget | None = None):
+    def __init__(
+        self,
+        min_value: float = None,
+        max_value: float = None,
+        step: float = None,
+        decimals: int = None,
+        prefix: str = None,
+        suffix: str = None,
+        accelerated: bool = False,
+        default: float | None = None,
+        parent: QWidget | None = None,
+    ):
 
         self._value_widget: QDoubleSpinBox | None = None
         self._min_value = min_value
@@ -106,10 +130,24 @@ class FloatSpinBox(CommonParameterWidget):
 
 
 class Dial(CommonParameterWidget):
-    def __init__(self, min_value: int = None, max_value: int = None, step: int = None, page_step: int = None,
-                 tracking: bool = False, wrapping: bool = False, notches_visible: bool = True, notches_target: float = None,
-                 inverted_appearance: bool = False, inverted_control: bool = False, show_value_label: bool = False,
-                 value_prefix: str = None, value_suffix: str = None, default: float | None = None, parent: QWidget | None = None):
+    def __init__(
+        self,
+        min_value: int = None,
+        max_value: int = None,
+        step: int = None,
+        page_step: int = None,
+        tracking: bool = False,
+        wrapping: bool = False,
+        notches_visible: bool = True,
+        notches_target: float = None,
+        inverted_appearance: bool = False,
+        inverted_control: bool = False,
+        show_value_label: bool = False,
+        value_prefix: str = None,
+        value_suffix: str = None,
+        default: float | None = None,
+        parent: QWidget | None = None,
+    ):
 
         self._value_widget: QDial | None = None
         self._value_label: QLabel | None = None
@@ -198,11 +236,23 @@ class Slider(CommonParameterWidget):
         "Right": QSlider.TickPosition.TicksRight,
     }
 
-    def __init__(self, min_value: int = None, max_value: int = None, step: int = None, page_step: int = None,
-                 tracking: bool = False, tick_position: str = None, tick_interval: int = None,
-                 inverted_appearance: bool = False, inverted_control: bool = False,
-                 show_value_label: bool = False, value_prefix: str = None, value_suffix: str = None,
-                 default: float | None = None, parent: QWidget | None = None):
+    def __init__(
+        self,
+        min_value: int = None,
+        max_value: int = None,
+        step: int = None,
+        page_step: int = None,
+        tracking: bool = False,
+        tick_position: str = None,
+        tick_interval: int = None,
+        inverted_appearance: bool = False,
+        inverted_control: bool = False,
+        show_value_label: bool = False,
+        value_prefix: str = None,
+        value_suffix: str = None,
+        default: float | None = None,
+        parent: QWidget | None = None,
+    ):
 
         self._value_widget: QSlider | None = None
         self._value_label: QLabel | None = None
@@ -245,7 +295,9 @@ class Slider(CommonParameterWidget):
             self._value_widget.setTracking(self._tracking)
 
         if isinstance(self._tick_position, str):
-            pos = self.TickPosition.get(self._tick_position.capitalize(), QSlider.TickPosition.NoTicks)
+            pos = self.TickPosition.get(
+                self._tick_position.capitalize(), QSlider.TickPosition.NoTicks
+            )
             self._value_widget.setTickPosition(pos)
 
         if self._tick_interval is not None:
@@ -254,6 +306,7 @@ class Slider(CommonParameterWidget):
         if self._show_value_label:
             self._setup_value_label(center_widget_layout)
             self._update_value_label(self._value_widget.value())
+
     def get_value(self, *args, **kwargs) -> int | None:
         if self._is_use_default():
             return self._default
@@ -280,7 +333,6 @@ class Slider(CommonParameterWidget):
         self._value_label.setText(f"{prefix}{value}{suffix}")
 
 
-
 def __test_main():
     from PyQt6.QtWidgets import QApplication
 
@@ -297,7 +349,9 @@ def __test_main():
     int_spin.set_value(None)
     print()
 
-    float_spin = FloatSpinBox(min_value=-100000.0, max_value=100000.0, step=1.5, default=10.01, decimals=5)
+    float_spin = FloatSpinBox(
+        min_value=-100000.0, max_value=100000.0, step=1.5, default=10.01, decimals=5
+    )
     float_spin.set_label("FloatSpinBox")
     print(f"{float_spin.get_value()}")
     float_spin.set_value(10.255555)
@@ -305,8 +359,17 @@ def __test_main():
     float_spin.set_value(10.01)
     print()
 
-    dial = Dial(default=None, min_value=0, max_value=360, step=1, page_step=10, notches_visible=True,
-                notches_target=2.0, show_value_label=True, value_suffix="°")
+    dial = Dial(
+        default=None,
+        min_value=0,
+        max_value=360,
+        step=1,
+        page_step=10,
+        notches_visible=True,
+        notches_target=2.0,
+        show_value_label=True,
+        value_suffix="°",
+    )
     dial.set_label("DialWidget")
     print(f"{dial.get_value()}")
     dial.set_value(180)
@@ -314,8 +377,17 @@ def __test_main():
     dial.set_value(None)
     print()
 
-    slider = Slider(default=None, min_value=0, max_value=360, step=1, page_step=10, tick_position="Above",
-                    tick_interval=0, show_value_label=True, value_suffix="°")
+    slider = Slider(
+        default=None,
+        min_value=0,
+        max_value=360,
+        step=1,
+        page_step=10,
+        tick_position="Above",
+        tick_interval=0,
+        show_value_label=True,
+        value_suffix="°",
+    )
     slider.set_label("SliderWidget")
     print(f"{slider.get_value()}")
     slider.set_value(180)
@@ -331,5 +403,5 @@ def __test_main():
     app.exec()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     __test_main()

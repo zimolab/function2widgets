@@ -26,7 +26,9 @@ class CommonParameterWidget(BaseParameterWidget):
         self._checkbox_use_default.setText(self.tr("default(%s)" % repr(self.default)))
         self._checkbox_use_default.setEnabled(True)
         # noinspection PyUnresolvedReferences
-        self._checkbox_use_default.toggled.connect(self._on_use_default_checkbox_toggled)
+        self._checkbox_use_default.toggled.connect(
+            self._on_use_default_checkbox_toggled
+        )
 
     def _on_use_default_checkbox_toggled(self, checked):
         if checked:
@@ -80,7 +82,11 @@ class CommonParameterWidget(BaseParameterWidget):
                 self._set_use_default()
                 return False
             else:
-                raise InvalidValueError(self.tr("invalid value: value cannot be None unless default value is None"))
+                raise InvalidValueError(
+                    self.tr(
+                        "invalid value: value cannot be None unless default value is None"
+                    )
+                )
 
         if value == self.default:
             self._set_use_default()

@@ -32,7 +32,12 @@ class PlainTextEdit(CommonParameterWidget):
 
 
 class SourceCodeEdit(CommonParameterWidget):
-    def __init__(self, configs: dict = None, default: str | None = None, parent: QWidget | None = None):
+    def __init__(
+        self,
+        configs: dict = None,
+        default: str | None = None,
+        parent: QWidget | None = None,
+    ):
 
         self._value_widget: _SourceCodeEdit | None = None
         self._configs = configs
@@ -96,5 +101,5 @@ def __test_main():
     app.exec()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     __test_main()

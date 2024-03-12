@@ -21,6 +21,9 @@ tomli = "^2.0.1"
 tomli-w = "^1.0.0"
 
 
+[tool.poetry.group.dev.dependencies]
+black = "^24.2.0"
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"

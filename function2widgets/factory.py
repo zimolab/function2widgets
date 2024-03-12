@@ -38,9 +38,9 @@ class ParameterWidgetFactory(object):
 
     def get_widget_class(self, widget_type: str) -> Type[BaseParameterWidget]:
         if not self.is_registered(widget_type):
-            raise NotRegisteredError(QApplication.tr(
-                f"widget type {widget_type} not registered"
-            ))
+            raise NotRegisteredError(
+                QApplication.tr(f"widget type {widget_type} not registered")
+            )
         return self._widget_classes[widget_type]
 
     def clear(self):
@@ -50,7 +50,9 @@ class ParameterWidgetFactory(object):
         widget_class = self.get_widget_class(widget_type)
         return widget_class(**kwargs)
 
-    def create_widget_from_description(self, param_description: ParameterDescription) -> BaseParameterWidget:
+    def create_widget_from_description(
+        self, param_description: ParameterDescription
+    ) -> BaseParameterWidget:
         widget_description = param_description.widget
 
         if not widget_description:
@@ -73,7 +75,7 @@ class ParameterWidgetFactory(object):
         args = {
             "default": param_description.default,
             "parent": None,
-            **widget_init_args
+            **widget_init_args,
         }
         widget = self.create_widget(widget_type, **args)
         widget.parameter_name = param_description.name
