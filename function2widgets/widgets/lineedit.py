@@ -26,10 +26,11 @@ class LineEdit(CommonParameterWidget):
         regex: str = None,
         input_mask: str = None,
         parent: QWidget | None = None,
+        stylesheet: str | None = "",
     ):
         self._value_widget: QLineEdit | None = None
 
-        super().__init__(default=default, parent=parent)
+        super().__init__(default=default, parent=parent, stylesheet=stylesheet)
 
         if placeholder:
             self._value_widget.setPlaceholderText(placeholder)
@@ -77,6 +78,7 @@ class IntLineEdit(LineEdit):
         min_value: int = None,
         placeholder: str = "",
         parent: QWidget | None = None,
+        stylesheet: str | None = None,
     ):
         super().__init__(
             default=default,
@@ -86,6 +88,7 @@ class IntLineEdit(LineEdit):
             regex=None,
             input_mask=None,
             parent=parent,
+            stylesheet=stylesheet,
         )
 
         edit_validator = QIntValidator(self._value_widget)
@@ -133,6 +136,7 @@ class FloatLineEdit(LineEdit):
         scientific_notation: bool = False,
         placeholder: str = "",
         parent: QWidget | None = None,
+        stylesheet: str | None = None,
     ):
         super().__init__(
             default=default,
@@ -142,6 +146,7 @@ class FloatLineEdit(LineEdit):
             regex=None,
             input_mask=None,
             parent=parent,
+            stylesheet=stylesheet,
         )
 
         edit_validator = QDoubleValidator(self._value_widget)

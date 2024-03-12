@@ -8,10 +8,15 @@ from function2widgets.widgets.base import CommonParameterWidget
 
 class PlainTextEdit(CommonParameterWidget):
 
-    def __init__(self, default: str | None = None, parent: QWidget | None = None):
+    def __init__(
+        self,
+        default: str | None = None,
+        parent: QWidget | None = None,
+        stylesheet: str | None = None,
+    ):
         self._value_widget: QPlainTextEdit | None = None
 
-        super().__init__(default, parent)
+        super().__init__(default=default, parent=parent, stylesheet=stylesheet)
 
     def setup_center_widget(self, center_widget: QWidget):
         center_widget_layout = QVBoxLayout(center_widget)
@@ -37,12 +42,13 @@ class SourceCodeEdit(CommonParameterWidget):
         configs: dict = None,
         default: str | None = None,
         parent: QWidget | None = None,
+        stylesheet: str | None = None,
     ):
 
         self._value_widget: _SourceCodeEdit | None = None
         self._configs = configs
 
-        super().__init__(default, parent)
+        super().__init__(default=default, parent=parent, stylesheet=stylesheet)
 
         self.set_value(self.default)
 

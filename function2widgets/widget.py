@@ -10,10 +10,13 @@ class InvalidValueError(ValueError):
 
 class BaseParameterWidget(QWidget):
 
-    def __init__(self, default: Any, parent: QWidget | None):
+    def __init__(self, default: Any, parent: QWidget | None, stylesheet: str | None):
         super().__init__(parent)
         self._default = default
         self._parameter_name: str | None = None
+
+        if stylesheet is not None:
+            self.setStyleSheet(stylesheet)
 
     @property
     def parameter_name(self) -> str | None:

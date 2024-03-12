@@ -30,6 +30,7 @@ class PathEdit(CommonParameterWidget):
         clear_button: bool = False,
         dialog_title: str = None,
         parent: QWidget | None = None,
+        stylesheet: str | None = None,
     ):
 
         self._value_widget: QLineEdit | None = None
@@ -45,7 +46,7 @@ class PathEdit(CommonParameterWidget):
         self._path_delimiter = path_delimiter or PATH_DELIMITER
         self._dialog_title = dialog_title or "Select Path"
 
-        super().__init__(default=default, parent=parent)
+        super().__init__(default=default, parent=parent, stylesheet=stylesheet)
 
         self.set_value(self.default)
 
@@ -162,6 +163,7 @@ class FilePathEdit(PathEdit):
         clear_button: bool = False,
         dialog_title: str = None,
         parent: QWidget | None = None,
+        stylesheet: str | None = None,
     ):
         if save_file:
             path_type = PATH_TYPE_SAVE_FILE
@@ -182,6 +184,7 @@ class FilePathEdit(PathEdit):
             clear_button=clear_button,
             dialog_title=dialog_title,
             parent=parent,
+            stylesheet=stylesheet,
         )
 
 
@@ -196,6 +199,7 @@ class DirPathEdit(PathEdit):
         clear_button: bool = False,
         dialog_title: str = None,
         parent: QWidget | None = None,
+        stylesheet: str | None = None,
     ):
         if save_dir:
             path_type = PATH_TYPE_SAVE_DIR
@@ -214,6 +218,7 @@ class DirPathEdit(PathEdit):
             clear_button=clear_button,
             dialog_title=dialog_title,
             parent=parent,
+            stylesheet=stylesheet,
         )
 
 

@@ -119,6 +119,7 @@ class BaseSourceCodeEditor(CommonParameterWidget):
         display_current_value: bool = True,
         default: Any = None,
         parent: QWidget | None = None,
+        stylesheet: str | None = None,
     ):
 
         if configs is None:
@@ -134,7 +135,7 @@ class BaseSourceCodeEditor(CommonParameterWidget):
         self._edit_button_text = edit_button_text or QApplication.tr("Edit/View")
         self._window_title = window_title or QApplication.tr("Code Editor")
 
-        super().__init__(default=default, parent=parent)
+        super().__init__(default=default, parent=parent, stylesheet=stylesheet)
 
         self.set_value(self.default)
 
@@ -202,6 +203,7 @@ class UniversalSourceCodeEditor(BaseSourceCodeEditor):
         display_current_value: bool = True,
         default: str | None = None,
         parent: QWidget | None = None,
+        stylesheet: str | None = None,
     ):
         super().__init__(
             configs=configs,
@@ -210,6 +212,7 @@ class UniversalSourceCodeEditor(BaseSourceCodeEditor):
             display_current_value=display_current_value,
             default=default,
             parent=parent,
+            stylesheet=stylesheet,
         )
 
     def get_value(self, *args, **kwargs) -> str | None:
@@ -297,6 +300,7 @@ class JsonEditor(BaseSourceCodeEditor):
         display_current_value: bool = True,
         default: Any = None,
         parent: QWidget | None = None,
+        stylesheet: str | None = None,
     ):
 
         if configs is None:
@@ -322,6 +326,7 @@ class JsonEditor(BaseSourceCodeEditor):
             display_current_value=display_current_value,
             default=default,
             parent=parent,
+            stylesheet=stylesheet,
         )
 
     def source_code_dialog(self) -> JsonEditDialog:
@@ -355,6 +360,7 @@ class ListEditor(JsonEditor):
         display_current_value: bool = True,
         default: list = None,
         parent: QWidget | None = None,
+        stylesheet: str | None = None,
     ):
         super().__init__(
             top_level_types=self.TYPE_RESTRICTIONS,
@@ -364,6 +370,7 @@ class ListEditor(JsonEditor):
             display_current_value=display_current_value,
             default=default,
             parent=parent,
+            stylesheet=stylesheet,
         )
 
     def get_value(self, *args, **kwargs) -> list | None:
@@ -386,6 +393,7 @@ class TupleEditor(JsonEditor):
         display_current_value: bool = True,
         default: tuple = None,
         parent: QWidget | None = None,
+        stylesheet: str | None = None,
     ):
         super().__init__(
             configs=configs,
@@ -394,6 +402,7 @@ class TupleEditor(JsonEditor):
             display_current_value=display_current_value,
             default=default,
             parent=parent,
+            stylesheet=stylesheet,
         )
 
     def set_value(self, value: tuple | None, *args, **kwargs):
@@ -428,6 +437,7 @@ class DictEditor(JsonEditor):
         display_current_value: bool = True,
         default: dict = None,
         parent: QWidget | None = None,
+        stylesheet: str | None = None,
     ):
         super().__init__(
             top_level_types=self.TYPE_RESTRICTIONS,
@@ -437,6 +447,7 @@ class DictEditor(JsonEditor):
             display_current_value=display_current_value,
             default=default,
             parent=parent,
+            stylesheet=stylesheet,
         )
 
     def get_value(self, *args, **kwargs) -> dict | None:
@@ -454,7 +465,9 @@ def __test_main():
     layout = QVBoxLayout(wind)
     wind.setLayout(layout)
 
-    source_code_editor = UniversalSourceCodeEditor(parent=wind, default=None)
+    source_code_editor = UniversalSourceCodeEditor(
+        parent=wind, default=None, stylesheet="QCheckBox{background-color: red}"
+    )
     source_code_editor.set_label("UniversalSourceCodeEditor")
 
     json_editor = JsonEditor(parent=wind, default=None, display_current_value=False)

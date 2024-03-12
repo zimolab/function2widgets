@@ -1,4 +1,4 @@
-from typing import Iterable, List, OrderedDict, Any
+from typing import Iterable, List, OrderedDict
 
 from PyQt6.QtWidgets import (
     QWidget,
@@ -25,6 +25,7 @@ class ComboBox(CommonParameterWidget):
         items: Iterable[str],
         default: str | None = None,
         parent: QWidget | None = None,
+        stylesheet: str | None = None,
     ):
 
         self._value_widget: QComboBox | None = None
@@ -35,7 +36,7 @@ class ComboBox(CommonParameterWidget):
                 QApplication.tr(f"invalid default value: {default}")
             )
 
-        super().__init__(default=default, parent=parent)
+        super().__init__(default=default, parent=parent, stylesheet=stylesheet)
 
         self.set_value(self.default)
 
@@ -105,6 +106,7 @@ class RadioButtonGroup(CommonParameterWidget):
         column_count: int = 1,
         default: str | None = None,
         parent: QWidget | None = None,
+        stylesheet: str | None = None,
     ):
 
         self._button_group: QButtonGroup | None = None
@@ -120,7 +122,7 @@ class RadioButtonGroup(CommonParameterWidget):
         if default not in self._items and default is not None:
             raise InvalidValueError(self.tr(f"invalid default value: '{default}'"))
 
-        super().__init__(default, parent)
+        super().__init__(default=default, parent=parent, stylesheet=stylesheet)
 
         self.set_value(self.default)
 
@@ -178,6 +180,7 @@ class CheckBoxGroup(CommonParameterWidget):
         column_count: int = 1,
         default: List[str] | None = None,
         parent: QWidget | None = None,
+        stylesheet: str | None = None,
     ):
 
         self._checkbox_buttons = []
@@ -192,7 +195,7 @@ class CheckBoxGroup(CommonParameterWidget):
 
         self._items = list(OrderedDict.fromkeys(items))
 
-        super().__init__(default=default, parent=parent)
+        super().__init__(default=default, parent=parent, stylesheet=stylesheet)
         self.set_value(self.default)
 
     def setup_center_widget(self, center_widget: QWidget):
@@ -238,10 +241,11 @@ class CheckBox(CommonParameterWidget):
         text: str = None,
         default: bool | None = None,
         parent: QWidget | None = None,
+        stylesheet: str | None = None,
     ):
         self._text = text or QApplication.tr("ENABLE")
         self._checkbox: QCheckBox | None = None
-        super().__init__(default=default, parent=parent)
+        super().__init__(default=default, parent=parent, stylesheet=stylesheet)
         self.set_value(default)
 
     def setup_center_widget(self, center_widget: QWidget):

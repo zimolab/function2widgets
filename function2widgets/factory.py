@@ -2,7 +2,11 @@ from typing import Type
 
 from PyQt6.QtWidgets import QApplication
 
-from function2widgets.common import AlreadyRegisteredError, NotRegisteredError
+from function2widgets.common import (
+    AlreadyRegisteredError,
+    NotRegisteredError,
+    safe_read_file,
+)
 from function2widgets.description import ParameterDescription
 from function2widgets.widget import BaseParameterWidget
 from function2widgets.widgets.allwidgets import BASIC_PARAMETER_WIDGETS
@@ -71,6 +75,15 @@ class ParameterWidgetFactory(object):
             widget_init_args = widget_description.init_args
 
         widget_type = widget_type or param_description.type
+
+        # 针对stylesheet参数做一些特殊处理
+        # 需要判断stylesheet是样式表本身还是一个执行样式表文件的路径
+        # 如果是一个指向文件的路径，则需要读取文件内容并设置为样式表
+        if "stylesheet" in widget_init_args:
+            stylesheet = widget_init_args["stylesheet"]
+            stylesheet = safe_read_file(stylesheet)
+            if stylesheet is not None:
+                widget_init_args["stylesheet"] = stylesheet
 
         args = {
             "default": param_description.default,

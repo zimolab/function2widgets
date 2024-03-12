@@ -26,6 +26,7 @@ class IntSpinBox(CommonParameterWidget):
         suffix: str = None,
         default: int | None = None,
         parent: QWidget | None = None,
+        stylesheet: str | None = None,
     ):
 
         self._value_widget: QSpinBox | None = None
@@ -35,7 +36,7 @@ class IntSpinBox(CommonParameterWidget):
         self._prefix = prefix
         self._suffix = suffix
 
-        super().__init__(default=default, parent=parent)
+        super().__init__(default=default, parent=parent, stylesheet=stylesheet)
 
         self.set_value(self._default)
 
@@ -81,6 +82,7 @@ class FloatSpinBox(CommonParameterWidget):
         accelerated: bool = False,
         default: float | None = None,
         parent: QWidget | None = None,
+        stylesheet: str | None = None,
     ):
 
         self._value_widget: QDoubleSpinBox | None = None
@@ -92,7 +94,7 @@ class FloatSpinBox(CommonParameterWidget):
         self._suffix = suffix
         self._accelerated = accelerated
 
-        super().__init__(default=default, parent=parent)
+        super().__init__(default=default, parent=parent, stylesheet=stylesheet)
 
         self.set_value(self._default)
 
@@ -147,6 +149,7 @@ class Dial(CommonParameterWidget):
         value_suffix: str = None,
         default: float | None = None,
         parent: QWidget | None = None,
+        stylesheet: str | None = None,
     ):
 
         self._value_widget: QDial | None = None
@@ -166,7 +169,7 @@ class Dial(CommonParameterWidget):
         self._value_prefix = value_prefix
         self._value_suffix = value_suffix
 
-        super().__init__(default=default, parent=parent)
+        super().__init__(default=default, parent=parent, stylesheet=stylesheet)
 
         self.set_value(self._default)
 
@@ -252,6 +255,7 @@ class Slider(CommonParameterWidget):
         value_suffix: str = None,
         default: float | None = None,
         parent: QWidget | None = None,
+        stylesheet: str | None = None,
     ):
 
         self._value_widget: QSlider | None = None
@@ -270,7 +274,7 @@ class Slider(CommonParameterWidget):
         self._value_prefix = value_prefix
         self._value_suffix = value_suffix
 
-        super().__init__(default=default, parent=parent)
+        super().__init__(default=default, parent=parent, stylesheet=stylesheet)
 
         self.set_value(self._default)
 
