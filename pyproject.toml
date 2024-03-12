@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "function2widgets"
-version = "0.1.8"
+version = "0.1.9"
 description = ""
 authors = ["zimolab <zimolab@aliyun.com>"]
 readme = "README.md"

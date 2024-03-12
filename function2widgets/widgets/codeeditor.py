@@ -153,6 +153,7 @@ class BaseSourceCodeEditor(CommonParameterWidget):
             return self._current_value
 
     def set_value(self, value: Any, *args, **kwargs):
+        value = copy.deepcopy(value)
         self._update_current_value_display(value)
         if not self._pre_set_value(value):
             return
@@ -211,7 +212,7 @@ class JsonEditDialog(BaseSourceCodeEditDialog):
             json_str = json.dumps(value, indent=indent, ensure_ascii=ensure_ascii, *args, **kwargs)
         except BaseException as e:
             raise InvalidValueError() from e
-        self._current_value = copy.deepcopy(value)
+        self._current_value = value
         self._code_edit.setText(json_str)
 
     def get_value(self, *args, **kwargs) -> Any:
@@ -369,6 +370,11 @@ def __test_main():
 
     json_editor2 = ListEditor(parent=wind, default=[], display_current_value=False)
     json_editor2.set_label("ListEditor")
+    a = [1, 2, 3]
+    print(id(a))
+    json_editor2.set_value(a)
+    b = json_editor2.get_value()
+    print(id(b))
 
     json_editor3 = DictEditor(parent=wind, default=None)
     json_editor3.set_label("DictEditor")
