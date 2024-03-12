@@ -150,7 +150,7 @@ class BaseSourceCodeEditor(CommonParameterWidget):
         if self._is_use_default():
             return self._default
         else:
-            return self._current_value
+            return copy.deepcopy(self._current_value)
 
     def set_value(self, value: Any, *args, **kwargs):
         value = copy.deepcopy(value)
