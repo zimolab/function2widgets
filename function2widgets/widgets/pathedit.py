@@ -1,6 +1,13 @@
 import os.path
 
-from PyQt6.QtWidgets import QWidget, QLineEdit, QPushButton, QHBoxLayout, QFileDialog
+from PyQt6.QtWidgets import (
+    QWidget,
+    QLineEdit,
+    QPushButton,
+    QHBoxLayout,
+    QFileDialog,
+    QApplication,
+)
 
 from function2widgets.widgets.base import CommonParameterWidget
 
@@ -38,13 +45,13 @@ class PathEdit(CommonParameterWidget):
 
         self._placeholder = placeholder or ""
         self._clear_button = clear_button
-        self._button_text = select_button_text or "Select"
+        self._button_text = select_button_text or QApplication.tr("Select")
         self._path_type = path_type
         self._filters = filters or FILTER_ALL_FILES
         self._init_filter = init_filter or ""
         self._start_path = start_path or "./"
         self._path_delimiter = path_delimiter or PATH_DELIMITER
-        self._dialog_title = dialog_title or "Select Path"
+        self._dialog_title = dialog_title or QApplication.tr("Select Path")
 
         super().__init__(default=default, stylesheet=stylesheet, parent=parent)
 
