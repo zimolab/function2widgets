@@ -20,6 +20,8 @@ def _uid(prefix: str, item: str):
 
 
 class ComboBox(CommonParameterWidget):
+    SET_DEFAULT_ON_INIT = False
+
     def __init__(
         self,
         items: Iterable[str],
@@ -38,7 +40,8 @@ class ComboBox(CommonParameterWidget):
 
         super().__init__(default=default, stylesheet=stylesheet, parent=parent)
 
-        self.set_value(self.default)
+        if self.SET_DEFAULT_ON_INIT:
+            self.set_value(self.default)
 
     def setup_center_widget(self, center_widget: QWidget):
         self._value_widget = QComboBox(center_widget)
@@ -67,6 +70,8 @@ class ComboBox(CommonParameterWidget):
 
 
 class ComboBoxEdit(ComboBox):
+    SET_DEFAULT_ON_INIT = False
+
     def __init__(
         self,
         items: Iterable[str],
@@ -80,7 +85,8 @@ class ComboBoxEdit(ComboBox):
         super().__init__(
             items=items, default=default, stylesheet=stylesheet, parent=parent
         )
-        self.set_value(default)
+        if self.SET_DEFAULT_ON_INIT:
+            self.set_value(self.default)
 
     def setup_center_widget(self, center_widget: QWidget):
         super().setup_center_widget(center_widget)
@@ -101,6 +107,7 @@ class ComboBoxEdit(ComboBox):
 
 
 class RadioButtonGroup(CommonParameterWidget):
+    SET_DEFAULT_ON_INIT = False
     BTN_PREFIX = "_radio_btn"
 
     def __init__(
@@ -126,8 +133,8 @@ class RadioButtonGroup(CommonParameterWidget):
             raise InvalidValueError(self.tr(f"invalid default value: '{default}'"))
 
         super().__init__(default=default, stylesheet=stylesheet, parent=parent)
-
-        self.set_value(self.default)
+        if self.SET_DEFAULT_ON_INIT:
+            self.set_value(self.default)
 
     def setup_center_widget(self, center_widget: QWidget):
         center_widget_layout = QGridLayout(center_widget)
@@ -175,6 +182,7 @@ class RadioButtonGroup(CommonParameterWidget):
 
 
 class CheckBoxGroup(CommonParameterWidget):
+    SET_DEFAULT_ON_INIT = False
     BTN_PREFIX = "_checkbox"
 
     def __init__(
@@ -199,7 +207,8 @@ class CheckBoxGroup(CommonParameterWidget):
         self._items = list(OrderedDict.fromkeys(items))
 
         super().__init__(default=default, stylesheet=stylesheet, parent=parent)
-        self.set_value(self.default)
+        if self.SET_DEFAULT_ON_INIT:
+            self.set_value(self.default)
 
     def setup_center_widget(self, center_widget: QWidget):
         center_widget_layout = QGridLayout(center_widget)
@@ -239,6 +248,8 @@ class CheckBoxGroup(CommonParameterWidget):
 
 
 class CheckBox(CommonParameterWidget):
+    SET_DEFAULT_ON_INIT = False
+
     def __init__(
         self,
         text: str = None,
@@ -249,7 +260,8 @@ class CheckBox(CommonParameterWidget):
         self._text = text or QApplication.tr("ENABLE")
         self._checkbox: QCheckBox | None = None
         super().__init__(default=default, stylesheet=stylesheet, parent=parent)
-        self.set_value(default)
+        if self.SET_DEFAULT_ON_INIT:
+            self.set_value(self.default)
 
     def setup_center_widget(self, center_widget: QWidget):
         center_widget_layout = QVBoxLayout(center_widget)
@@ -281,27 +293,27 @@ def __test_main():
     combo = ComboBox(["a", "b", "c"], default=None, parent=wind)
     combo.set_label("ComboBoxWidget")
     print("current value:", combo.get_value())
-    combo.set_value("c")
-    try:
-        combo.set_value("d")
-    except InvalidValueError as e:
-        print(e)
-    print("current value:", combo.get_value())
+    # combo.set_value("c")
+    # try:
+    #     combo.set_value("d")
+    # except InvalidValueError as e:
+    #     print(e)
+    # print("current value:", combo.get_value())
     # combo.set_value(None)
     # print("current value:", combo.get_value())
 
     combo_edit = ComboBoxEdit(["a", "b", "c"], default="b", parent=wind)
-    combo_edit.set_label("ComboBoxEdit")
-    combo_edit.set_value("new1")
-    combo_edit.set_value("new2")
-    combo_edit.set_value("new3")
+    # combo_edit.set_label("ComboBoxEdit")
+    # combo_edit.set_value("new1")
+    # combo_edit.set_value("new2")
+    # combo_edit.set_value("new3")
 
     options = ["a", "b", "c"]
     radio_group = RadioButtonGroup(options, column_count=3, default="c", parent=wind)
     radio_group.set_label("RadioButtonGroup")
     # for opt in options:
     #     print(radio_group._get_radio_button(opt))
-    radio_group.set_value("c")
+    # radio_group.set_value("c")
     # radio_group.set_value("a")
 
     checkbox_group = CheckBoxGroup(options, column_count=3, default=None, parent=wind)
