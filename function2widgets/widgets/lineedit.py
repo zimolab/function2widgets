@@ -16,6 +16,7 @@ ECHO_MODES = {
 
 
 class LineEdit(CommonParameterWidget):
+    SET_DEFAULT_ON_INIT = False
 
     def __init__(
         self,
@@ -44,8 +45,8 @@ class LineEdit(CommonParameterWidget):
             self._value_widget.setValidator(regex_validator)
         if input_mask:
             self._value_widget.setInputMask(input_mask)
-
-        self.set_value(self.default)
+        if self.SET_DEFAULT_ON_INIT:
+            self.set_value(self.default)
 
     def setup_center_widget(self, center_widget: QWidget):
         self._value_widget = QLineEdit(center_widget)
@@ -98,14 +99,10 @@ class IntLineEdit(LineEdit):
             edit_validator.setTop(max_value)
         self._value_widget.setValidator(edit_validator)
 
-    def get_value(
-        self, empty_value_as_none: bool = True, *args, **kwargs
-    ) -> int | None:
+    def get_value(self, *args, **kwargs) -> int | None:
         raw_value = super().get_value()
 
-        if raw_value is None:
-            return None
-        if empty_value_as_none and raw_value == "":
+        if raw_value is None or raw_value == "":
             return None
 
         try:
@@ -116,7 +113,6 @@ class IntLineEdit(LineEdit):
             ) from e
 
     def set_value(self, value: int | None, strict: bool = False, *args, **kwargs):
-
         if value is None:
             super().set_value(None)
             return
@@ -160,13 +156,9 @@ class FloatLineEdit(LineEdit):
             edit_validator.setNotation(QDoubleValidator.Notation.ScientificNotation)
         self._value_widget.setValidator(edit_validator)
 
-    def get_value(
-        self, empty_value_as_none: bool = True, *args, **kwargs
-    ) -> float | None:
+    def get_value(self, *args, **kwargs) -> float | None:
         raw_value = super().get_value()
-        if empty_value_as_none and raw_value == "":
-            return None
-        if raw_value is None:
+        if raw_value is None or raw_value == "":
             return None
         try:
             return float(raw_value)
@@ -192,15 +184,15 @@ def __test_main():
 
     line_edit = LineEdit(default=None, placeholder="Enter value", parent=window)
     line_edit.set_label("LineEdit")
-    print("LineEdit:")
-    print(f"value: {line_edit.get_value()}")
-    line_edit.set_value(None)
-    print(f"value: {line_edit.get_value()}")
-    line_edit.set_value("hello world")
-    print(f"value: {line_edit.get_value()}")
-    line_edit.set_value(123)
-    print(f"value: {line_edit.get_value()}")
-    line_edit.set_value(None)
+    # print("LineEdit:")
+    # print(f"value: {line_edit.get_value()}")
+    # line_edit.set_value(None)
+    # print(f"value: {line_edit.get_value()}")
+    # line_edit.set_value("hello world")
+    # print(f"value: {line_edit.get_value()}")
+    # line_edit.set_value(123)
+    # print(f"value: {line_edit.get_value()}")
+    # line_edit.set_value(None)
     print()
     # print(f"value: {line_edit.get_value()}")
     # line_edit.set_value(UNSET)
@@ -228,7 +220,7 @@ def __test_main():
     print("FloatLineEdit:")
     print(f"value: {float_edit.get_value()}")
     try:
-        print(f"value: {float_edit.get_value(empty_value_as_none=False)}")
+        print(f"value: {float_edit.get_value()}")
     except ValueError as e:
         print(f"error: {e}")
         traceback.print_exc()
@@ -242,9 +234,17 @@ def __test_main():
     except InvalidValueError as e:
         print(f"error: {e}")
 
+    float_edit2 = FloatLineEdit(parent=window)
+    print(f"float_edit2: {float_edit2.get_value()}")
+
+    int_edit2 = IntLineEdit(parent=window)
+    print(f"int_edit2: {int_edit2.get_value()}")
+
     layout.addWidget(line_edit)
     layout.addWidget(int_edit)
     layout.addWidget(float_edit)
+    layout.addWidget(float_edit2)
+    layout.addWidget(int_edit2)
 
     window.show()
     app.exec()
