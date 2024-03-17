@@ -12,9 +12,23 @@ from PyQt6.QtWidgets import QApplication
 from docstring_parser import Docstring, DocstringParam
 
 from function2widgets.common import safe_pop
-from function2widgets.description import FunctionDescription, WidgetDescription, ParameterDescription
-from function2widgets.widgets import CheckBox, IntLineEdit, FloatLineEdit, LineEdit, ListEditor, TupleEditor, \
-    DictEditor, ComboBox, JsonEditor, ComboBoxEdit
+from function2widgets.description import (
+    FunctionDescription,
+    WidgetDescription,
+    ParameterDescription,
+)
+from function2widgets.widgets import (
+    CheckBox,
+    IntLineEdit,
+    FloatLineEdit,
+    LineEdit,
+    ListEditor,
+    TupleEditor,
+    DictEditor,
+    ComboBox,
+    JsonEditor,
+    ComboBoxEdit,
+)
 
 TYPING_ANNOTATION_PATTERN = re.compile(r"^(typing\..+?)(\[.+])*$")
 
@@ -24,9 +38,7 @@ def dict_to_widget_descriptions(raw: dict[str, Any]) -> WidgetDescription | None
         return None
     # 检查WidgetDescription.type字段
     if "type" not in raw:
-        warnings.warn(
-            QApplication.tr(f"invalid widget description: {raw}")
-        )
+        warnings.warn(QApplication.tr(f"invalid widget description: {raw}"))
         return None
     widget_type = raw["type"]
     # 获取WidgetDescription.label字段
@@ -38,7 +50,9 @@ def dict_to_widget_descriptions(raw: dict[str, Any]) -> WidgetDescription | None
     # 获取WidgetDescription.show_docstring字段
     show_docstring = raw.get("show_docstring", True)
     # 剔除以上字段，剩余字段作为init_args
-    init_args = safe_pop(raw, "type", "label", "docstring", "show_label", "show_docstring")
+    init_args = safe_pop(
+        raw, "type", "label", "docstring", "show_label", "show_docstring"
+    )
     return WidgetDescription(
         type=widget_type,
         label=label,
@@ -53,20 +67,22 @@ def parse_toml_metadata(metadata: str) -> dict:
     try:
         return tomli.loads(metadata)
     except BaseException as e:
-        warnings.warn(
-            QApplication.tr(f"failed to parse metadata: {e}")
-        )
+        warnings.warn(QApplication.tr(f"failed to parse metadata: {e}"))
         return {}
 
 
-def normalize_typing_annotation_str(typing_annotation_str: str) -> (str, list[str] | None):
+def normalize_typing_annotation_str(
+    typing_annotation_str: str,
+) -> (str, list[str] | None):
     typing_annotation_str = typing_annotation_str.strip()
     match_result = re.match(TYPING_ANNOTATION_PATTERN, typing_annotation_str)
     if not match_result:
         return typing_annotation_str, None
     basic_typing_name = match_result.group(1)
     if match_result.group(2):
-        type_extras_str = match_result.group(2).strip().removeprefix("[").removesuffix("]")
+        type_extras_str = (
+            match_result.group(2).strip().removeprefix("[").removesuffix("]")
+        )
         type_extras = [ast.literal_eval(x) for x in type_extras_str.split(",")]
     else:
         type_extras = None
@@ -74,8 +90,12 @@ def normalize_typing_annotation_str(typing_annotation_str: str) -> (str, list[st
 
 
 class _DocstringInfo(object):
-    def __init__(self, docstring_text: str, docstring_obj: Docstring,
-                 param_widgets_description: dict[str, WidgetDescription]):
+    def __init__(
+        self,
+        docstring_text: str,
+        docstring_obj: Docstring,
+        param_widgets_description: dict[str, WidgetDescription],
+    ):
         self._docstring_text = docstring_text
         self._docstring_obj = docstring_obj
         self._param_widgets_description = param_widgets_description
@@ -98,7 +118,9 @@ class _DocstringInfo(object):
     def has_parameter(self, param_name: str) -> bool:
         return self._find_param(param_name) is not None
 
-    def get_param_description(self, param_name: str, fallback: str = None) -> str | None:
+    def get_param_description(
+        self, param_name: str, fallback: str = None
+    ) -> str | None:
         doc_param = self._find_param(param_name)
         if not doc_param:
             return fallback
@@ -119,7 +141,9 @@ class _DocstringInfo(object):
     def has_param_widget(self, param_name: str) -> bool:
         return param_name in self._param_widgets_description
 
-    def get_param_widget(self, param_name: str, default: WidgetDescription = None) -> WidgetDescription | None:
+    def get_param_widget(
+        self, param_name: str, default: WidgetDescription = None
+    ) -> WidgetDescription | None:
         return self._param_widgets_description.get(param_name, default)
 
     def get_raw_docstring(self) -> str:
@@ -130,21 +154,33 @@ class DocstringInfoParser(object):
     WIDGETS_BLOCK_START_TAG = "@begin"
     WIDGETS_BLOCK_END_TAG = "@end"
 
-    def __init__(self, metadata_start_tag: str = WIDGETS_BLOCK_START_TAG, metadata_end_tag: str = WIDGETS_BLOCK_END_TAG,
-                 metadata_parser: Callable[[str], dict | None] = parse_toml_metadata):
-        self._metadata_pattern = rf"^(\s*{metadata_start_tag}\s*(.*\n.+)^\s*{metadata_end_tag}\s*\n)"
+    def __init__(
+        self,
+        metadata_start_tag: str = WIDGETS_BLOCK_START_TAG,
+        metadata_end_tag: str = WIDGETS_BLOCK_END_TAG,
+        metadata_parser: Callable[[str], dict | None] = parse_toml_metadata,
+    ):
+        self._metadata_pattern = (
+            rf"^(\s*{metadata_start_tag}\s*(.*\n.+)^\s*{metadata_end_tag}\s*\n)"
+        )
         self._metadata_parser = metadata_parser
 
     def _extract_metadata_from_docstring(self, docstring: str) -> str:
-        match_result = re.search(self._metadata_pattern, docstring, re.MULTILINE | re.DOTALL)
+        match_result = re.search(
+            self._metadata_pattern, docstring, re.MULTILINE | re.DOTALL
+        )
         if match_result:
             return match_result.group(2)
         return ""
 
     def _remove_metadata_in_docstring(self, docstring: str):
-        match_result = re.search(self._metadata_pattern, docstring, re.MULTILINE | re.DOTALL)
+        match_result = re.search(
+            self._metadata_pattern, docstring, re.MULTILINE | re.DOTALL
+        )
         if match_result:
-            return re.sub(self._metadata_pattern, "", docstring, flags=re.MULTILINE | re.DOTALL)
+            return re.sub(
+                self._metadata_pattern, "", docstring, flags=re.MULTILINE | re.DOTALL
+            )
         return docstring
 
     # noinspection PyMethodMayBeStatic
@@ -165,15 +201,15 @@ class DocstringInfoParser(object):
         try:
             return docstring_parser.parse(docstring)
         except BaseException as e:
-            warnings.warn(QApplication.tr(
-                f"docstring parsing error: {e}"
-            ))
+            warnings.warn(QApplication.tr(f"docstring parsing error: {e}"))
             return Docstring()
 
     def parse(self, docstring: str) -> _DocstringInfo:
 
         metadata_in_docstring = self._extract_metadata_from_docstring(docstring).strip()
-        docstring_without_metadata = self._remove_metadata_in_docstring(docstring).strip()
+        docstring_without_metadata = self._remove_metadata_in_docstring(
+            docstring
+        ).strip()
 
         if not metadata_in_docstring:
             raw_metadata = {}
@@ -181,14 +217,15 @@ class DocstringInfoParser(object):
             try:
                 raw_metadata = self._metadata_parser(metadata_in_docstring)
             except BaseException as e:
-                warnings.warn(
-                    QApplication.tr(f"metadata parsing error: {e}")
-                )
+                warnings.warn(QApplication.tr(f"metadata parsing error: {e}"))
                 raw_metadata = {}
         func_docstring_obj = self._parse_docstring(docstring_without_metadata)
         param_widgets_descriptions = self._process_metadata(raw_metadata)
-        return _DocstringInfo(docstring_text=docstring_without_metadata, docstring_obj=func_docstring_obj,
-                              param_widgets_description=param_widgets_descriptions)
+        return _DocstringInfo(
+            docstring_text=docstring_without_metadata,
+            docstring_obj=func_docstring_obj,
+            param_widgets_description=param_widgets_descriptions,
+        )
 
 
 @dataclasses.dataclass
@@ -218,9 +255,7 @@ class _FunctionInfo(object):
 
     def get_parameter(self, param_name: str) -> _ParameterInfo:
         if not self.has_parameter(param_name):
-            raise ValueError(QApplication.tr(
-                f"parameter {param_name} not found"
-            ))
+            raise ValueError(QApplication.tr(f"parameter {param_name} not found"))
         return self._parameters[param_name]
 
     def has_parameter(self, param_name: str) -> bool:
@@ -231,16 +266,12 @@ class _FunctionInfo(object):
 
     def get_parameter_typename(self, param_name: str) -> str:
         if not self.has_parameter(param_name):
-            raise ValueError(
-                QApplication.tr(f"parameter {param_name} not found")
-            )
+            raise ValueError(QApplication.tr(f"parameter {param_name} not found"))
         return self._parameters[param_name].typename
 
     def get_parameter_default(self, param_name: str) -> Any:
         if not self.has_parameter(param_name):
-            raise ValueError(
-                QApplication.tr(f"parameter {param_name} not found")
-            )
+            raise ValueError(QApplication.tr(f"parameter {param_name} not found"))
         return self._parameters[param_name].default
 
     def add_parameter(self, param_name: str, func_param: _ParameterInfo):
@@ -302,7 +333,9 @@ class FunctionInfoParser(object):
         # 不支持仅通过位置传递的参数
         if param.kind == inspect.Parameter.POSITIONAL_ONLY:
             raise TypeError(
-                QApplication.tr(f"positional only parameter is not supported: '{param.name}'")
+                QApplication.tr(
+                    f"positional only parameter is not supported: '{param.name}'"
+                )
             )
         # 可变位置参数
         if param.kind == inspect.Parameter.VAR_POSITIONAL:
@@ -325,7 +358,12 @@ class FunctionInfoParser(object):
         param_name = param.name
         param_typename, extras = self._param_typename(param)
         param_default = self._param_default_value(param)
-        return _ParameterInfo(name=param_name, typename=param_typename, default=param_default, type_extras=extras)
+        return _ParameterInfo(
+            name=param_name,
+            typename=param_typename,
+            default=param_default,
+            type_extras=extras,
+        )
 
     def parse(self, func, ignore_self_param: bool = True) -> _FunctionInfo:
         func_name = func.__name__
@@ -367,13 +405,19 @@ class FunctionDescriptionComposer(object):
     def __init__(self, fallback_param_widget_type: str = DEFAULT_FALLBACK_PARAM_WIDGET):
         self._fallback_param_widget = fallback_param_widget_type
 
-    def determine_param_type(self, param_info: _ParameterInfo, docstring_info: _DocstringInfo) -> str:
+    def determine_param_type(
+        self, param_info: _ParameterInfo, docstring_info: _DocstringInfo
+    ) -> str:
         if param_info.typename is not None:
             return param_info.typename
-        typename_in_docstring = docstring_info.get_param_typename(param_info.name, self.TYPENAME_FOR_EMPTY)
+        typename_in_docstring = docstring_info.get_param_typename(
+            param_info.name, self.TYPENAME_FOR_EMPTY
+        )
         return typename_in_docstring
 
-    def determine_param_default(self, param_info: _ParameterInfo, docstring_info: _DocstringInfo) -> Any:
+    def determine_param_default(
+        self, param_info: _ParameterInfo, docstring_info: _DocstringInfo
+    ) -> Any:
         if param_info.default is FunctionInfoParser.DEFAULT_FOR_EMPTY:
             return self.DEFAULT_FOR_EMPTY
         if param_info.default is not None:
@@ -381,14 +425,24 @@ class FunctionDescriptionComposer(object):
         return docstring_info.get_param_default(param_info.name, self.DEFAULT_FOR_EMPTY)
 
     # noinspection PyMethodMayBeStatic
-    def _make_param_widget_of_type(self, widget_type: str, param_info: _ParameterInfo,
-                                   docstring_info: _DocstringInfo, **init_args) -> WidgetDescription:
-        param_docstring = docstring_info.get_param_description(param_name=param_info.name, fallback="")
+    def _make_param_widget_of_type(
+        self,
+        widget_type: str,
+        param_info: _ParameterInfo,
+        docstring_info: _DocstringInfo,
+        **init_args,
+    ) -> WidgetDescription:
+        param_docstring = docstring_info.get_param_description(
+            param_name=param_info.name, fallback=""
+        )
         show_docstring = param_docstring != ""
 
         # 一些类型需要特定化处理
         if param_info.typename == str(typing.Literal):
-            if isinstance(param_info.type_extras, list) and len(param_info.type_extras) > 0:
+            if (
+                isinstance(param_info.type_extras, list)
+                and len(param_info.type_extras) > 0
+            ):
                 widget_type = ComboBox.__name__
                 init_args["items"] = param_info.type_extras
             else:
@@ -400,49 +454,78 @@ class FunctionDescriptionComposer(object):
             docstring=param_docstring,
             show_label=True,
             show_docstring=show_docstring,
-            init_args=init_args
+            init_args=init_args,
         )
         return widget
 
-    def _param_widget_of_type(self, param_type: str, param_info: _ParameterInfo,
-                              docstring_info: _DocstringInfo) -> WidgetDescription | None:
+    def _param_widget_of_type(
+        self,
+        param_type: str,
+        param_info: _ParameterInfo,
+        docstring_info: _DocstringInfo,
+    ) -> WidgetDescription | None:
         widget_type = self.DEFAULT_WIDGET_TYPES.get(param_type, None)
         if widget_type is None:
             return None
         widget = self._make_param_widget_of_type(
-            widget_type=widget_type, param_info=param_info, docstring_info=docstring_info
+            widget_type=widget_type,
+            param_info=param_info,
+            docstring_info=docstring_info,
         )
         return widget
 
-    def _tweak_param_widget(self, param_widget: WidgetDescription, param_info: _ParameterInfo,
-                            docstring_info: _DocstringInfo):
+    # noinspection PyMethodMayBeStatic
+    def _tweak_param_widget(
+        self,
+        param_widget: WidgetDescription,
+        param_info: _ParameterInfo,
+        docstring_info: _DocstringInfo,
+    ):
         if not param_widget.docstring:
-            param_widget.docstring = docstring_info.get_param_description(param_info.name, "")
+            param_widget.docstring = docstring_info.get_param_description(
+                param_info.name, ""
+            )
 
         if not param_widget.label:
             param_widget.label = param_info.name
 
-        if param_widget.type == ComboBox.__name__ or param_widget.type == ComboBoxEdit.__name__:
-            if "items" not in param_widget.init_args and isinstance(param_info.type_extras, list):
+        if (
+            param_widget.type == ComboBox.__name__
+            or param_widget.type == ComboBoxEdit.__name__
+        ):
+            if "items" not in param_widget.init_args and isinstance(
+                param_info.type_extras, list
+            ):
                 param_widget.init_args["items"] = param_info.type_extras
 
-    def determine_param_widget(self, param_info: _ParameterInfo, docstring_info: _DocstringInfo) -> WidgetDescription:
+    def determine_param_widget(
+        self, param_info: _ParameterInfo, docstring_info: _DocstringInfo
+    ) -> WidgetDescription:
         # 如果在docstring中描述了参数的控件，则优先使用该描述
         param_widget = docstring_info.get_param_widget(param_info.name, None)
         if param_widget is not None:
             self._tweak_param_widget(param_widget, param_info, docstring_info)
             return param_widget
         # 否则使用该参数类型的默认控件
-        param_widget = self._param_widget_of_type(param_info.typename, param_info, docstring_info)
+        param_widget = self._param_widget_of_type(
+            param_info.typename, param_info, docstring_info
+        )
         if param_widget is not None:
             return param_widget
         # 如果该参数类型没有定义默认的控件，则使用fallback_param_widget
-        return self._make_param_widget_of_type(widget_type=self._fallback_param_widget, param_info=param_info,
-                                               docstring_info=docstring_info)
+        return self._make_param_widget_of_type(
+            widget_type=self._fallback_param_widget,
+            param_info=param_info,
+            docstring_info=docstring_info,
+        )
 
-    def compose(self, func_info: _FunctionInfo, docstring_info: _DocstringInfo) -> FunctionDescription:
-        func_description = FunctionDescription(name=func_info.get_function_name(),
-                                               docstring=docstring_info.get_func_description())
+    def compose(
+        self, func_info: _FunctionInfo, docstring_info: _DocstringInfo
+    ) -> FunctionDescription:
+        func_description = FunctionDescription(
+            name=func_info.get_function_name(),
+            docstring=docstring_info.get_func_description(),
+        )
         for param_name, param_info in func_info.parameters.items():
             param_typename = self.determine_param_type(param_info, docstring_info)
             param_default = self.determine_param_default(param_info, docstring_info)
@@ -453,30 +536,39 @@ class FunctionDescriptionComposer(object):
                 type_extras=param_info.type_extras or None,
                 default=param_default,
                 docstring=docstring_info.get_param_description(param_name, None),
-                widget=self.determine_param_widget(param_info, docstring_info)
+                widget=self.determine_param_widget(param_info, docstring_info),
             )
             func_description.parameters.append(param)
         return func_description
 
 
 class FunctionDescriptionParser(object):
-    def __init__(self, docstring_info_parser: DocstringInfoParser = DocstringInfoParser(),
-                 func_info_parser: FunctionInfoParser = FunctionInfoParser(),
-                 func_description_maker: FunctionDescriptionComposer = FunctionDescriptionComposer()):
+    def __init__(
+        self,
+        docstring_info_parser: DocstringInfoParser = DocstringInfoParser(),
+        func_info_parser: FunctionInfoParser = FunctionInfoParser(),
+        func_description_maker: FunctionDescriptionComposer = FunctionDescriptionComposer(),
+    ):
         self._docstring_info_parser = docstring_info_parser
         self._func_info_parser = func_info_parser
         self._func_description_maker = func_description_maker
 
-    def parse(self, func: Any, parse_class: bool = True, ignore_self_param: bool = True) -> FunctionDescription:
+    def parse(
+        self, func: Any, parse_class: bool = True, ignore_self_param: bool = True
+    ) -> FunctionDescription:
         if not parse_class and inspect.isclass(func):
-            raise TypeError(QApplication.tr(f"func must be a function or method, but got {func}"))
+            raise TypeError(
+                QApplication.tr(f"func must be a function or method, but got {func}")
+            )
 
         if inspect.isclass(func):
             # noinspection PyTypeChecker
             func = func.__init__
 
         if not inspect.isfunction(func) and not inspect.ismethod(func):
-            raise TypeError(QApplication.tr(f"func must be a function or method, but got {func}"))
+            raise TypeError(
+                QApplication.tr(f"func must be a function or method, but got {func}")
+            )
 
         func_docstring = self._docstring_info_parser.parse(func.__doc__ or "")
         func_info = self._func_info_parser.parse(func, ignore_self_param)
@@ -491,7 +583,19 @@ def __test_main():
         this class is for demo use
         """
 
-        def __init__(self, a: int, b: str, c: list, d: dict, e: tuple, g: list, h: dict, i: tuple, *args, **kwargs):
+        def __init__(
+            self,
+            a: int,
+            b: str,
+            c: list,
+            d: dict,
+            e: tuple,
+            g: list,
+            h: dict,
+            i: tuple,
+            *args,
+            **kwargs,
+        ):
             """this is init method
 
             this is an init method and will create a instance of class Deomo
@@ -516,8 +620,12 @@ def __test_main():
             """
             pass
 
-        def func2(self, labels: typing.Literal["a", "b", "c"], path: str,
-                  opt: typing.Literal["opt1", "opt2", "opt3"] = "opt1"):
+        def func2(
+            self,
+            labels: typing.Literal["a", "b", "c"],
+            path: str,
+            opt: typing.Literal["opt1", "opt2", "opt3"] = "opt1",
+        ):
             """
 
             :param opt:
@@ -546,5 +654,5 @@ def __test_main():
     print(func2)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     __test_main()

@@ -18,6 +18,8 @@ class PlainTextEdit(CommonParameterWidget):
 
         super().__init__(default=default, parent=parent, stylesheet=stylesheet)
 
+        self.set_value(default)
+
     def setup_center_widget(self, center_widget: QWidget):
         center_widget_layout = QVBoxLayout(center_widget)
         self._value_widget = QPlainTextEdit(center_widget)
