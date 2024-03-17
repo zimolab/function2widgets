@@ -1,6 +1,7 @@
 import traceback
 from typing import Any
 
+from PyQt6.QtCore import QRegularExpression
 from PyQt6.QtGui import QRegularExpressionValidator, QIntValidator, QDoubleValidator
 from PyQt6.QtWidgets import QWidget, QLineEdit, QHBoxLayout
 
@@ -40,7 +41,8 @@ class LineEdit(CommonParameterWidget):
             ECHO_MODES.get(echo_mode.capitalize(), QLineEdit.EchoMode.Normal)
         )
         if regex:
-            regex_validator = QRegularExpressionValidator(regex)
+            exp = QRegularExpression(regex)
+            regex_validator = QRegularExpressionValidator(exp)
             regex_validator.setParent(self)
             self._value_widget.setValidator(regex_validator)
         if input_mask:
