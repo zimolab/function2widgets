@@ -72,6 +72,8 @@ class LineEdit(CommonParameterWidget):
 
 
 class IntLineEdit(LineEdit):
+    SET_DEFAULT_ON_INIT = False
+
     def __init__(
         self,
         default: int | None = None,
@@ -123,6 +125,8 @@ class IntLineEdit(LineEdit):
 
 
 class FloatLineEdit(LineEdit):
+    SET_DEFAULT_ON_INIT = False
+
     def __init__(
         self,
         default: float | None = None,
