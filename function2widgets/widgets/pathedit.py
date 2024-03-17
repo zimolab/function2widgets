@@ -17,7 +17,7 @@ PATH_TYPE_OPEN_DIR = 2
 PATH_TYPE_SAVE_FILE = 3
 PATH_TYPE_SAVE_DIR = 4
 
-FILTER_ALL_FILES = "All Files (*)"
+FILTER_ALL_FILES = QApplication.tr("All Files (*)")
 
 PATH_DELIMITER = ";"
 
