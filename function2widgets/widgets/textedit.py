@@ -11,12 +11,12 @@ class PlainTextEdit(CommonParameterWidget):
     def __init__(
         self,
         default: str | None = None,
-        parent: QWidget | None = None,
         stylesheet: str | None = None,
+        parent: QWidget | None = None,
     ):
         self._value_widget: QPlainTextEdit | None = None
 
-        super().__init__(default=default, parent=parent, stylesheet=stylesheet)
+        super().__init__(default=default, stylesheet=stylesheet, parent=parent)
 
         self.set_value(default)
 
@@ -43,14 +43,14 @@ class SourceCodeEdit(CommonParameterWidget):
         self,
         configs: dict = None,
         default: str | None = None,
-        parent: QWidget | None = None,
         stylesheet: str | None = None,
+        parent: QWidget | None = None,
     ):
 
         self._value_widget: _SourceCodeEdit | None = None
         self._configs = configs
 
-        super().__init__(default=default, parent=parent, stylesheet=stylesheet)
+        super().__init__(default=default, stylesheet=stylesheet, parent=parent)
 
         self.set_value(self.default)
 

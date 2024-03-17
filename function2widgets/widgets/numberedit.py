@@ -25,8 +25,8 @@ class IntSpinBox(CommonParameterWidget):
         prefix: str = None,
         suffix: str = None,
         default: int | None = None,
-        parent: QWidget | None = None,
         stylesheet: str | None = None,
+        parent: QWidget | None = None,
     ):
 
         self._value_widget: QSpinBox | None = None
@@ -36,7 +36,7 @@ class IntSpinBox(CommonParameterWidget):
         self._prefix = prefix
         self._suffix = suffix
 
-        super().__init__(default=default, parent=parent, stylesheet=stylesheet)
+        super().__init__(default=default, stylesheet=stylesheet, parent=parent)
 
         self.set_value(self._default)
 
@@ -81,8 +81,8 @@ class FloatSpinBox(CommonParameterWidget):
         suffix: str = None,
         accelerated: bool = False,
         default: float | None = None,
-        parent: QWidget | None = None,
         stylesheet: str | None = None,
+        parent: QWidget | None = None,
     ):
 
         self._value_widget: QDoubleSpinBox | None = None
@@ -94,7 +94,7 @@ class FloatSpinBox(CommonParameterWidget):
         self._suffix = suffix
         self._accelerated = accelerated
 
-        super().__init__(default=default, parent=parent, stylesheet=stylesheet)
+        super().__init__(default=default, stylesheet=stylesheet, parent=parent)
 
         self.set_value(self._default)
 
@@ -148,8 +148,8 @@ class Dial(CommonParameterWidget):
         value_prefix: str = None,
         value_suffix: str = None,
         default: float | None = None,
-        parent: QWidget | None = None,
         stylesheet: str | None = None,
+        parent: QWidget | None = None,
     ):
 
         self._value_widget: QDial | None = None
@@ -169,7 +169,7 @@ class Dial(CommonParameterWidget):
         self._value_prefix = value_prefix
         self._value_suffix = value_suffix
 
-        super().__init__(default=default, parent=parent, stylesheet=stylesheet)
+        super().__init__(default=default, stylesheet=stylesheet, parent=parent)
 
         self.set_value(self._default)
 
@@ -254,8 +254,8 @@ class Slider(CommonParameterWidget):
         value_prefix: str = None,
         value_suffix: str = None,
         default: float | None = None,
-        parent: QWidget | None = None,
         stylesheet: str | None = None,
+        parent: QWidget | None = None,
     ):
 
         self._value_widget: QSlider | None = None
@@ -274,7 +274,7 @@ class Slider(CommonParameterWidget):
         self._value_prefix = value_prefix
         self._value_suffix = value_suffix
 
-        super().__init__(default=default, parent=parent, stylesheet=stylesheet)
+        super().__init__(default=default, stylesheet=stylesheet, parent=parent)
 
         self.set_value(self._default)
 
@@ -354,7 +354,7 @@ def __test_main():
     print()
 
     float_spin = FloatSpinBox(
-        min_value=-100000.0, max_value=100000.0, step=1.5, default=10.01, decimals=5
+        min_value=-100000.0, max_value=100000.0, step=1.5, decimals=5, default=10.01
     )
     float_spin.set_label("FloatSpinBox")
     print(f"{float_spin.get_value()}")
@@ -364,7 +364,6 @@ def __test_main():
     print()
 
     dial = Dial(
-        default=None,
         min_value=0,
         max_value=360,
         step=1,
@@ -373,6 +372,7 @@ def __test_main():
         notches_target=2.0,
         show_value_label=True,
         value_suffix="°",
+        default=None,
     )
     dial.set_label("DialWidget")
     print(f"{dial.get_value()}")
@@ -382,7 +382,6 @@ def __test_main():
     print()
 
     slider = Slider(
-        default=None,
         min_value=0,
         max_value=360,
         step=1,
@@ -391,6 +390,7 @@ def __test_main():
         tick_interval=0,
         show_value_label=True,
         value_suffix="°",
+        default=None,
     )
     slider.set_label("SliderWidget")
     print(f"{slider.get_value()}")

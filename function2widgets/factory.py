@@ -13,10 +13,10 @@ from function2widgets.widgets.allwidgets import BASIC_PARAMETER_WIDGETS
 
 
 class ParameterWidgetFactory(object):
-    def __init__(self, enable_basic_type_widgets: bool = True):
+    def __init__(self, register_basic_parameter_widgets: bool = True):
         self._widget_classes = {}
 
-        if enable_basic_type_widgets:
+        if register_basic_parameter_widgets:
             self.register_all(BASIC_PARAMETER_WIDGETS)
 
     def register(self, widget_type: str, widget_class: Type[BaseParameterWidget]):

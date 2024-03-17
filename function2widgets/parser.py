@@ -598,7 +598,7 @@ def __test_main():
         ):
             """this is init method
 
-            this is an init method and will create a instance of class Deomo
+            this is an init method and will create an instance of class Demo
 
             :param a:  this is param a
             :param b:  this is param b

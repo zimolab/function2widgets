@@ -10,7 +10,9 @@ class InvalidValueError(ValueError):
 
 class BaseParameterWidget(QWidget):
 
-    def __init__(self, default: Any, parent: QWidget | None, stylesheet: str | None):
+    SET_DEFAULT_ON_INIT: bool = False
+
+    def __init__(self, default: Any, stylesheet: str | None, parent: QWidget | None):
         super().__init__(parent)
         self._default = default
         self._parameter_name: str | None = None

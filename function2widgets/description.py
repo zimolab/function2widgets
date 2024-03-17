@@ -34,7 +34,9 @@ class WidgetDescription(object):
                 setattr(self, key, new_value)
             else:
                 warnings.warn(
-                    QApplication.tr(f"unexpected type for field '{key}': expected {expected_type}, got{type(new_value)}")
+                    QApplication.tr(
+                        f"unexpected type for field '{key}': expected {expected_type}, got{type(new_value)}"
+                    )
                 )
 
     def update_init_args(self, new_args: dict):
@@ -69,7 +71,9 @@ class WidgetDescription(object):
             if type(value) is not expected_type:
                 # 若为已定义的字段，但类型不匹配，则警告
                 warnings.warn(
-                    QApplication.tr(f"unexpected type for field '{key}': expected {expected_type}, got {type(value)}")
+                    QApplication.tr(
+                        f"unexpected type for field '{key}': expected {expected_type}, got {type(value)}"
+                    )
                 )
                 continue
             else:
@@ -92,7 +96,6 @@ class ParameterDescription(object):
 
 @dataclasses.dataclass
 class FunctionDescription(object):
-    """A description of a function."""
     name: str
     docstring: str
     parameters: list[ParameterDescription] = dataclasses.field(default_factory=list)

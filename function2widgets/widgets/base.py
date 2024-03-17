@@ -7,8 +7,8 @@ from function2widgets.widget import BaseParameterWidget, InvalidValueError
 
 
 class CommonParameterWidget(BaseParameterWidget):
-    def __init__(self, default: Any, parent: QWidget | None, stylesheet: str):
-        super().__init__(default=default, parent=parent, stylesheet=stylesheet)
+    def __init__(self, default: Any, stylesheet: str, parent: QWidget | None):
+        super().__init__(default=default, stylesheet=stylesheet, parent=parent)
 
         self._layout_main = QGridLayout(self)
         self._label_widget = QLabel(self)
@@ -76,7 +76,6 @@ class CommonParameterWidget(BaseParameterWidget):
         self._checkbox_use_default.setChecked(True)
 
     def _pre_set_value(self, value: Any) -> bool:
-
         if value is None:
             if self.default is None:
                 self._set_use_default()

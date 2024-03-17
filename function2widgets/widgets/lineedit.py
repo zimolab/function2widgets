@@ -25,12 +25,12 @@ class LineEdit(CommonParameterWidget):
         echo_mode: str = "Normal",
         regex: str = None,
         input_mask: str = None,
-        parent: QWidget | None = None,
         stylesheet: str | None = "",
+        parent: QWidget | None = None,
     ):
         self._value_widget: QLineEdit | None = None
 
-        super().__init__(default=default, parent=parent, stylesheet=stylesheet)
+        super().__init__(default=default, stylesheet=stylesheet, parent=parent)
 
         if placeholder:
             self._value_widget.setPlaceholderText(placeholder)
@@ -77,8 +77,8 @@ class IntLineEdit(LineEdit):
         max_value: int = None,
         min_value: int = None,
         placeholder: str = "",
-        parent: QWidget | None = None,
         stylesheet: str | None = None,
+        parent: QWidget | None = None,
     ):
         super().__init__(
             default=default,
@@ -87,8 +87,8 @@ class IntLineEdit(LineEdit):
             echo_mode="Normal",
             regex=None,
             input_mask=None,
-            parent=parent,
             stylesheet=stylesheet,
+            parent=parent,
         )
 
         edit_validator = QIntValidator(self._value_widget)
@@ -135,8 +135,8 @@ class FloatLineEdit(LineEdit):
         decimals: float = None,
         scientific_notation: bool = False,
         placeholder: str = "",
-        parent: QWidget | None = None,
         stylesheet: str | None = None,
+        parent: QWidget | None = None,
     ):
         super().__init__(
             default=default,
@@ -145,8 +145,8 @@ class FloatLineEdit(LineEdit):
             echo_mode="Normal",
             regex=None,
             input_mask=None,
-            parent=parent,
             stylesheet=stylesheet,
+            parent=parent,
         )
 
         edit_validator = QDoubleValidator(self._value_widget)
@@ -190,7 +190,7 @@ def __test_main():
     layout = QVBoxLayout(window)
     window.setLayout(layout)
 
-    line_edit = LineEdit(parent=window, default=None, placeholder="Enter value")
+    line_edit = LineEdit(default=None, placeholder="Enter value", parent=window)
     line_edit.set_label("LineEdit")
     print("LineEdit:")
     print(f"value: {line_edit.get_value()}")
@@ -206,7 +206,7 @@ def __test_main():
     # line_edit.set_value(UNSET)
     # line_edit.set_value(line_edit._default)
 
-    int_edit = IntLineEdit(parent=window, default=0, placeholder="Enter value")
+    int_edit = IntLineEdit(default=0, placeholder="Enter value", parent=window)
     int_edit.set_label("IntLineEdit")
     print("IntLineEdit:")
     print(f"value: {int_edit.get_value()}")
@@ -223,7 +223,7 @@ def __test_main():
     print(f"value: {int_edit.get_value()}")
     print()
 
-    float_edit = FloatLineEdit(parent=window, default=0.0, placeholder="Enter value")
+    float_edit = FloatLineEdit(default=0.0, placeholder="Enter value", parent=window)
     float_edit.set_label("FloatLineEdit")
     print("FloatLineEdit:")
     print(f"value: {float_edit.get_value()}")
