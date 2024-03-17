@@ -23,6 +23,7 @@ PATH_DELIMITER = ";"
 
 
 class PathEdit(CommonParameterWidget):
+    SET_DEFAULT_ON_INIT = False
 
     def __init__(
         self,
@@ -54,8 +55,8 @@ class PathEdit(CommonParameterWidget):
         self._dialog_title = dialog_title or QApplication.tr("Select Path")
 
         super().__init__(default=default, stylesheet=stylesheet, parent=parent)
-
-        self.set_value(self.default)
+        if self.SET_DEFAULT_ON_INIT:
+            self.set_value(self.default)
 
     # noinspection PyUnresolvedReferences
     def setup_center_widget(self, center_widget: QWidget):
@@ -155,6 +156,7 @@ class PathEdit(CommonParameterWidget):
 
 
 class FilePathEdit(PathEdit):
+    SET_DEFAULT_ON_INIT = False
 
     def __init__(
         self,
@@ -196,6 +198,8 @@ class FilePathEdit(PathEdit):
 
 
 class DirPathEdit(PathEdit):
+    SET_DEFAULT_ON_INIT = False
+
     def __init__(
         self,
         default: str | None = None,
@@ -239,6 +243,7 @@ def __test_main():
 
     path_edit = PathEdit(default=None, placeholder="select path", parent=win)
     path_edit.set_label("PathEdit")
+    print(path_edit.get_value())
 
     file_path_edit = FilePathEdit(
         default=None, save_file=True, placeholder="select file path", parent=win
