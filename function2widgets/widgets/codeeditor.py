@@ -94,23 +94,22 @@ class UniversalSourceCodeEditDialog(BaseSourceCodeEditDialog):
     def __init__(self, configs: dict = None, window_title: str = "", parent=None):
         super().__init__(configs=configs, window_title=window_title, parent=parent)
 
-    def set_value(self, obj: str | None, none_as_empty: bool = False, *args, **kwargs):
+    def set_value(self, obj: str | None, *args, **kwargs):
         if obj is None:
-            if none_as_empty:
-                obj = ""
-            else:
-                return
+            obj = ""
         self._code_edit.setText(obj)
 
     def get_value(self, empty_as_none: bool = False, *args, **kwargs) -> str | None:
         text = self._code_edit.text()
-        if not text and empty_as_none:
+        if not text:
             return None
         else:
             return text
 
 
 class BaseSourceCodeEditor(CommonParameterWidget):
+    SET_DEFAULT_ON_INIT = True
+
     def __init__(
         self,
         configs: dict = None,
@@ -137,7 +136,8 @@ class BaseSourceCodeEditor(CommonParameterWidget):
 
         super().__init__(default=default, stylesheet=stylesheet, parent=parent)
 
-        self.set_value(self.default)
+        if self.SET_DEFAULT_ON_INIT:
+            self.set_value(self.default)
 
     # noinspection PyUnresolvedReferences
     def setup_center_widget(self, center_widget: QWidget):
@@ -147,6 +147,7 @@ class BaseSourceCodeEditor(CommonParameterWidget):
         self._display_widget = QPlainTextEdit(parent=center_widget)
         self._display_widget.setReadOnly(True)
         if self._display_current_value:
+            self._update_current_value_display(self._current_value)
             self._display_widget.show()
         else:
             self._display_widget.hide()
@@ -195,6 +196,8 @@ class BaseSourceCodeEditor(CommonParameterWidget):
 
 
 class UniversalSourceCodeEditor(BaseSourceCodeEditor):
+    SET_DEFAULT_ON_INIT = False
+
     def __init__(
         self,
         configs: dict = None,
@@ -205,6 +208,10 @@ class UniversalSourceCodeEditor(BaseSourceCodeEditor):
         stylesheet: str | None = None,
         parent: QWidget | None = None,
     ):
+        if default is not None and not isinstance(default, str):
+            raise InvalidValueError(
+                QApplication.tr(f"default must be str, got {type(default)}")
+            )
         super().__init__(
             configs=configs,
             edit_button_text=edit_button_text,
@@ -220,7 +227,7 @@ class UniversalSourceCodeEditor(BaseSourceCodeEditor):
 
     def set_value(self, value: str | None, *args, **kwargs):
         if value is not None and not isinstance(value, str):
-            raise TypeError(self.tr("value must be None or str"))
+            raise TypeError(self.tr(f"value must be None or str, got {type(value)}"))
         super().set_value(value, *args, **kwargs)
 
     def source_code_dialog(self) -> UniversalSourceCodeEditDialog:
@@ -291,14 +298,16 @@ class JsonEditDialog(BaseSourceCodeEditDialog):
 
 
 class JsonEditor(BaseSourceCodeEditor):
+    SET_DEFAULT_ON_INIT = False
+
     def __init__(
         self,
         top_level_types: tuple = JsonTopLevelTypes,
+        default: Any = None,
         configs: dict = None,
         edit_button_text: str = None,
         window_title: str = None,
         display_current_value: bool = True,
-        default: Any = None,
         stylesheet: str | None = None,
         parent: QWidget | None = None,
     ):
@@ -350,25 +359,27 @@ class JsonEditor(BaseSourceCodeEditor):
 
 
 class ListEditor(JsonEditor):
+    SET_DEFAULT_ON_INIT = False
+
     TYPE_RESTRICTIONS = (list, NoneType)
 
     def __init__(
         self,
+        default: list = None,
         configs: dict = None,
         edit_button_text: str = None,
         window_title: str = None,
         display_current_value: bool = True,
-        default: list = None,
         stylesheet: str | None = None,
         parent: QWidget | None = None,
     ):
         super().__init__(
             top_level_types=self.TYPE_RESTRICTIONS,
+            default=default,
             configs=configs,
             edit_button_text=edit_button_text,
             window_title=window_title,
             display_current_value=display_current_value,
-            default=default,
             stylesheet=stylesheet,
             parent=parent,
         )
@@ -383,24 +394,26 @@ class ListEditor(JsonEditor):
 
 
 class TupleEditor(JsonEditor):
+    SET_DEFAULT_ON_INIT = False
     TYPE_RESTRICTIONS = (list, tuple, NoneType)
 
     def __init__(
         self,
+        default: tuple = None,
         configs: dict = None,
         edit_button_text: str = None,
         window_title: str = None,
         display_current_value: bool = True,
-        default: tuple = None,
         stylesheet: str | None = None,
         parent: QWidget | None = None,
     ):
         super().__init__(
+            top_level_types=self.TYPE_RESTRICTIONS,
             configs=configs,
+            default=default,
             edit_button_text=edit_button_text,
             window_title=window_title,
             display_current_value=display_current_value,
-            default=default,
             stylesheet=stylesheet,
             parent=parent,
         )
@@ -427,25 +440,26 @@ class TupleEditor(JsonEditor):
 
 
 class DictEditor(JsonEditor):
+    SET_DEFAULT_ON_INIT = False
     TYPE_RESTRICTIONS = (dict, NoneType)
 
     def __init__(
         self,
+        default: dict = None,
         configs: dict = None,
         edit_button_text: str = None,
         window_title: str = None,
         display_current_value: bool = True,
-        default: dict = None,
         stylesheet: str | None = None,
         parent: QWidget | None = None,
     ):
         super().__init__(
             top_level_types=self.TYPE_RESTRICTIONS,
+            default=default,
             configs=configs,
             edit_button_text=edit_button_text,
             window_title=window_title,
             display_current_value=display_current_value,
-            default=default,
             stylesheet=stylesheet,
             parent=parent,
         )
@@ -470,16 +484,18 @@ def __test_main():
     )
     source_code_editor.set_label("UniversalSourceCodeEditor")
 
-    json_editor = JsonEditor(display_current_value=False, default=None, parent=wind)
+    json_editor = JsonEditor(default=123, display_current_value=True, parent=wind)
     json_editor.set_label("JsonEditor")
 
-    json_editor2 = ListEditor(display_current_value=False, default=[], parent=wind)
+    json_editor2 = ListEditor(
+        default=[1, 2, 3], display_current_value=True, parent=wind
+    )
     json_editor2.set_label("ListEditor")
-    a = [1, 2, 3]
-    print(id(a))
-    json_editor2.set_value(a)
-    b = json_editor2.get_value()
-    print(id(b))
+    # a = [1, 2, 3]
+    # print(id(a))
+    # json_editor2.set_value(a)
+    # b = json_editor2.get_value()
+    # print(id(b))
 
     json_editor3 = DictEditor(default=None, parent=wind)
     json_editor3.set_label("DictEditor")
