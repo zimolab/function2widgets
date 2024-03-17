@@ -7,6 +7,7 @@ from function2widgets.widgets.base import CommonParameterWidget
 
 
 class PlainTextEdit(CommonParameterWidget):
+    SET_DEFAULT_ON_INIT = False
 
     def __init__(
         self,
@@ -18,7 +19,8 @@ class PlainTextEdit(CommonParameterWidget):
 
         super().__init__(default=default, stylesheet=stylesheet, parent=parent)
 
-        self.set_value(default)
+        if self.SET_DEFAULT_ON_INIT:
+            self.set_value(default)
 
     def setup_center_widget(self, center_widget: QWidget):
         center_widget_layout = QVBoxLayout(center_widget)
@@ -39,6 +41,8 @@ class PlainTextEdit(CommonParameterWidget):
 
 
 class SourceCodeEdit(CommonParameterWidget):
+    SET_DEFAULT_ON_INIT = False
+
     def __init__(
         self,
         configs: dict = None,
@@ -52,7 +56,8 @@ class SourceCodeEdit(CommonParameterWidget):
 
         super().__init__(default=default, stylesheet=stylesheet, parent=parent)
 
-        self.set_value(self.default)
+        if self.SET_DEFAULT_ON_INIT:
+            self.set_value(default)
 
     def setup_center_widget(self, center_widget: QWidget):
         center_widget_layout = QVBoxLayout(center_widget)
@@ -95,14 +100,20 @@ def __test_main():
     print(f"value: {edit.get_value()}")
     print()
 
+    edit2 = PlainTextEdit(default=None, parent=win)
+
     code_edit = SourceCodeEdit(default=None, parent=win)
     print(f"value: {code_edit.get_value()}")
     code_edit.set_value("print('hello world')")
     print(f"value: {code_edit.get_value()}")
     print()
 
+    code_edit2 = SourceCodeEdit(default=None, parent=win)
+
     layout.addWidget(edit)
+    layout.addWidget(edit2)
     layout.addWidget(code_edit)
+    layout.addWidget(code_edit2)
 
     win.show()
 
