@@ -122,7 +122,7 @@ class IntLineEdit(LineEdit):
             return
 
         if not isinstance(value, int):
-            raise InvalidValueError(self.tr(f"value must be int, got {type(int)}"))
+            raise InvalidValueError(self.tr(f"value must be int, got {type(value)}"))
         super().set_value(value)
 
 
