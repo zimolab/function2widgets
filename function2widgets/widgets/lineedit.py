@@ -113,16 +113,16 @@ class IntLineEdit(LineEdit):
             return int(raw_value)
         except (TypeError, ValueError) as e:
             raise InvalidValueError(
-                self.tr(f"invalid value: value must be int (value={raw_value})")
+                self.tr(f"value must be int, got {type(raw_value)}")
             ) from e
 
-    def set_value(self, value: int | None, strict: bool = False, *args, **kwargs):
+    def set_value(self, value: int | None, *args, **kwargs):
         if value is None:
             super().set_value(None)
             return
 
-        if strict and not isinstance(value, int):
-            raise InvalidValueError(self.tr("value must be int"))
+        if not isinstance(value, int):
+            raise InvalidValueError(self.tr(f"value must be int, got {type(int)}"))
         super().set_value(value)
 
 
@@ -169,15 +169,17 @@ class FloatLineEdit(LineEdit):
         try:
             return float(raw_value)
         except (TypeError, ValueError) as e:
-            raise InvalidValueError(self.tr("value must be float")) from e
+            raise InvalidValueError(
+                self.tr(f"value must be float, got {type(raw_value)}")
+            ) from e
 
-    def set_value(self, value: float | None, strict: bool = False, *args, **kwargs):
+    def set_value(self, value: float | None, *args, **kwargs):
         if value is None:
             super().set_value(None)
             return
-        if strict and not isinstance(value, float):
-            raise InvalidValueError(self.tr("value must be float"))
-        super().set_value(value)
+        if not isinstance(value, (float, int)):
+            raise InvalidValueError(self.tr(f"value must be float, got {type(value)}"))
+        super().set_value(float(value))
 
 
 def __test_main():
