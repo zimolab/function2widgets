@@ -1,8 +1,7 @@
 import abc
 import copy
 import json
-from types import NoneType
-from typing import Any
+from typing import Any, Optional
 
 from PyQt6.QtWidgets import (
     QVBoxLayout,
@@ -22,7 +21,9 @@ from function2widgets.widget import InvalidValueError
 from function2widgets.widgets._sourcecodeedit import _SourceCodeEdit, DEFAULT_CONFIGS
 from function2widgets.widgets.base import CommonParameterWidget
 
-JsonTopLevelTypes = (dict, list, tuple, int, str, float, bool, NoneType)
+_NoneType = type(None)
+
+JsonTopLevelTypes = (dict, list, tuple, int, str, float, bool, _NoneType)
 
 
 class BaseSourceCodeEditDialog(QDialog):
@@ -94,12 +95,12 @@ class UniversalSourceCodeEditDialog(BaseSourceCodeEditDialog):
     def __init__(self, configs: dict = None, window_title: str = "", parent=None):
         super().__init__(configs=configs, window_title=window_title, parent=parent)
 
-    def set_value(self, obj: str | None, *args, **kwargs):
+    def set_value(self, obj: Optional[str], *args, **kwargs):
         if obj is None:
             obj = ""
         self._code_edit.setText(obj)
 
-    def get_value(self, empty_as_none: bool = False, *args, **kwargs) -> str | None:
+    def get_value(self, empty_as_none: bool = False, *args, **kwargs) -> Optional[str]:
         text = self._code_edit.text()
         if not text:
             return None
@@ -117,15 +118,15 @@ class BaseSourceCodeEditor(CommonParameterWidget):
         window_title: str = None,
         display_current_value: bool = True,
         default: Any = None,
-        stylesheet: str | None = None,
-        parent: QWidget | None = None,
+        stylesheet: Optional[str] = None,
+        parent: Optional[QWidget] = None,
     ):
 
         if configs is None:
             configs = DEFAULT_CONFIGS.copy()
 
-        self._value_widget: QPushButton | None = None
-        self._display_widget: QPlainTextEdit | None = None
+        self._value_widget: Optional[QPushButton] = None
+        self._display_widget: Optional[QPlainTextEdit] = None
         self._display_current_value = display_current_value
 
         self._current_value = default
@@ -204,9 +205,9 @@ class UniversalSourceCodeEditor(BaseSourceCodeEditor):
         edit_button_text: str = None,
         window_title: str = None,
         display_current_value: bool = True,
-        default: str | None = None,
-        stylesheet: str | None = None,
-        parent: QWidget | None = None,
+        default: Optional[str] = None,
+        stylesheet: Optional[str] = None,
+        parent: Optional[QWidget] = None,
     ):
         if default is not None and not isinstance(default, str):
             raise InvalidValueError(
@@ -222,10 +223,10 @@ class UniversalSourceCodeEditor(BaseSourceCodeEditor):
             parent=parent,
         )
 
-    def get_value(self, *args, **kwargs) -> str | None:
+    def get_value(self, *args, **kwargs) -> Optional[str]:
         return super().get_value(*args, **kwargs)
 
-    def set_value(self, value: str | None, *args, **kwargs):
+    def set_value(self, value: Optional[str], *args, **kwargs):
         if value is not None and not isinstance(value, str):
             raise TypeError(self.tr(f"value must be None or str, got {type(value)}"))
         super().set_value(value, *args, **kwargs)
@@ -308,8 +309,8 @@ class JsonEditor(BaseSourceCodeEditor):
         edit_button_text: str = None,
         window_title: str = None,
         display_current_value: bool = True,
-        stylesheet: str | None = None,
-        parent: QWidget | None = None,
+        stylesheet: Optional[str] = None,
+        parent: Optional[QWidget] = None,
     ):
 
         if configs is None:
@@ -317,7 +318,7 @@ class JsonEditor(BaseSourceCodeEditor):
         configs["Lexer"] = "JSON"
 
         if default is not None:
-            self._top_level_types = remove_tuple_element(top_level_types, NoneType)
+            self._top_level_types = remove_tuple_element(top_level_types, _NoneType)
         else:
             self._top_level_types = top_level_types
 
@@ -351,17 +352,17 @@ class JsonEditor(BaseSourceCodeEditor):
     def fetch_result_from_dialog(self, dialog: JsonEditDialog):
         return dialog.current_value
 
-    def get_value(self, *args, **kwargs) -> Any | None:
+    def get_value(self, *args, **kwargs) -> Any:
         return super().get_value(*args, **kwargs)
 
-    def set_value(self, value: Any | None, *args, **kwargs):
+    def set_value(self, value: Any, *args, **kwargs):
         super().set_value(value, *args, **kwargs)
 
 
 class ListEditor(JsonEditor):
     SET_DEFAULT_ON_INIT = False
 
-    TYPE_RESTRICTIONS = (list, NoneType)
+    TYPE_RESTRICTIONS = (list, _NoneType)
 
     def __init__(
         self,
@@ -370,8 +371,8 @@ class ListEditor(JsonEditor):
         edit_button_text: str = None,
         window_title: str = None,
         display_current_value: bool = True,
-        stylesheet: str | None = None,
-        parent: QWidget | None = None,
+        stylesheet: Optional[str] = None,
+        parent: Optional[QWidget] = None,
     ):
         super().__init__(
             top_level_types=self.TYPE_RESTRICTIONS,
@@ -384,10 +385,10 @@ class ListEditor(JsonEditor):
             parent=parent,
         )
 
-    def get_value(self, *args, **kwargs) -> list | None:
+    def get_value(self, *args, **kwargs) -> Optional[list]:
         return super().get_value(*args, **kwargs)
 
-    def set_value(self, value: list | None, *args, **kwargs):
+    def set_value(self, value: Optional[list], *args, **kwargs):
         if isinstance(value, (tuple, set)):
             value = list(value)
         super().set_value(value, *args, **kwargs)
@@ -395,7 +396,7 @@ class ListEditor(JsonEditor):
 
 class TupleEditor(JsonEditor):
     SET_DEFAULT_ON_INIT = False
-    TYPE_RESTRICTIONS = (list, tuple, NoneType)
+    TYPE_RESTRICTIONS = (list, tuple, _NoneType)
 
     def __init__(
         self,
@@ -404,8 +405,8 @@ class TupleEditor(JsonEditor):
         edit_button_text: str = None,
         window_title: str = None,
         display_current_value: bool = True,
-        stylesheet: str | None = None,
-        parent: QWidget | None = None,
+        stylesheet: Optional[str] = None,
+        parent: Optional[QWidget] = None,
     ):
         super().__init__(
             top_level_types=self.TYPE_RESTRICTIONS,
@@ -418,12 +419,12 @@ class TupleEditor(JsonEditor):
             parent=parent,
         )
 
-    def set_value(self, value: tuple | None, *args, **kwargs):
+    def set_value(self, value: Optional[tuple], *args, **kwargs):
         if isinstance(value, list):
             value = tuple(value)
         super().set_value(value, *args, **kwargs)
 
-    def get_value(self, *args, **kwargs) -> tuple | None:
+    def get_value(self, *args, **kwargs) -> Optional[tuple]:
         value = super().get_value(*args, **kwargs)
         if value is None:
             return None
@@ -441,7 +442,7 @@ class TupleEditor(JsonEditor):
 
 class DictEditor(JsonEditor):
     SET_DEFAULT_ON_INIT = False
-    TYPE_RESTRICTIONS = (dict, NoneType)
+    TYPE_RESTRICTIONS = (dict, _NoneType)
 
     def __init__(
         self,
@@ -450,8 +451,8 @@ class DictEditor(JsonEditor):
         edit_button_text: str = None,
         window_title: str = None,
         display_current_value: bool = True,
-        stylesheet: str | None = None,
-        parent: QWidget | None = None,
+        stylesheet: Optional[str] = None,
+        parent: Optional[QWidget] = None,
     ):
         super().__init__(
             top_level_types=self.TYPE_RESTRICTIONS,
@@ -464,10 +465,10 @@ class DictEditor(JsonEditor):
             parent=parent,
         )
 
-    def get_value(self, *args, **kwargs) -> dict | None:
+    def get_value(self, *args, **kwargs) -> Optional[dict]:
         return super().get_value(*args, **kwargs)
 
-    def set_value(self, value: dict | None, *args, **kwargs):
+    def set_value(self, value: Optional[dict], *args, **kwargs):
         super().set_value(value, *args, **kwargs)
 
 

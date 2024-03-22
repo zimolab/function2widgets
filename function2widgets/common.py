@@ -1,6 +1,6 @@
 import os.path
 import warnings
-from typing import Any
+from typing import Any, Optional
 
 
 class NotRegisteredError(Exception):
@@ -29,7 +29,7 @@ def remove_tuple_element(t: tuple, ele: Any) -> tuple:
     return tuple(tmp)
 
 
-def safe_read_file(path: str, encoding: str = "utf-8") -> str | None:
+def safe_read_file(path: str, encoding: str = "utf-8") -> Optional[str]:
     if not os.path.isfile(path):
         return None
     try:
@@ -38,3 +38,17 @@ def safe_read_file(path: str, encoding: str = "utf-8") -> str | None:
     except BaseException as e:
         warnings.warn(f"Failed to read file {path}: {e}")
         return None
+
+
+def remove_prefix(text: str, prefix: str) -> str:
+    if text.startswith(prefix):
+        return text[len(prefix) :]
+    else:
+        return text
+
+
+def remove_suffix(text: str, suffix: str) -> str:
+    if text.endswith(suffix):
+        return text[: -len(suffix)]
+    else:
+        return text

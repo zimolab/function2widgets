@@ -1,4 +1,5 @@
 import os.path
+from typing import Optional
 
 from PyQt6.QtWidgets import (
     QWidget,
@@ -27,7 +28,7 @@ class PathEdit(CommonParameterWidget):
 
     def __init__(
         self,
-        default: str | None = None,
+        default: Optional[str] = None,
         select_button_text: str = None,
         path_type: int = PATH_TYPE_OPEN_FILE,
         filters: str = FILTER_ALL_FILES,
@@ -37,12 +38,12 @@ class PathEdit(CommonParameterWidget):
         placeholder: str = None,
         clear_button: bool = False,
         dialog_title: str = None,
-        stylesheet: str | None = None,
-        parent: QWidget | None = None,
+        stylesheet: Optional[str] = None,
+        parent: Optional[QWidget] = None,
     ):
 
-        self._value_widget: QLineEdit | None = None
-        self._select_button: QPushButton | None = None
+        self._value_widget: Optional[QLineEdit] = None
+        self._select_button: Optional[QPushButton] = None
 
         self._placeholder = placeholder or ""
         self._clear_button = clear_button
@@ -78,12 +79,12 @@ class PathEdit(CommonParameterWidget):
         center_widget_layout.setStretch(0, 8)
         center_widget_layout.setStretch(1, 2)
 
-    def get_value(self, *args, **kwargs) -> str | None:
+    def get_value(self, *args, **kwargs) -> Optional[str]:
         if self._is_use_default():
             return self.default
         return self._value_widget.text()
 
-    def set_value(self, value: str | None, *args, **kwargs):
+    def set_value(self, value: Optional[str], *args, **kwargs):
         if not self._pre_set_value(value):
             return
         self._value_widget.setText(value or "")
@@ -116,7 +117,7 @@ class PathEdit(CommonParameterWidget):
             return ""
         return os.path.abspath(path)
 
-    def _get_save_file_path(self) -> str | None:
+    def _get_save_file_path(self) -> Optional[str]:
         path, _ = QFileDialog.getSaveFileName(
             caption=self._dialog_title,
             directory=self._start_path,
@@ -127,7 +128,7 @@ class PathEdit(CommonParameterWidget):
             return None
         return os.path.abspath(path)
 
-    def _get_open_dir_path(self) -> str | None:
+    def _get_open_dir_path(self) -> Optional[str]:
         path = QFileDialog.getExistingDirectory(
             caption=self._dialog_title, directory=self._start_path
         )
@@ -135,7 +136,7 @@ class PathEdit(CommonParameterWidget):
             return None
         return os.path.abspath(path)
 
-    def _get_open_files_path(self) -> str | None:
+    def _get_open_files_path(self) -> Optional[str]:
         paths, _ = QFileDialog.getOpenFileNames(
             caption=self._dialog_title,
             directory=self._start_path,
@@ -146,7 +147,7 @@ class PathEdit(CommonParameterWidget):
             return None
         return self._path_delimiter.join((os.path.abspath(path) for path in paths))
 
-    def _get_save_dir_path(self) -> str | None:
+    def _get_save_dir_path(self) -> Optional[str]:
         path = QFileDialog.getExistingDirectory(
             caption=self._dialog_title, directory=self._start_path
         )
@@ -160,7 +161,7 @@ class FilePathEdit(PathEdit):
 
     def __init__(
         self,
-        default: str | None = None,
+        default: Optional[str] = None,
         select_button_text: str = None,
         save_file: bool = False,
         multiple_files: bool = False,
@@ -171,8 +172,8 @@ class FilePathEdit(PathEdit):
         placeholder: str = None,
         clear_button: bool = False,
         dialog_title: str = None,
-        stylesheet: str | None = None,
-        parent: QWidget | None = None,
+        stylesheet: Optional[str] = None,
+        parent: Optional[QWidget] = None,
     ):
         if save_file:
             path_type = PATH_TYPE_SAVE_FILE
@@ -202,15 +203,15 @@ class DirPathEdit(PathEdit):
 
     def __init__(
         self,
-        default: str | None = None,
+        default: Optional[str] = None,
         select_button_text: str = None,
         save_dir: bool = False,
         start_path: str = None,
         placeholder: str = None,
         clear_button: bool = False,
         dialog_title: str = None,
-        stylesheet: str | None = None,
-        parent: QWidget | None = None,
+        stylesheet: Optional[str] = None,
+        parent: Optional[QWidget] = None,
     ):
         if save_dir:
             path_type = PATH_TYPE_SAVE_DIR

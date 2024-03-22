@@ -1,4 +1,4 @@
-from typing import Type
+from typing import Type, Dict
 
 from PyQt6.QtWidgets import QApplication
 
@@ -26,7 +26,7 @@ class ParameterWidgetFactory(object):
             )
         self._widget_classes[widget_type] = widget_class
 
-    def register_all(self, widgets: dict[str, Type[BaseParameterWidget]]):
+    def register_all(self, widgets: Dict[str, Type[BaseParameterWidget]]):
         for widget_type, widget_class in widgets.items():
             self.register(widget_type, widget_class)
 

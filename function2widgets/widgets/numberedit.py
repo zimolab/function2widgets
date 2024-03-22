@@ -2,6 +2,8 @@
 主要包含数值输入类控件，如：IntSpinBox, FloatSpanBox、DialWidget、SliderWidget
 """
 
+from typing import Optional
+
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import (
     QSpinBox,
@@ -26,12 +28,12 @@ class IntSpinBox(CommonParameterWidget):
         step: int = None,
         prefix: str = None,
         suffix: str = None,
-        default: int | None = None,
-        stylesheet: str | None = None,
-        parent: QWidget | None = None,
+        default: Optional[int] = None,
+        stylesheet: Optional[str] = None,
+        parent: Optional[QWidget] = None,
     ):
 
-        self._value_widget: QSpinBox | None = None
+        self._value_widget: Optional[QSpinBox] = None
         self._min_value = min_value
         self._max_value = max_value
         self._step = step
@@ -61,12 +63,12 @@ class IntSpinBox(CommonParameterWidget):
         if self._suffix:
             self._value_widget.setSuffix(self._suffix)
 
-    def get_value(self, *args, **kwargs) -> int | None:
+    def get_value(self, *args, **kwargs) -> Optional[int]:
         if self._is_use_default():
             return self._default
         return self._value_widget.value()
 
-    def set_value(self, value: int | None, *args, **kwargs):
+    def set_value(self, value: Optional[int], *args, **kwargs):
         if not self._pre_set_value(value):
             return
         self._value_widget.setValue(value)
@@ -84,12 +86,12 @@ class FloatSpinBox(CommonParameterWidget):
         prefix: str = None,
         suffix: str = None,
         accelerated: bool = False,
-        default: float | None = None,
-        stylesheet: str | None = None,
-        parent: QWidget | None = None,
+        default: Optional[float] = None,
+        stylesheet: Optional[str] = None,
+        parent: Optional[QWidget] = None,
     ):
 
-        self._value_widget: QDoubleSpinBox | None = None
+        self._value_widget: Optional[QDoubleSpinBox] = None
         self._min_value = min_value
         self._max_value = max_value
         self._step = step
@@ -124,12 +126,12 @@ class FloatSpinBox(CommonParameterWidget):
             self._value_widget.setDecimals(self._decimals)
         self._value_widget.setAccelerated(self._accelerated is True)
 
-    def get_value(self, *args, **kwargs) -> float | None:
+    def get_value(self, *args, **kwargs) -> Optional[float]:
         if self._is_use_default():
             return self._default
         return self._value_widget.value()
 
-    def set_value(self, value: float | None, *args, **kwargs):
+    def set_value(self, value: Optional[float], *args, **kwargs):
         if not self._pre_set_value(value):
             return
         self._value_widget.setValue(value)
@@ -153,13 +155,13 @@ class Dial(CommonParameterWidget):
         show_value_label: bool = False,
         value_prefix: str = None,
         value_suffix: str = None,
-        default: float | None = None,
-        stylesheet: str | None = None,
-        parent: QWidget | None = None,
+        default: Optional[float] = None,
+        stylesheet: Optional[str] = None,
+        parent: Optional[QWidget] = None,
     ):
 
-        self._value_widget: QDial | None = None
-        self._value_label: QLabel | None = None
+        self._value_widget: Optional[QDial] = None
+        self._value_label: Optional[QLabel] = None
 
         self._min_value = min_value
         self._max_value = max_value
@@ -210,12 +212,12 @@ class Dial(CommonParameterWidget):
             self._setup_value_label(center_widget_layout)
             self._update_value_label(self._value_widget.value())
 
-    def get_value(self, *args, **kwargs) -> int | None:
+    def get_value(self, *args, **kwargs) -> Optional[int]:
         if self._is_use_default():
             return self._default
         return self._value_widget.value()
 
-    def set_value(self, value: int | None, *args, **kwargs):
+    def set_value(self, value: Optional[int], *args, **kwargs):
         if not self._pre_set_value(value):
             return
         self._value_widget.setValue(value)
@@ -262,13 +264,13 @@ class Slider(CommonParameterWidget):
         show_value_label: bool = False,
         value_prefix: str = None,
         value_suffix: str = None,
-        default: float | None = None,
-        stylesheet: str | None = None,
-        parent: QWidget | None = None,
+        default: Optional[float] = None,
+        stylesheet: Optional[str] = None,
+        parent: Optional[QWidget] = None,
     ):
 
-        self._value_widget: QSlider | None = None
-        self._value_label: QLabel | None = None
+        self._value_widget: Optional[QSlider] = None
+        self._value_label: Optional[QLabel] = None
 
         self._min_value = min_value
         self._max_value = max_value
@@ -320,12 +322,12 @@ class Slider(CommonParameterWidget):
             self._setup_value_label(center_widget_layout)
             self._update_value_label(self._value_widget.value())
 
-    def get_value(self, *args, **kwargs) -> int | None:
+    def get_value(self, *args, **kwargs) -> Optional[int]:
         if self._is_use_default():
             return self._default
         return self._value_widget.value()
 
-    def set_value(self, value: int | None, *args, **kwargs):
+    def set_value(self, value: Optional[int], *args, **kwargs):
         if not self._pre_set_value(value):
             return
         self._value_widget.setValue(value)

@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, Optional
 
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QPlainTextEdit
 
@@ -11,11 +11,11 @@ class PlainTextEdit(CommonParameterWidget):
 
     def __init__(
         self,
-        default: str | None = None,
-        stylesheet: str | None = None,
-        parent: QWidget | None = None,
+        default: Optional[str] = None,
+        stylesheet: Optional[str] = None,
+        parent: Optional[QWidget] = None,
     ):
-        self._value_widget: QPlainTextEdit | None = None
+        self._value_widget: Optional[QPlainTextEdit] = None
 
         super().__init__(default=default, stylesheet=stylesheet, parent=parent)
 
@@ -29,7 +29,7 @@ class PlainTextEdit(CommonParameterWidget):
         center_widget_layout.addWidget(self._value_widget)
         center_widget.setLayout(center_widget_layout)
 
-    def get_value(self, *args, **kwargs) -> str | None:
+    def get_value(self, *args, **kwargs) -> Optional[str]:
         if self._is_use_default():
             return self._default
         return self._value_widget.toPlainText()
@@ -46,12 +46,12 @@ class SourceCodeEdit(CommonParameterWidget):
     def __init__(
         self,
         configs: dict = None,
-        default: str | None = None,
-        stylesheet: str | None = None,
-        parent: QWidget | None = None,
+        default: Optional[str] = None,
+        stylesheet: Optional[str] = None,
+        parent: Optional[QWidget] = None,
     ):
 
-        self._value_widget: _SourceCodeEdit | None = None
+        self._value_widget: Optional[_SourceCodeEdit] = None
         self._configs = configs
 
         super().__init__(default=default, stylesheet=stylesheet, parent=parent)
@@ -67,7 +67,7 @@ class SourceCodeEdit(CommonParameterWidget):
         self._value_widget = _SourceCodeEdit(configs=self._configs)
         center_widget_layout.addWidget(self._value_widget)
 
-    def get_value(self, *args, **kwargs) -> str | None:
+    def get_value(self, *args, **kwargs) -> Optional[str]:
         if self._is_use_default():
             return self._default
         return self._value_widget.text()

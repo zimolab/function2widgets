@@ -1,6 +1,6 @@
 import inspect
 import warnings
-from typing import Type, Any
+from typing import Type, Any, Dict, Optional
 
 from PyQt6 import Qsci
 from PyQt6.Qsci import QsciScintilla, QsciLexer
@@ -33,7 +33,7 @@ DEFAULT_CONFIGS = {
 }
 
 
-def _all_lexers() -> dict[str, Type[QsciLexer]]:
+def _all_lexers() -> Dict[str, Type[QsciLexer]]:
     all_lexers = {}
     baseclass_name = "QsciLexer"
     b_len = len(baseclass_name)
@@ -91,7 +91,7 @@ class _CodeEditConfigurator(object):
             "AutoCompletionSource": self.map_acs,
         }
 
-    def apply_configs(self, configs: dict[str, Any]):
+    def apply_configs(self, configs: Dict[str, Any]):
         for configname, configvalue in configs.items():
             if configname.startswith("_"):
                 continue
@@ -125,7 +125,7 @@ class _CodeEditConfigurator(object):
     ) -> QsciScintilla.WrapMode:
         return WrapModes.get(raw_value, None)
 
-    def map_lexer(self, raw_value: str, configs: dict = None) -> QsciLexer | None:
+    def map_lexer(self, raw_value: str, configs: dict = None) -> Optional[QsciLexer]:
         lexer = Lexers.get(raw_value, None)
         if not lexer:
             return None

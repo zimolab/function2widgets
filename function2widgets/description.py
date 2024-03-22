@@ -1,6 +1,6 @@
 import dataclasses
 import warnings
-from typing import Any, OrderedDict
+from typing import Any, OrderedDict, Dict, Optional, List
 
 from PyQt6.QtWidgets import QApplication
 
@@ -14,7 +14,7 @@ class WidgetDescription(object):
     show_docstring: bool = True
     init_args: dict = dataclasses.field(default_factory=OrderedDict)
 
-    def update(self, new_configs: dict[str, Any]):
+    def update(self, new_configs: Dict[str, Any]):
         placeholder = object()
         for key, new_value in new_configs.items():
             if new_value is None:
@@ -90,12 +90,12 @@ class ParameterDescription(object):
     type: str
     type_extras: Any = None
     default: Any = None
-    docstring: str | None = None
-    widget: WidgetDescription | None = None
+    docstring: Optional[str] = None
+    widget: Optional[WidgetDescription] = None
 
 
 @dataclasses.dataclass
 class FunctionDescription(object):
     name: str
     docstring: str
-    parameters: list[ParameterDescription] = dataclasses.field(default_factory=list)
+    parameters: List[ParameterDescription] = dataclasses.field(default_factory=list)

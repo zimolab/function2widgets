@@ -1,5 +1,5 @@
 import abc
-from typing import Any
+from typing import Any, Optional
 
 from PyQt6.QtWidgets import QWidget, QGridLayout, QLabel, QCheckBox, QHBoxLayout
 
@@ -7,7 +7,7 @@ from function2widgets.widget import BaseParameterWidget, InvalidValueError
 
 
 class CommonParameterWidget(BaseParameterWidget):
-    def __init__(self, default: Any, stylesheet: str, parent: QWidget | None):
+    def __init__(self, default: Any, stylesheet: str, parent: Optional[QWidget]):
         super().__init__(default=default, stylesheet=stylesheet, parent=parent)
 
         self._layout_main = QGridLayout(self)

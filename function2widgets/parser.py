@@ -4,14 +4,14 @@ import inspect
 import re
 import typing
 import warnings
-from typing import Any, Callable, List
+from typing import Any, Callable, List, Optional, Dict
 
 import docstring_parser
 import tomli
 from PyQt6.QtWidgets import QApplication
 from docstring_parser import Docstring, DocstringParam
 
-from function2widgets.common import safe_pop
+from function2widgets.common import safe_pop, remove_prefix, remove_suffix
 from function2widgets.description import (
     FunctionDescription,
     WidgetDescription,
@@ -33,7 +33,7 @@ from function2widgets.widgets import (
 TYPING_ANNOTATION_PATTERN = re.compile(r"^(typing\..+?)(\[.+])*$")
 
 
-def dict_to_widget_descriptions(raw: dict[str, Any]) -> WidgetDescription | None:
+def dict_to_widget_descriptions(raw: Dict[str, Any]) -> Optional[WidgetDescription]:
     if not raw:
         return None
     # 检查WidgetDescription.type字段
@@ -73,17 +73,18 @@ def parse_toml_metadata(metadata: str) -> dict:
 
 def normalize_typing_annotation_str(
     typing_annotation_str: str,
-) -> (str, list[str] | None):
+) -> (str, Optional[List[str]]):
     typing_annotation_str = typing_annotation_str.strip()
     match_result = re.match(TYPING_ANNOTATION_PATTERN, typing_annotation_str)
     if not match_result:
         return typing_annotation_str, None
     basic_typing_name = match_result.group(1)
     if match_result.group(2):
-        type_extras_str = (
-            match_result.group(2).strip().removeprefix("[").removesuffix("]")
-        )
-        type_extras = [ast.literal_eval(x) for x in type_extras_str.split(",")]
+
+        type_extras_str = match_result.group(2).strip()
+        type_extras_str = remove_prefix(type_extras_str, "[")
+        type_extras_str = remove_suffix(type_extras_str, "]")
+        type_extras = [ast.literal_eval(x.strip()) for x in type_extras_str.split(",")]
     else:
         type_extras = None
     return basic_typing_name, type_extras
@@ -94,13 +95,13 @@ class _DocstringInfo(object):
         self,
         docstring_text: str,
         docstring_obj: Docstring,
-        param_widgets_description: dict[str, WidgetDescription],
+        param_widgets_description: Dict[str, WidgetDescription],
     ):
         self._docstring_text = docstring_text
         self._docstring_obj = docstring_obj
         self._param_widgets_description = param_widgets_description
 
-    def _find_param(self, param_name: str) -> DocstringParam | None:
+    def _find_param(self, param_name: str) -> Optional[DocstringParam]:
         for param in self._docstring_obj.params:
             if param.arg_name == param_name:
                 return param
@@ -120,13 +121,15 @@ class _DocstringInfo(object):
 
     def get_param_description(
         self, param_name: str, fallback: str = None
-    ) -> str | None:
+    ) -> Optional[str]:
         doc_param = self._find_param(param_name)
         if not doc_param:
             return fallback
         return doc_param.description
 
-    def get_param_typename(self, param_name: str, fallback: str = None) -> str | None:
+    def get_param_typename(
+        self, param_name: str, fallback: str = None
+    ) -> Optional[str]:
         doc_param = self._find_param(param_name)
         if not doc_param:
             return fallback
@@ -143,7 +146,7 @@ class _DocstringInfo(object):
 
     def get_param_widget(
         self, param_name: str, default: WidgetDescription = None
-    ) -> WidgetDescription | None:
+    ) -> Optional[WidgetDescription]:
         return self._param_widgets_description.get(param_name, default)
 
     def get_raw_docstring(self) -> str:
@@ -158,7 +161,7 @@ class DocstringInfoParser(object):
         self,
         metadata_start_tag: str = WIDGETS_BLOCK_START_TAG,
         metadata_end_tag: str = WIDGETS_BLOCK_END_TAG,
-        metadata_parser: Callable[[str], dict | None] = parse_toml_metadata,
+        metadata_parser: Callable[[str], Optional[dict]] = parse_toml_metadata,
     ):
         self._metadata_pattern = (
             rf"^(\s*{metadata_start_tag}\s*(.*\n.+)^\s*{metadata_end_tag}\s*\n)"
@@ -184,7 +187,7 @@ class DocstringInfoParser(object):
         return docstring
 
     # noinspection PyMethodMayBeStatic
-    def _process_metadata(self, metadata: dict) -> dict[str, WidgetDescription]:
+    def _process_metadata(self, metadata: dict) -> Dict[str, WidgetDescription]:
         param_widgets_descriptions = {}
         for param_name, param_widget_dict in metadata.items():
             if not isinstance(param_widget_dict, dict) or not param_widget_dict:
@@ -231,7 +234,7 @@ class DocstringInfoParser(object):
 @dataclasses.dataclass
 class _ParameterInfo(object):
     name: str
-    typename: str | None
+    typename: Optional[str]
     default: Any
     type_extras: Any = None
 
@@ -244,13 +247,13 @@ class _FunctionInfo(object):
 
     def __init__(self, function_name: str):
         self._function_name: str = function_name
-        self._parameters: dict[str, _ParameterInfo] = {}
+        self._parameters: Dict[str, _ParameterInfo] = {}
 
     def get_function_name(self) -> str:
         return self._function_name
 
     @property
-    def parameters(self) -> dict[str, _ParameterInfo]:
+    def parameters(self) -> Dict[str, _ParameterInfo]:
         return {**self._parameters}
 
     def get_parameter(self, param_name: str) -> _ParameterInfo:
@@ -312,7 +315,7 @@ class FunctionInfoParser(object):
         str(typing.Literal): str(typing.Literal),
     }
 
-    def _find_typename(self, type_annotation: Any) -> (str | None, Any | None):
+    def _find_typename(self, type_annotation: Any) -> (Optional[str], Any):
 
         basic_type = self.BASIC_TYPES.get(type_annotation, None)
         if basic_type is not None:
@@ -329,7 +332,7 @@ class FunctionInfoParser(object):
 
         return type_annotation_str, None
 
-    def _param_typename(self, param: inspect.Parameter) -> (str | None, Any):
+    def _param_typename(self, param: inspect.Parameter) -> (Optional[str], Any):
         # 不支持仅通过位置传递的参数
         if param.kind == inspect.Parameter.POSITIONAL_ONLY:
             raise TypeError(
@@ -354,7 +357,9 @@ class FunctionInfoParser(object):
             return self.DEFAULT_FOR_EMPTY
         return param.default
 
-    def _parse_parameter_info(self, param: inspect.Parameter) -> _ParameterInfo | None:
+    def _parse_parameter_info(
+        self, param: inspect.Parameter
+    ) -> Optional[_ParameterInfo]:
         param_name = param.name
         param_typename, extras = self._param_typename(param)
         param_default = self._param_default_value(param)
@@ -463,7 +468,7 @@ class FunctionDescriptionComposer(object):
         param_type: str,
         param_info: _ParameterInfo,
         docstring_info: _DocstringInfo,
-    ) -> WidgetDescription | None:
+    ) -> Optional[WidgetDescription]:
         widget_type = self.DEFAULT_WIDGET_TYPES.get(param_type, None)
         if widget_type is None:
             return None
