@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "function2widgets"
-version = "0.3.3"
+version = "0.3.4"
 description = ""
 authors = ["zimolab <zimolab@aliyun.com>"]
 readme = "README.md"
@@ -16,7 +16,7 @@ documentation = "https://github.com/zimolab/function2widgets"
 python = ">=3.10,<3.11"
 pyqt6 = "^6.6.1"
 pyqt6-qscintilla = "^2.14.1"
-docstring-parser = "^0.15"
+docstring-parser = "^0.16"
 tomli = "^2.0.1"
 tomli-w = "^1.0.0"
 
