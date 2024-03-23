@@ -1,5 +1,5 @@
 import traceback
-from typing import Any, Optional
+from typing import Any, Optional, Literal
 
 from PyQt6.QtCore import QRegularExpression
 from PyQt6.QtGui import QRegularExpressionValidator, QIntValidator, QDoubleValidator
@@ -24,12 +24,26 @@ class LineEdit(CommonParameterWidget):
         default: Optional[str] = None,
         placeholder: str = "",
         clear_button: bool = False,
-        echo_mode: str = "Normal",
+        echo_mode: Literal[
+            "Normal", "Password", "NoEcho", "PasswordEchoOnEdit"
+        ] = "Normal",
         regex: str = None,
         input_mask: str = None,
         stylesheet: Optional[str] = "",
         parent: Optional[QWidget] = None,
     ):
+        """
+        单行文本输入控件，支持str类型参数。
+
+        :param default: 参数的默认值
+        :param placeholder: 占位文本，在无输入时显示
+        :param clear_button: 是否显示清除按钮
+        :param echo_mode: 回显模式，支持Normal、Password、NoEcho、PasswordEchoOnEdit
+        :param regex: 用于验证输入的正则表达式
+        :param input_mask: 输入掩码，用以限制输入的内容，具体参考QLineEdit对input mask的描述
+        :param stylesheet: 控件的样式表
+        :param parent: 控件的父组件
+        """
         self._value_widget: Optional[QLineEdit] = None
 
         super().__init__(default=default, stylesheet=stylesheet, parent=parent)
@@ -85,6 +99,16 @@ class IntLineEdit(LineEdit):
         stylesheet: Optional[str] = None,
         parent: Optional[QWidget] = None,
     ):
+        """
+        整数输入控件，支持int类型参数。
+
+        :param default: 参数的默认值
+        :param max_value: 参数的最大值
+        :param min_value: 参数的最小值
+        :param placeholder: 占位文本，在无输入时显示
+        :param stylesheet: 控件的样式表
+        :param parent: 控件的父组件
+        """
         super().__init__(
             default=default,
             placeholder=placeholder,
@@ -140,6 +164,18 @@ class FloatLineEdit(LineEdit):
         stylesheet: Optional[str] = None,
         parent: Optional[QWidget] = None,
     ):
+        """
+        浮点数输入控件，支持float类型参数。
+
+        :param default: 参数的默认值
+        :param max_value: 参数的最大值
+        :param min_value: 参数的最小值
+        :param decimals: 参数的小数位数
+        :param scientific_notation: 是否使用科学计数法
+        :param placeholder: 占位文本，在无输入时显示
+        :param stylesheet: 控件的样式表
+        :param parent: 控件的父组件
+        """
         super().__init__(
             default=default,
             placeholder=placeholder,
@@ -180,83 +216,3 @@ class FloatLineEdit(LineEdit):
         if not isinstance(value, (float, int)):
             raise InvalidValueError(self.tr(f"value must be float, got {type(value)}"))
         super().set_value(float(value))
-
-
-def __test_main():
-    from PyQt6.QtWidgets import QApplication, QVBoxLayout
-
-    app = QApplication([])
-    window = QWidget()
-    layout = QVBoxLayout(window)
-    window.setLayout(layout)
-
-    line_edit = LineEdit(default=None, placeholder="Enter value", parent=window)
-    line_edit.set_label("LineEdit")
-    # print("LineEdit:")
-    # print(f"value: {line_edit.get_value()}")
-    # line_edit.set_value(None)
-    # print(f"value: {line_edit.get_value()}")
-    # line_edit.set_value("hello world")
-    # print(f"value: {line_edit.get_value()}")
-    # line_edit.set_value(123)
-    # print(f"value: {line_edit.get_value()}")
-    # line_edit.set_value(None)
-    print()
-    # print(f"value: {line_edit.get_value()}")
-    # line_edit.set_value(UNSET)
-    # line_edit.set_value(line_edit._default)
-
-    int_edit = IntLineEdit(default=0, placeholder="Enter value", parent=window)
-    int_edit.set_label("IntLineEdit")
-    print("IntLineEdit:")
-    print(f"value: {int_edit.get_value()}")
-    # print(f"value: {int_edit.get_value()}")
-    int_edit.set_value(123)
-    print(f"value: {int_edit.get_value()}")
-    int_edit.set_value(-1)
-    print(f"value: {int_edit.get_value()}")
-    try:
-        int_edit.set_value(None)
-    except InvalidValueError as e:
-        print(f"error: {e}")
-    int_edit.set_value(0)
-    print(f"value: {int_edit.get_value()}")
-    print()
-
-    float_edit = FloatLineEdit(default=0.0, placeholder="Enter value", parent=window)
-    float_edit.set_label("FloatLineEdit")
-    print("FloatLineEdit:")
-    print(f"value: {float_edit.get_value()}")
-    try:
-        print(f"value: {float_edit.get_value()}")
-    except ValueError as e:
-        print(f"error: {e}")
-        traceback.print_exc()
-    # print(f"value: {float_edit.get_value()}")
-    float_edit.set_value(123.456)
-    print(f"value: {float_edit.get_value()}")
-    float_edit.set_value(-1.23456)
-    print(f"value: {float_edit.get_value()}")
-    try:
-        float_edit.set_value(None)
-    except InvalidValueError as e:
-        print(f"error: {e}")
-
-    float_edit2 = FloatLineEdit(parent=window)
-    print(f"float_edit2: {float_edit2.get_value()}")
-
-    int_edit2 = IntLineEdit(parent=window)
-    print(f"int_edit2: {int_edit2.get_value()}")
-
-    layout.addWidget(line_edit)
-    layout.addWidget(int_edit)
-    layout.addWidget(float_edit)
-    layout.addWidget(float_edit2)
-    layout.addWidget(int_edit2)
-
-    window.show()
-    app.exec()
-
-
-if __name__ == "__main__":
-    __test_main()

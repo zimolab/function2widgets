@@ -22,6 +22,24 @@ class CommonParameterWidget(BaseParameterWidget):
         self.setup_layout()
         self.setup_center_widget(self._center_widget)
 
+    def set_label(self, label_text):
+        self.label_widget.setText(label_text)
+
+    def get_label(self):
+        return self.label_widget.text()
+
+    def set_docstring(self, docstring: str):
+        self.docstring_widget.setText(docstring)
+
+    def get_docstring(self) -> str:
+        return self.docstring_widget.text()
+
+    def show_label(self, show: bool):
+        self.label_widget.setVisible(show is True)
+
+    def show_docstring(self, show):
+        self.docstring_widget.setVisible(show is True)
+
     def setup_use_default_checkbox(self):
         self._checkbox_use_default.setText(self.tr("default(%s)" % repr(self.default)))
         self._checkbox_use_default.setEnabled(True)
@@ -95,21 +113,3 @@ class CommonParameterWidget(BaseParameterWidget):
 
     def _unset_use_default(self):
         self._checkbox_use_default.setChecked(False)
-
-    def set_label(self, label_text):
-        self.label_widget.setText(label_text)
-
-    def get_label(self, label_text):
-        return self.label_widget.text()
-
-    def set_docstring(self, docstring: str):
-        self.docstring_widget.setText(docstring)
-
-    def get_docstring(self) -> str:
-        return self.docstring_widget.text()
-
-    def show_label(self, show: bool):
-        self.label_widget.setVisible(show is True)
-
-    def show_docstring(self, show):
-        self.docstring_widget.setVisible(show is True)
