@@ -12,7 +12,7 @@ class PlainTextEdit(CommonParameterWidget):
 
     def __init__(
         self,
-        default: Optional[str] = None,
+        default: Optional[str] = "",
         stylesheet: Optional[str] = None,
         set_default_on_init: Optional[bool] = None,
         hide_use_default_checkbox: Optional[bool] = None,
@@ -55,8 +55,8 @@ class SourceCodeEdit(CommonParameterWidget):
 
     def __init__(
         self,
+        default: Optional[str] = "",
         configs: dict = None,
-        default: Optional[str] = None,
         stylesheet: Optional[str] = None,
         set_default_on_init: Optional[bool] = None,
         hide_use_default_checkbox: Optional[bool] = None,
@@ -126,7 +126,7 @@ def __test_main():
     print(f"value: {code_edit.get_value()}")
     print()
 
-    code_edit2 = SourceCodeEdit(default="{}", parent=win, set_default_on_init=True)
+    code_edit2 = SourceCodeEdit(default="{}", set_default_on_init=True, parent=win)
 
     layout.addWidget(edit)
     layout.addWidget(edit2)

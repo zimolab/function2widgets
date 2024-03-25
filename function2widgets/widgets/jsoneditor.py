@@ -109,11 +109,11 @@ class JsonEditor(BaseSourceCodeEditor):
             )
 
         super().__init__(
+            default=default,
             configs=configs,
             edit_button_text=edit_button_text,
             window_title=window_title,
             display_current_value=display_current_value,
-            default=default,
             stylesheet=stylesheet,
             set_default_on_init=set_default_on_init,
             hide_use_default_checkbox=hide_use_default_checkbox,

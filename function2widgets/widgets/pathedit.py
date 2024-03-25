@@ -29,7 +29,7 @@ class PathEdit(CommonParameterWidget):
 
     def __init__(
         self,
-        default: Optional[str] = None,
+        default: Optional[str] = "",
         select_button_text: str = None,
         path_type: int = PATH_TYPE_OPEN_FILE,
         filters: str = FILTER_ALL_FILES,
@@ -171,7 +171,7 @@ class FilePathEdit(PathEdit):
 
     def __init__(
         self,
-        default: Optional[str] = None,
+        default: Optional[str] = "",
         select_button_text: str = None,
         save_file: bool = False,
         multiple_files: bool = False,
@@ -218,7 +218,7 @@ class DirPathEdit(PathEdit):
 
     def __init__(
         self,
-        default: Optional[str] = None,
+        default: Optional[str] = "",
         select_button_text: str = None,
         save_dir: bool = False,
         start_path: str = None,

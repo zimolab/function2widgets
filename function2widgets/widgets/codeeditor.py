@@ -104,11 +104,11 @@ class BaseSourceCodeEditor(CommonParameterWidget):
 
     def __init__(
         self,
+        default: Any = None,
         configs: dict = None,
         edit_button_text: str = None,
         window_title: str = None,
         display_current_value: bool = True,
-        default: Any = None,
         stylesheet: Optional[str] = None,
         set_default_on_init: Optional[bool] = None,
         hide_use_default_checkbox: Optional[bool] = None,
@@ -219,11 +219,11 @@ class UniversalSourceCodeEditor(BaseSourceCodeEditor):
                 QApplication.tr(f"default must be str, got {type(default)}")
             )
         super().__init__(
+            default=default,
             configs=configs,
             edit_button_text=edit_button_text,
             window_title=window_title,
             display_current_value=display_current_value,
-            default=default,
             stylesheet=stylesheet,
             set_default_on_init=set_default_on_init,
             hide_use_default_checkbox=hide_use_default_checkbox,

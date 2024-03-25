@@ -21,7 +21,7 @@ class LineEdit(CommonParameterWidget):
 
     def __init__(
         self,
-        default: Optional[str] = None,
+        default: Optional[str] = "",
         placeholder: str = "",
         clear_button: bool = False,
         echo_mode: Literal[
