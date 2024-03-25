@@ -1,4 +1,3 @@
-import traceback
 from typing import Any, Optional, Literal
 
 from PyQt6.QtCore import QRegularExpression
@@ -30,6 +29,7 @@ class LineEdit(CommonParameterWidget):
         regex: str = None,
         input_mask: str = None,
         stylesheet: Optional[str] = "",
+        set_default_on_init: Optional[bool] = None,
         parent: Optional[QWidget] = None,
     ):
         """
@@ -46,7 +46,12 @@ class LineEdit(CommonParameterWidget):
         """
         self._value_widget: Optional[QLineEdit] = None
 
-        super().__init__(default=default, stylesheet=stylesheet, parent=parent)
+        super().__init__(
+            default=default,
+            stylesheet=stylesheet,
+            set_default_on_init=set_default_on_init,
+            parent=parent,
+        )
 
         if placeholder:
             self._value_widget.setPlaceholderText(placeholder)
@@ -61,7 +66,8 @@ class LineEdit(CommonParameterWidget):
             self._value_widget.setValidator(regex_validator)
         if input_mask:
             self._value_widget.setInputMask(input_mask)
-        if self.SET_DEFAULT_ON_INIT:
+
+        if self._set_default_on_init:
             self.set_value(self.default)
 
     def setup_center_widget(self, center_widget: QWidget):
@@ -97,6 +103,7 @@ class IntLineEdit(LineEdit):
         min_value: int = None,
         placeholder: str = "",
         stylesheet: Optional[str] = None,
+        set_default_on_init: Optional[bool] = None,
         parent: Optional[QWidget] = None,
     ):
         """
@@ -117,6 +124,7 @@ class IntLineEdit(LineEdit):
             regex=None,
             input_mask=None,
             stylesheet=stylesheet,
+            set_default_on_init=set_default_on_init,
             parent=parent,
         )
 
@@ -162,6 +170,7 @@ class FloatLineEdit(LineEdit):
         scientific_notation: bool = False,
         placeholder: str = "",
         stylesheet: Optional[str] = None,
+        set_default_on_init: Optional[bool] = None,
         parent: Optional[QWidget] = None,
     ):
         """
@@ -184,6 +193,7 @@ class FloatLineEdit(LineEdit):
             regex=None,
             input_mask=None,
             stylesheet=stylesheet,
+            set_default_on_init=set_default_on_init,
             parent=parent,
         )
 

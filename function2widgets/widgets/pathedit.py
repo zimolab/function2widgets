@@ -39,6 +39,7 @@ class PathEdit(CommonParameterWidget):
         clear_button: bool = False,
         dialog_title: str = None,
         stylesheet: Optional[str] = None,
+        set_default_on_init: Optional[bool] = None,
         parent: Optional[QWidget] = None,
     ):
 
@@ -55,8 +56,13 @@ class PathEdit(CommonParameterWidget):
         self._path_delimiter = path_delimiter or PATH_DELIMITER
         self._dialog_title = dialog_title or QApplication.tr("Select Path")
 
-        super().__init__(default=default, stylesheet=stylesheet, parent=parent)
-        if self.SET_DEFAULT_ON_INIT:
+        super().__init__(
+            default=default,
+            stylesheet=stylesheet,
+            set_default_on_init=set_default_on_init,
+            parent=parent,
+        )
+        if self._set_default_on_init:
             self.set_value(self.default)
 
     # noinspection PyUnresolvedReferences
@@ -173,6 +179,7 @@ class FilePathEdit(PathEdit):
         clear_button: bool = False,
         dialog_title: str = None,
         stylesheet: Optional[str] = None,
+        set_default_on_init: Optional[bool] = None,
         parent: Optional[QWidget] = None,
     ):
         if save_file:
@@ -194,6 +201,7 @@ class FilePathEdit(PathEdit):
             clear_button=clear_button,
             dialog_title=dialog_title,
             stylesheet=stylesheet,
+            set_default_on_init=set_default_on_init,
             parent=parent,
         )
 
@@ -211,6 +219,7 @@ class DirPathEdit(PathEdit):
         clear_button: bool = False,
         dialog_title: str = None,
         stylesheet: Optional[str] = None,
+        set_default_on_init: Optional[bool] = None,
         parent: Optional[QWidget] = None,
     ):
         if save_dir:
@@ -230,6 +239,7 @@ class DirPathEdit(PathEdit):
             clear_button=clear_button,
             dialog_title=dialog_title,
             stylesheet=stylesheet,
+            set_default_on_init=set_default_on_init,
             parent=parent,
         )
 
@@ -247,7 +257,11 @@ def __test_main():
     print(path_edit.get_value())
 
     file_path_edit = FilePathEdit(
-        default=None, save_file=True, placeholder="select file path", parent=win
+        default=None,
+        save_file=True,
+        placeholder="select file path",
+        parent=win,
+        set_default_on_init=True,
     )
     file_path_edit.set_label("FilePathEdit")
 

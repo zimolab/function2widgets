@@ -16,11 +16,19 @@ class BaseParameterWidget(QWidget):
     SET_DEFAULT_ON_INIT: bool = False
 
     def __init__(
-        self, default: Any, stylesheet: Optional[str], parent: Optional[QWidget]
+        self,
+        default: Any,
+        stylesheet: Optional[str],
+        set_default_on_init: Optional[bool],
+        parent: Optional[QWidget],
     ):
         super().__init__(parent)
         self._default = default
         self._parameter_name: Optional[str] = None
+        if set_default_on_init is None:
+            self._set_default_on_init = self.SET_DEFAULT_ON_INIT
+        else:
+            self._set_default_on_init = set_default_on_init
 
         if stylesheet is not None:
             self.setStyleSheet(stylesheet)

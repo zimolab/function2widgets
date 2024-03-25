@@ -27,6 +27,7 @@ class ComboBox(CommonParameterWidget):
         items: Iterable[str],
         default: Optional[str] = None,
         stylesheet: Optional[str] = None,
+        set_default_on_init: Optional[bool] = None,
         parent: Optional[QWidget] = None,
     ):
 
@@ -38,9 +39,14 @@ class ComboBox(CommonParameterWidget):
                 QApplication.tr(f"invalid default value: {default}")
             )
 
-        super().__init__(default=default, stylesheet=stylesheet, parent=parent)
+        super().__init__(
+            default=default,
+            stylesheet=stylesheet,
+            set_default_on_init=set_default_on_init,
+            parent=parent,
+        )
 
-        if self.SET_DEFAULT_ON_INIT:
+        if self._set_default_on_init:
             self.set_value(self.default)
 
     def setup_center_widget(self, center_widget: QWidget):
@@ -77,15 +83,21 @@ class ComboBoxEdit(ComboBox):
         items: Iterable[str],
         default: Optional[str] = None,
         stylesheet: Optional[str] = None,
+        set_default_on_init: Optional[bool] = None,
         parent: Optional[QWidget] = None,
     ):
         items = [items for items in items]
         if isinstance(default, str) and default not in items:
             items.append(default)
         super().__init__(
-            items=items, default=default, stylesheet=stylesheet, parent=parent
+            items=items,
+            default=default,
+            stylesheet=stylesheet,
+            set_default_on_init=set_default_on_init,
+            parent=parent,
         )
-        if self.SET_DEFAULT_ON_INIT:
+
+        if self._set_default_on_init:
             self.set_value(self.default)
 
     def setup_center_widget(self, center_widget: QWidget):
@@ -116,6 +128,7 @@ class RadioButtonGroup(CommonParameterWidget):
         column_count: int = 1,
         default: Optional[str] = None,
         stylesheet: Optional[str] = None,
+        set_default_on_init: Optional[bool] = None,
         parent: Optional[QWidget] = None,
     ):
 
@@ -132,8 +145,14 @@ class RadioButtonGroup(CommonParameterWidget):
         if default not in self._items and default is not None:
             raise InvalidValueError(self.tr(f"invalid default value: '{default}'"))
 
-        super().__init__(default=default, stylesheet=stylesheet, parent=parent)
-        if self.SET_DEFAULT_ON_INIT:
+        super().__init__(
+            default=default,
+            stylesheet=stylesheet,
+            set_default_on_init=set_default_on_init,
+            parent=parent,
+        )
+
+        if self._set_default_on_init:
             self.set_value(self.default)
 
     def setup_center_widget(self, center_widget: QWidget):
@@ -191,6 +210,7 @@ class CheckBoxGroup(CommonParameterWidget):
         column_count: int = 1,
         default: Optional[List[str]] = None,
         stylesheet: Optional[str] = None,
+        set_default_on_init: Optional[bool] = None,
         parent: Optional[QWidget] = None,
     ):
 
@@ -206,8 +226,14 @@ class CheckBoxGroup(CommonParameterWidget):
 
         self._items = list(OrderedDict.fromkeys(items))
 
-        super().__init__(default=default, stylesheet=stylesheet, parent=parent)
-        if self.SET_DEFAULT_ON_INIT:
+        super().__init__(
+            default=default,
+            stylesheet=stylesheet,
+            set_default_on_init=set_default_on_init,
+            parent=parent,
+        )
+
+        if self._set_default_on_init:
             self.set_value(self.default)
 
     def setup_center_widget(self, center_widget: QWidget):
@@ -255,12 +281,19 @@ class CheckBox(CommonParameterWidget):
         text: str = None,
         default: Optional[bool] = None,
         stylesheet: Optional[str] = None,
+        set_default_on_init: Optional[bool] = None,
         parent: Optional[QWidget] = None,
     ):
         self._text = text or QApplication.tr("ENABLE")
         self._checkbox: Optional[QCheckBox] = None
-        super().__init__(default=default, stylesheet=stylesheet, parent=parent)
-        if self.SET_DEFAULT_ON_INIT:
+        super().__init__(
+            default=default,
+            stylesheet=stylesheet,
+            set_default_on_init=set_default_on_init,
+            parent=parent,
+        )
+
+        if self._set_default_on_init:
             self.set_value(self.default)
 
     def setup_center_widget(self, center_widget: QWidget):
@@ -290,7 +323,9 @@ def __test_main():
     layout = QVBoxLayout(wind)
     wind.setLayout(layout)
 
-    combo = ComboBox(["a", "b", "c"], default=None, parent=wind)
+    combo = ComboBox(
+        ["a", "b", "c"], default=None, parent=wind, set_default_on_init=True
+    )
     combo.set_label("ComboBoxWidget")
     print("current value:", combo.get_value())
     # combo.set_value("c")

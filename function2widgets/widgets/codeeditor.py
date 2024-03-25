@@ -119,6 +119,7 @@ class BaseSourceCodeEditor(CommonParameterWidget):
         display_current_value: bool = True,
         default: Any = None,
         stylesheet: Optional[str] = None,
+        set_default_on_init: Optional[bool] = None,
         parent: Optional[QWidget] = None,
     ):
 
@@ -135,9 +136,14 @@ class BaseSourceCodeEditor(CommonParameterWidget):
         self._edit_button_text = edit_button_text or QApplication.tr("Edit/View")
         self._window_title = window_title or QApplication.tr("Code Editor")
 
-        super().__init__(default=default, stylesheet=stylesheet, parent=parent)
+        super().__init__(
+            default=default,
+            stylesheet=stylesheet,
+            set_default_on_init=set_default_on_init,
+            parent=parent,
+        )
 
-        if self.SET_DEFAULT_ON_INIT:
+        if self._set_default_on_init:
             self.set_value(self.default)
 
     # noinspection PyUnresolvedReferences
@@ -310,6 +316,7 @@ class JsonEditor(BaseSourceCodeEditor):
         window_title: str = None,
         display_current_value: bool = True,
         stylesheet: Optional[str] = None,
+        set_default_on_init: Optional[bool] = None,
         parent: Optional[QWidget] = None,
     ):
 
@@ -336,6 +343,7 @@ class JsonEditor(BaseSourceCodeEditor):
             display_current_value=display_current_value,
             default=default,
             stylesheet=stylesheet,
+            set_default_on_init=set_default_on_init,
             parent=parent,
         )
 
@@ -372,6 +380,7 @@ class ListEditor(JsonEditor):
         window_title: str = None,
         display_current_value: bool = True,
         stylesheet: Optional[str] = None,
+        set_default_on_init: Optional[bool] = None,
         parent: Optional[QWidget] = None,
     ):
         super().__init__(
@@ -382,6 +391,7 @@ class ListEditor(JsonEditor):
             window_title=window_title,
             display_current_value=display_current_value,
             stylesheet=stylesheet,
+            set_default_on_init=set_default_on_init,
             parent=parent,
         )
 
@@ -406,6 +416,7 @@ class TupleEditor(JsonEditor):
         window_title: str = None,
         display_current_value: bool = True,
         stylesheet: Optional[str] = None,
+        set_default_on_init: Optional[bool] = None,
         parent: Optional[QWidget] = None,
     ):
         super().__init__(
@@ -416,6 +427,7 @@ class TupleEditor(JsonEditor):
             window_title=window_title,
             display_current_value=display_current_value,
             stylesheet=stylesheet,
+            set_default_on_init=set_default_on_init,
             parent=parent,
         )
 
@@ -452,6 +464,7 @@ class DictEditor(JsonEditor):
         window_title: str = None,
         display_current_value: bool = True,
         stylesheet: Optional[str] = None,
+        set_default_on_init: Optional[bool] = None,
         parent: Optional[QWidget] = None,
     ):
         super().__init__(
@@ -462,6 +475,7 @@ class DictEditor(JsonEditor):
             window_title=window_title,
             display_current_value=display_current_value,
             stylesheet=stylesheet,
+            set_default_on_init=set_default_on_init,
             parent=parent,
         )
 
@@ -498,7 +512,7 @@ def __test_main():
     # b = json_editor2.get_value()
     # print(id(b))
 
-    json_editor3 = DictEditor(default=None, parent=wind)
+    json_editor3 = DictEditor(default=None, parent=wind, set_default_on_init=True)
     json_editor3.set_label("DictEditor")
 
     json_editor4 = TupleEditor(default=(1, 2, 3), parent=wind)

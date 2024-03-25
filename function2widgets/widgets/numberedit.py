@@ -30,6 +30,7 @@ class IntSpinBox(CommonParameterWidget):
         suffix: str = None,
         default: Optional[int] = None,
         stylesheet: Optional[str] = None,
+        set_default_on_init: Optional[bool] = None,
         parent: Optional[QWidget] = None,
     ):
 
@@ -40,9 +41,15 @@ class IntSpinBox(CommonParameterWidget):
         self._prefix = prefix
         self._suffix = suffix
 
-        super().__init__(default=default, stylesheet=stylesheet, parent=parent)
-        if self.SET_DEFAULT_ON_INIT:
-            self.set_value(self._default)
+        super().__init__(
+            default=default,
+            stylesheet=stylesheet,
+            set_default_on_init=set_default_on_init,
+            parent=parent,
+        )
+
+        if self._set_default_on_init:
+            self.set_value(self.default)
 
     def setup_center_widget(self, center_widget: QWidget):
         center_widget_layout = QVBoxLayout(center_widget)
@@ -88,6 +95,7 @@ class FloatSpinBox(CommonParameterWidget):
         accelerated: bool = False,
         default: Optional[float] = None,
         stylesheet: Optional[str] = None,
+        set_default_on_init: Optional[bool] = None,
         parent: Optional[QWidget] = None,
     ):
 
@@ -100,9 +108,14 @@ class FloatSpinBox(CommonParameterWidget):
         self._suffix = suffix
         self._accelerated = accelerated
 
-        super().__init__(default=default, stylesheet=stylesheet, parent=parent)
-        if self.SET_DEFAULT_ON_INIT:
-            self.set_value(self._default)
+        super().__init__(
+            default=default,
+            stylesheet=stylesheet,
+            set_default_on_init=set_default_on_init,
+            parent=parent,
+        )
+        if self._set_default_on_init:
+            self.set_value(self.default)
 
     def setup_center_widget(self, center_widget: QWidget):
         center_widget_layout = QVBoxLayout(center_widget)
@@ -157,6 +170,7 @@ class Dial(CommonParameterWidget):
         value_suffix: str = None,
         default: Optional[float] = None,
         stylesheet: Optional[str] = None,
+        set_default_on_init: Optional[bool] = None,
         parent: Optional[QWidget] = None,
     ):
 
@@ -177,10 +191,15 @@ class Dial(CommonParameterWidget):
         self._value_prefix = value_prefix
         self._value_suffix = value_suffix
 
-        super().__init__(default=default, stylesheet=stylesheet, parent=parent)
+        super().__init__(
+            default=default,
+            stylesheet=stylesheet,
+            set_default_on_init=set_default_on_init,
+            parent=parent,
+        )
 
-        if self.SET_DEFAULT_ON_INIT:
-            self.set_value(self._default)
+        if self._set_default_on_init:
+            self.set_value(self.default)
 
     def setup_center_widget(self, center_widget: QWidget):
         center_widget_layout = QVBoxLayout(center_widget)
@@ -266,6 +285,7 @@ class Slider(CommonParameterWidget):
         value_suffix: str = None,
         default: Optional[float] = None,
         stylesheet: Optional[str] = None,
+        set_default_on_init: Optional[bool] = None,
         parent: Optional[QWidget] = None,
     ):
 
@@ -285,9 +305,15 @@ class Slider(CommonParameterWidget):
         self._value_prefix = value_prefix
         self._value_suffix = value_suffix
 
-        super().__init__(default=default, stylesheet=stylesheet, parent=parent)
-        if self.SET_DEFAULT_ON_INIT:
-            self.set_value(self._default)
+        super().__init__(
+            default=default,
+            stylesheet=stylesheet,
+            set_default_on_init=set_default_on_init,
+            parent=parent,
+        )
+
+        if self._set_default_on_init:
+            self.set_value(self.default)
 
     def setup_center_widget(self, center_widget: QWidget):
         center_widget_layout = QVBoxLayout(center_widget)
@@ -365,7 +391,12 @@ def __test_main():
     print()
 
     float_spin = FloatSpinBox(
-        min_value=-100000.0, max_value=100000.0, step=1.5, decimals=5, default=10.01
+        min_value=-100000.0,
+        max_value=100000.0,
+        step=1.5,
+        decimals=5,
+        default=10.01,
+        set_default_on_init=True,
     )
     # float_spin.set_label("FloatSpinBox")
     # print(f"{float_spin.get_value()}")
@@ -384,6 +415,7 @@ def __test_main():
         show_value_label=True,
         value_suffix="°",
         default=None,
+        set_default_on_init=True,
     )
     dial.set_label("DialWidget")
     print(f"{dial.get_value()}")
@@ -401,7 +433,8 @@ def __test_main():
         tick_interval=0,
         show_value_label=True,
         value_suffix="°",
-        default=None,
+        set_default_on_init=True,
+        default=10,
     )
     slider.set_label("SliderWidget")
     print(f"{slider.get_value()}")

@@ -13,13 +13,19 @@ class PlainTextEdit(CommonParameterWidget):
         self,
         default: Optional[str] = None,
         stylesheet: Optional[str] = None,
+        set_default_on_init: Optional[bool] = None,
         parent: Optional[QWidget] = None,
     ):
         self._value_widget: Optional[QPlainTextEdit] = None
 
-        super().__init__(default=default, stylesheet=stylesheet, parent=parent)
+        super().__init__(
+            default=default,
+            stylesheet=stylesheet,
+            set_default_on_init=set_default_on_init,
+            parent=parent,
+        )
 
-        if self.SET_DEFAULT_ON_INIT:
+        if self._set_default_on_init:
             self.set_value(default)
 
     def setup_center_widget(self, center_widget: QWidget):
@@ -48,15 +54,21 @@ class SourceCodeEdit(CommonParameterWidget):
         configs: dict = None,
         default: Optional[str] = None,
         stylesheet: Optional[str] = None,
+        set_default_on_init: Optional[bool] = None,
         parent: Optional[QWidget] = None,
     ):
 
         self._value_widget: Optional[_SourceCodeEdit] = None
         self._configs = configs
 
-        super().__init__(default=default, stylesheet=stylesheet, parent=parent)
+        super().__init__(
+            default=default,
+            stylesheet=stylesheet,
+            set_default_on_init=set_default_on_init,
+            parent=parent,
+        )
 
-        if self.SET_DEFAULT_ON_INIT:
+        if self._set_default_on_init:
             self.set_value(default)
 
     def setup_center_widget(self, center_widget: QWidget):
@@ -86,7 +98,7 @@ def __test_main():
     layout = QVBoxLayout(win)
     win.setLayout(layout)
 
-    edit = PlainTextEdit(default=None, parent=win)
+    edit = PlainTextEdit(default=None, parent=win, set_default_on_init=True)
     print(f"value: {edit.get_value()}")
     edit.set_value(123)
     print(f"value: {edit.get_value()}")
@@ -100,7 +112,7 @@ def __test_main():
     print(f"value: {edit.get_value()}")
     print()
 
-    edit2 = PlainTextEdit(default=None, parent=win)
+    edit2 = PlainTextEdit(default=None, parent=win, set_default_on_init=True)
 
     code_edit = SourceCodeEdit(default=None, parent=win)
     print(f"value: {code_edit.get_value()}")
@@ -108,7 +120,7 @@ def __test_main():
     print(f"value: {code_edit.get_value()}")
     print()
 
-    code_edit2 = SourceCodeEdit(default=None, parent=win)
+    code_edit2 = SourceCodeEdit(default="{}", parent=win, set_default_on_init=True)
 
     layout.addWidget(edit)
     layout.addWidget(edit2)

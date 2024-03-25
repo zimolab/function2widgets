@@ -7,8 +7,19 @@ from function2widgets.widget import BaseParameterWidget, InvalidValueError
 
 
 class CommonParameterWidget(BaseParameterWidget):
-    def __init__(self, default: Any, stylesheet: str, parent: Optional[QWidget]):
-        super().__init__(default=default, stylesheet=stylesheet, parent=parent)
+    def __init__(
+        self,
+        default: Any,
+        stylesheet: str,
+        set_default_on_init: Optional[bool],
+        parent: Optional[QWidget],
+    ):
+        super().__init__(
+            default=default,
+            stylesheet=stylesheet,
+            set_default_on_init=set_default_on_init,
+            parent=parent,
+        )
 
         self._layout_main = QGridLayout(self)
         self._label_widget = QLabel(self)
