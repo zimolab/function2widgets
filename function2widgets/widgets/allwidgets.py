@@ -1,11 +1,8 @@
-from function2widgets.widgets.codeeditor import (
-    UniversalSourceCodeEditor,
-    JsonEditor,
-    ListEditor,
-    TupleEditor,
-    DictEditor,
-)
+from function2widgets.widgets.codeeditor import UniversalSourceCodeEditor
+from function2widgets.widgets.dicteditor import DictEditor
+from function2widgets.widgets.jsoneditor import JsonEditor
 from function2widgets.widgets.lineedit import LineEdit, IntLineEdit, FloatLineEdit
+from function2widgets.widgets.listeditor import ListEditor
 from function2widgets.widgets.numberedit import IntSpinBox, FloatSpinBox, Dial, Slider
 from function2widgets.widgets.pathedit import PathEdit, FilePathEdit, DirPathEdit
 from function2widgets.widgets.selectwidget import (
@@ -16,6 +13,7 @@ from function2widgets.widgets.selectwidget import (
     CheckBox,
 )
 from function2widgets.widgets.textedit import PlainTextEdit, SourceCodeEdit
+from function2widgets.widgets.tupleeditor import TupleEditor
 
 BASIC_PARAMETER_WIDGETS = {
     LineEdit.__name__: LineEdit,

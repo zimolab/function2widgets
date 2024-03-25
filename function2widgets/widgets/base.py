@@ -1,4 +1,5 @@
 import abc
+import logging
 from typing import Any, Optional
 
 from PyQt6.QtWidgets import QWidget, QGridLayout, QLabel, QCheckBox, QHBoxLayout
@@ -7,13 +8,53 @@ from function2widgets.widget import BaseParameterWidget, InvalidValueError
 
 
 class CommonParameterWidget(BaseParameterWidget):
+    HIDE_USE_DEFAULT_CHECKBOX = False
+
     def __init__(
         self,
         default: Any,
         stylesheet: str,
         set_default_on_init: Optional[bool],
+        hide_use_default_checkbox: Optional[bool],
         parent: Optional[QWidget],
     ):
+        """
+        Note:
+        1. if 'set_default_on_init' is None, it will be set to class field SET_DEFAULT_ON_INIT
+        2. if 'hide_use_default_checkbox' is None, it will be set to class field HIDE_USE_DEFAULT_CHECKBOX
+        3. 'set_default_on_init' will be set to True if 'default' is not None and 'hide_use_default_checkbox' is True
+        4. 'hide_use_default_checkbox' will be set to False if 'default' is None
+
+        :param default:
+        :param stylesheet:
+        :param set_default_on_init:
+        :param hide_use_default_checkbox:
+        :param parent:
+        """
+        if set_default_on_init is None:
+            logging.debug("set_default_on_init will be set to SET_DEFAULT_ON_INIT")
+            set_default_on_init = self.SET_DEFAULT_ON_INIT
+
+        if hide_use_default_checkbox is None:
+            logging.debug(
+                "hide_use_default_checkbox will be set to HIDE_USE_DEFAULT_CHECKBOX"
+            )
+            hide_use_default_checkbox = self.HIDE_USE_DEFAULT_CHECKBOX
+
+        self._hide_use_default_checkbox = hide_use_default_checkbox
+
+        if default is None:
+            logging.debug(
+                "hide_use_default_checkbox will be set to False because default is None"
+            )
+            self._hide_use_default_checkbox = False
+
+        if self._hide_use_default_checkbox and default is not None:
+            logging.debug(
+                "set_set_default_on_init will be set to True because hide_use_default_checkbox is True and default is not None"
+            )
+            set_default_on_init = True
+
         super().__init__(
             default=default,
             stylesheet=stylesheet,
@@ -26,8 +67,7 @@ class CommonParameterWidget(BaseParameterWidget):
         self._label_widget.setText(self.tr("parameter name"))
         self._docstring_widget = QLabel(self)
         self._center_widget = QWidget(self)
-        self._checkbox_use_default = QCheckBox(self)
-        self._checkbox_use_default.setText(self.tr("use default value"))
+        self._use_default_checkbox = QCheckBox(self)
 
         self.setup_use_default_checkbox()
         self.setup_layout()
@@ -52,14 +92,20 @@ class CommonParameterWidget(BaseParameterWidget):
         self.docstring_widget.setVisible(show is True)
 
     def setup_use_default_checkbox(self):
-        self._checkbox_use_default.setText(self.tr("default(%s)" % repr(self.default)))
-        self._checkbox_use_default.setEnabled(True)
+        self._use_default_checkbox.setText(
+            self.tr("default({})".format(repr(self.default)))
+        )
+        self._use_default_checkbox.setEnabled(True)
         # noinspection PyUnresolvedReferences
-        self._checkbox_use_default.toggled.connect(
+        self._use_default_checkbox.toggled.connect(
             self._on_use_default_checkbox_toggled
         )
+        if self._hide_use_default_checkbox:
+            self._use_default_checkbox.setVisible(False)
 
     def _on_use_default_checkbox_toggled(self, checked):
+        if self._hide_use_default_checkbox:
+            return
         if checked:
             self._center_widget.setEnabled(False)
         else:
@@ -79,10 +125,10 @@ class CommonParameterWidget(BaseParameterWidget):
         self._docstring_widget.setObjectName("docstring_widget")
         self._center_widget.setObjectName("center_widget")
 
-        self._checkbox_use_default.setObjectName("checkbox_use_default")
+        self._use_default_checkbox.setObjectName("checkbox_use_default")
         checkboxes_layout = QHBoxLayout(self)
-        checkboxes_layout.addWidget(self._checkbox_use_default)
-        self._checkbox_use_default.setChecked(False)
+        checkboxes_layout.addWidget(self._use_default_checkbox)
+        self._use_default_checkbox.setChecked(False)
 
         # label_widget在第一行第一列
         self._layout_main.addWidget(self._label_widget, 0, 0, 1, 1)
@@ -99,10 +145,13 @@ class CommonParameterWidget(BaseParameterWidget):
         pass
 
     def _is_use_default(self) -> bool:
-        return self._checkbox_use_default.isChecked()
+        return self._use_default_checkbox.isChecked()
 
     def _set_use_default(self):
-        self._checkbox_use_default.setChecked(True)
+        self._use_default_checkbox.setChecked(True)
+
+    def _unset_use_default(self):
+        self._use_default_checkbox.setChecked(False)
 
     def _pre_set_value(self, value: Any) -> bool:
         if value is None:
@@ -121,6 +170,3 @@ class CommonParameterWidget(BaseParameterWidget):
         else:
             self._unset_use_default()
         return True
-
-    def _unset_use_default(self):
-        self._checkbox_use_default.setChecked(False)

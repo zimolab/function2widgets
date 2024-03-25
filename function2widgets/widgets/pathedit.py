@@ -24,7 +24,8 @@ PATH_DELIMITER = ";"
 
 
 class PathEdit(CommonParameterWidget):
-    SET_DEFAULT_ON_INIT = False
+    HIDE_USE_DEFAULT_CHECKBOX = True
+    SET_DEFAULT_ON_INIT = True
 
     def __init__(
         self,
@@ -40,6 +41,7 @@ class PathEdit(CommonParameterWidget):
         dialog_title: str = None,
         stylesheet: Optional[str] = None,
         set_default_on_init: Optional[bool] = None,
+        hide_use_default_checkbox: Optional[bool] = None,
         parent: Optional[QWidget] = None,
     ):
 
@@ -60,6 +62,7 @@ class PathEdit(CommonParameterWidget):
             default=default,
             stylesheet=stylesheet,
             set_default_on_init=set_default_on_init,
+            hide_use_default_checkbox=hide_use_default_checkbox,
             parent=parent,
         )
         if self._set_default_on_init:
@@ -163,7 +166,8 @@ class PathEdit(CommonParameterWidget):
 
 
 class FilePathEdit(PathEdit):
-    SET_DEFAULT_ON_INIT = False
+    HIDE_USE_DEFAULT_CHECKBOX = True
+    SET_DEFAULT_ON_INIT = True
 
     def __init__(
         self,
@@ -180,6 +184,7 @@ class FilePathEdit(PathEdit):
         dialog_title: str = None,
         stylesheet: Optional[str] = None,
         set_default_on_init: Optional[bool] = None,
+        hide_use_default_checkbox: Optional[bool] = None,
         parent: Optional[QWidget] = None,
     ):
         if save_file:
@@ -202,12 +207,14 @@ class FilePathEdit(PathEdit):
             dialog_title=dialog_title,
             stylesheet=stylesheet,
             set_default_on_init=set_default_on_init,
+            hide_use_default_checkbox=hide_use_default_checkbox,
             parent=parent,
         )
 
 
 class DirPathEdit(PathEdit):
-    SET_DEFAULT_ON_INIT = False
+    HIDE_USE_DEFAULT_CHECKBOX = True
+    SET_DEFAULT_ON_INIT = True
 
     def __init__(
         self,
@@ -220,6 +227,7 @@ class DirPathEdit(PathEdit):
         dialog_title: str = None,
         stylesheet: Optional[str] = None,
         set_default_on_init: Optional[bool] = None,
+        hide_use_default_checkbox: Optional[bool] = None,
         parent: Optional[QWidget] = None,
     ):
         if save_dir:
@@ -240,6 +248,7 @@ class DirPathEdit(PathEdit):
             dialog_title=dialog_title,
             stylesheet=stylesheet,
             set_default_on_init=set_default_on_init,
+            hide_use_default_checkbox=hide_use_default_checkbox,
             parent=parent,
         )
 
@@ -252,16 +261,19 @@ def __test_main():
     layout = QVBoxLayout(win)
     win.setLayout(layout)
 
-    path_edit = PathEdit(default=None, placeholder="select path", parent=win)
+    path_edit = PathEdit(
+        default="./",
+        placeholder="select path",
+        parent=win,
+    )
     path_edit.set_label("PathEdit")
     print(path_edit.get_value())
 
     file_path_edit = FilePathEdit(
-        default=None,
+        default="abc",
         save_file=True,
         placeholder="select file path",
         parent=win,
-        set_default_on_init=True,
     )
     file_path_edit.set_label("FilePathEdit")
 

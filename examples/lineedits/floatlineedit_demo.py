@@ -15,13 +15,13 @@ with ExampleContext() as ctx:
     float_lineedit.set_docstring("This is an float number line edit.")
 
     float_lineedit2 = FloatLineEdit(
-        default=10.0,
+        default=1.0,
         max_value=100.0,
         min_value=0.0,
         decimals=5,
         scientific_notation=False,
         placeholder="Enter an integer",
-        set_default_on_init=True,
+        hide_use_default_checkbox=False,
     )
     float_lineedit2.set_label("float_lineedit2")
     float_lineedit2.set_docstring("This is an float number line edit.")

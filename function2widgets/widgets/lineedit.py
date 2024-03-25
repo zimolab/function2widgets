@@ -17,6 +17,7 @@ ECHO_MODES = {
 
 class LineEdit(CommonParameterWidget):
     SET_DEFAULT_ON_INIT = False
+    HIDE_USE_DEFAULT_CHECKBOX = True
 
     def __init__(
         self,
@@ -30,11 +31,13 @@ class LineEdit(CommonParameterWidget):
         input_mask: str = None,
         stylesheet: Optional[str] = "",
         set_default_on_init: Optional[bool] = None,
+        hide_use_default_checkbox: Optional[bool] = None,
         parent: Optional[QWidget] = None,
     ):
         """
         单行文本输入控件，支持str类型参数。
 
+        :type hide_use_default_checkbox: 在界面上隐藏默认值复选框（仅在默认值不为None时生效）
         :param default: 参数的默认值
         :param placeholder: 占位文本，在无输入时显示
         :param clear_button: 是否显示清除按钮
@@ -50,6 +53,7 @@ class LineEdit(CommonParameterWidget):
             default=default,
             stylesheet=stylesheet,
             set_default_on_init=set_default_on_init,
+            hide_use_default_checkbox=hide_use_default_checkbox,
             parent=parent,
         )
 
@@ -94,7 +98,8 @@ class LineEdit(CommonParameterWidget):
 
 
 class IntLineEdit(LineEdit):
-    SET_DEFAULT_ON_INIT = False
+    HIDE_USE_DEFAULT_CHECKBOX = True
+    SET_DEFAULT_ON_INIT = True
 
     def __init__(
         self,
@@ -104,11 +109,13 @@ class IntLineEdit(LineEdit):
         placeholder: str = "",
         stylesheet: Optional[str] = None,
         set_default_on_init: Optional[bool] = None,
+        hide_use_default_checkbox: Optional[bool] = None,
         parent: Optional[QWidget] = None,
     ):
         """
-        整数输入控件，支持int类型参数。
+        整数输入控件，支持int类型参数。输入框为空时，get_value()返回None。
 
+        :type hide_use_default_checkbox: 隐藏默认值复选框（仅在默认值不为None时生效）
         :param default: 参数的默认值
         :param max_value: 参数的最大值
         :param min_value: 参数的最小值
@@ -125,6 +132,7 @@ class IntLineEdit(LineEdit):
             input_mask=None,
             stylesheet=stylesheet,
             set_default_on_init=set_default_on_init,
+            hide_use_default_checkbox=hide_use_default_checkbox,
             parent=parent,
         )
 
@@ -159,7 +167,8 @@ class IntLineEdit(LineEdit):
 
 
 class FloatLineEdit(LineEdit):
-    SET_DEFAULT_ON_INIT = False
+    HIDE_USE_DEFAULT_CHECKBOX = True
+    SET_DEFAULT_ON_INIT = True
 
     def __init__(
         self,
@@ -171,11 +180,13 @@ class FloatLineEdit(LineEdit):
         placeholder: str = "",
         stylesheet: Optional[str] = None,
         set_default_on_init: Optional[bool] = None,
+        hide_use_default_checkbox: Optional[bool] = None,
         parent: Optional[QWidget] = None,
     ):
         """
-        浮点数输入控件，支持float类型参数。
+        浮点数输入控件，支持float类型参数。输入框为空时，get_value()返回None。
 
+        :type hide_use_default_checkbox: 隐藏默认值复选框（仅在默认值不为None时生效）
         :param default: 参数的默认值
         :param max_value: 参数的最大值
         :param min_value: 参数的最小值
@@ -194,6 +205,7 @@ class FloatLineEdit(LineEdit):
             input_mask=None,
             stylesheet=stylesheet,
             set_default_on_init=set_default_on_init,
+            hide_use_default_checkbox=hide_use_default_checkbox,
             parent=parent,
         )
 

@@ -19,7 +19,8 @@ from function2widgets.widgets.base import CommonParameterWidget
 
 
 class IntSpinBox(CommonParameterWidget):
-    SET_DEFAULT_ON_INIT = False
+    HIDE_USE_DEFAULT_CHECKBOX = True
+    SET_DEFAULT_ON_INIT = True
 
     def __init__(
         self,
@@ -31,6 +32,7 @@ class IntSpinBox(CommonParameterWidget):
         default: Optional[int] = None,
         stylesheet: Optional[str] = None,
         set_default_on_init: Optional[bool] = None,
+        hide_use_default_checkbox: Optional[bool] = None,
         parent: Optional[QWidget] = None,
     ):
 
@@ -45,6 +47,7 @@ class IntSpinBox(CommonParameterWidget):
             default=default,
             stylesheet=stylesheet,
             set_default_on_init=set_default_on_init,
+            hide_use_default_checkbox=hide_use_default_checkbox,
             parent=parent,
         )
 
@@ -82,7 +85,8 @@ class IntSpinBox(CommonParameterWidget):
 
 
 class FloatSpinBox(CommonParameterWidget):
-    SET_DEFAULT_ON_INIT = False
+    HIDE_USE_DEFAULT_CHECKBOX = True
+    SET_DEFAULT_ON_INIT = True
 
     def __init__(
         self,
@@ -96,6 +100,7 @@ class FloatSpinBox(CommonParameterWidget):
         default: Optional[float] = None,
         stylesheet: Optional[str] = None,
         set_default_on_init: Optional[bool] = None,
+        hide_use_default_checkbox: Optional[bool] = None,
         parent: Optional[QWidget] = None,
     ):
 
@@ -112,6 +117,7 @@ class FloatSpinBox(CommonParameterWidget):
             default=default,
             stylesheet=stylesheet,
             set_default_on_init=set_default_on_init,
+            hide_use_default_checkbox=hide_use_default_checkbox,
             parent=parent,
         )
         if self._set_default_on_init:
@@ -151,7 +157,8 @@ class FloatSpinBox(CommonParameterWidget):
 
 
 class Dial(CommonParameterWidget):
-    SET_DEFAULT_ON_INIT = False
+    HIDE_USE_DEFAULT_CHECKBOX = True
+    SET_DEFAULT_ON_INIT = True
 
     def __init__(
         self,
@@ -171,6 +178,7 @@ class Dial(CommonParameterWidget):
         default: Optional[float] = None,
         stylesheet: Optional[str] = None,
         set_default_on_init: Optional[bool] = None,
+        hide_use_default_checkbox: Optional[bool] = None,
         parent: Optional[QWidget] = None,
     ):
 
@@ -195,6 +203,7 @@ class Dial(CommonParameterWidget):
             default=default,
             stylesheet=stylesheet,
             set_default_on_init=set_default_on_init,
+            hide_use_default_checkbox=hide_use_default_checkbox,
             parent=parent,
         )
 
@@ -258,7 +267,8 @@ class Dial(CommonParameterWidget):
 
 
 class Slider(CommonParameterWidget):
-    SET_DEFAULT_ON_INIT = False
+    HIDE_USE_DEFAULT_CHECKBOX = True
+    SET_DEFAULT_ON_INIT = True
 
     TickPosition = {
         "None": QSlider.TickPosition.NoTicks,
@@ -286,6 +296,7 @@ class Slider(CommonParameterWidget):
         default: Optional[float] = None,
         stylesheet: Optional[str] = None,
         set_default_on_init: Optional[bool] = None,
+        hide_use_default_checkbox: Optional[bool] = None,
         parent: Optional[QWidget] = None,
     ):
 
@@ -309,6 +320,7 @@ class Slider(CommonParameterWidget):
             default=default,
             stylesheet=stylesheet,
             set_default_on_init=set_default_on_init,
+            hide_use_default_checkbox=hide_use_default_checkbox,
             parent=parent,
         )
 
@@ -415,7 +427,7 @@ def __test_main():
         show_value_label=True,
         value_suffix="°",
         default=None,
-        set_default_on_init=True,
+        set_default_on_init=False,
     )
     dial.set_label("DialWidget")
     print(f"{dial.get_value()}")
@@ -433,7 +445,6 @@ def __test_main():
         tick_interval=0,
         show_value_label=True,
         value_suffix="°",
-        set_default_on_init=True,
         default=10,
     )
     slider.set_label("SliderWidget")

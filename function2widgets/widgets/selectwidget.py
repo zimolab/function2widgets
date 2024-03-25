@@ -20,6 +20,7 @@ def _uid(prefix: str, item: str):
 
 
 class ComboBox(CommonParameterWidget):
+    HIDE_USE_DEFAULT_CHECKBOX = True
     SET_DEFAULT_ON_INIT = False
 
     def __init__(
@@ -28,6 +29,7 @@ class ComboBox(CommonParameterWidget):
         default: Optional[str] = None,
         stylesheet: Optional[str] = None,
         set_default_on_init: Optional[bool] = None,
+        hide_use_default_checkbox: Optional[bool] = None,
         parent: Optional[QWidget] = None,
     ):
 
@@ -43,6 +45,7 @@ class ComboBox(CommonParameterWidget):
             default=default,
             stylesheet=stylesheet,
             set_default_on_init=set_default_on_init,
+            hide_use_default_checkbox=hide_use_default_checkbox,
             parent=parent,
         )
 
@@ -53,8 +56,8 @@ class ComboBox(CommonParameterWidget):
         self._value_widget = QComboBox(center_widget)
         for item in self._items:
             self._value_widget.addItem(item)
-        if isinstance(self.default, str) and self.default in self._items:
-            self._value_widget.setCurrentText(self.default)
+        # if isinstance(self.default, str) and self.default in self._items:
+        #     self._value_widget.setCurrentText(self.default)
         center_widget_layout = QVBoxLayout(center_widget)
         center_widget_layout.addWidget(self._value_widget)
         center_widget_layout.setContentsMargins(0, 0, 0, 0)
@@ -76,6 +79,7 @@ class ComboBox(CommonParameterWidget):
 
 
 class ComboBoxEdit(ComboBox):
+    HIDE_USE_DEFAULT_CHECKBOX = True
     SET_DEFAULT_ON_INIT = False
 
     def __init__(
@@ -84,6 +88,7 @@ class ComboBoxEdit(ComboBox):
         default: Optional[str] = None,
         stylesheet: Optional[str] = None,
         set_default_on_init: Optional[bool] = None,
+        hide_use_default_checkbox: Optional[bool] = None,
         parent: Optional[QWidget] = None,
     ):
         items = [items for items in items]
@@ -94,6 +99,7 @@ class ComboBoxEdit(ComboBox):
             default=default,
             stylesheet=stylesheet,
             set_default_on_init=set_default_on_init,
+            hide_use_default_checkbox=hide_use_default_checkbox,
             parent=parent,
         )
 
@@ -119,7 +125,9 @@ class ComboBoxEdit(ComboBox):
 
 
 class RadioButtonGroup(CommonParameterWidget):
-    SET_DEFAULT_ON_INIT = False
+    HIDE_USE_DEFAULT_CHECKBOX = True
+    SET_DEFAULT_ON_INIT = True
+
     BTN_PREFIX = "_radio_btn"
 
     def __init__(
@@ -129,6 +137,7 @@ class RadioButtonGroup(CommonParameterWidget):
         default: Optional[str] = None,
         stylesheet: Optional[str] = None,
         set_default_on_init: Optional[bool] = None,
+        hide_use_default_checkbox: Optional[bool] = None,
         parent: Optional[QWidget] = None,
     ):
 
@@ -149,6 +158,7 @@ class RadioButtonGroup(CommonParameterWidget):
             default=default,
             stylesheet=stylesheet,
             set_default_on_init=set_default_on_init,
+            hide_use_default_checkbox=hide_use_default_checkbox,
             parent=parent,
         )
 
@@ -202,6 +212,8 @@ class RadioButtonGroup(CommonParameterWidget):
 
 class CheckBoxGroup(CommonParameterWidget):
     SET_DEFAULT_ON_INIT = False
+    HIDE_USE_DEFAULT_CHECKBOX = True
+
     BTN_PREFIX = "_checkbox"
 
     def __init__(
@@ -211,6 +223,7 @@ class CheckBoxGroup(CommonParameterWidget):
         default: Optional[List[str]] = None,
         stylesheet: Optional[str] = None,
         set_default_on_init: Optional[bool] = None,
+        hide_use_default_checkbox: Optional[bool] = None,
         parent: Optional[QWidget] = None,
     ):
 
@@ -230,6 +243,7 @@ class CheckBoxGroup(CommonParameterWidget):
             default=default,
             stylesheet=stylesheet,
             set_default_on_init=set_default_on_init,
+            hide_use_default_checkbox=hide_use_default_checkbox,
             parent=parent,
         )
 
@@ -274,7 +288,8 @@ class CheckBoxGroup(CommonParameterWidget):
 
 
 class CheckBox(CommonParameterWidget):
-    SET_DEFAULT_ON_INIT = False
+    SET_DEFAULT_ON_INIT = True
+    HIDE_USE_DEFAULT_CHECKBOX = True
 
     def __init__(
         self,
@@ -282,14 +297,16 @@ class CheckBox(CommonParameterWidget):
         default: Optional[bool] = None,
         stylesheet: Optional[str] = None,
         set_default_on_init: Optional[bool] = None,
+        hide_use_default_checkbox: Optional[bool] = None,
         parent: Optional[QWidget] = None,
     ):
-        self._text = text or QApplication.tr("ENABLE")
+        self._text = text or self.tr("enabled")
         self._checkbox: Optional[QCheckBox] = None
         super().__init__(
             default=default,
             stylesheet=stylesheet,
             set_default_on_init=set_default_on_init,
+            hide_use_default_checkbox=hide_use_default_checkbox,
             parent=parent,
         )
 
@@ -324,7 +341,9 @@ def __test_main():
     wind.setLayout(layout)
 
     combo = ComboBox(
-        ["a", "b", "c"], default=None, parent=wind, set_default_on_init=True
+        ["a", "b", "c"],
+        default=None,
+        parent=wind,
     )
     combo.set_label("ComboBoxWidget")
     print("current value:", combo.get_value())
@@ -337,25 +356,39 @@ def __test_main():
     # combo.set_value(None)
     # print("current value:", combo.get_value())
 
-    combo_edit = ComboBoxEdit(["a", "b", "c"], default="b", parent=wind)
+    combo_edit = ComboBoxEdit(["a", "b", "c"], default="c", parent=wind)
     # combo_edit.set_label("ComboBoxEdit")
     # combo_edit.set_value("new1")
     # combo_edit.set_value("new2")
     # combo_edit.set_value("new3")
 
     options = ["a", "b", "c"]
-    radio_group = RadioButtonGroup(options, column_count=3, default="c", parent=wind)
+    radio_group = RadioButtonGroup(
+        options,
+        column_count=3,
+        default=None,
+        parent=wind,
+    )
+    print(radio_group.get_value())
     radio_group.set_label("RadioButtonGroup")
     # for opt in options:
     #     print(radio_group._get_radio_button(opt))
     # radio_group.set_value("c")
     # radio_group.set_value("a")
 
-    checkbox_group = CheckBoxGroup(options, column_count=3, default=None, parent=wind)
+    checkbox_group = CheckBoxGroup(
+        options,
+        column_count=3,
+        default=None,
+        parent=wind,
+    )
     checkbox_group.set_label("CheckBoxGroup")
     print()
 
-    checkbox = CheckBox()
+    checkbox = CheckBox(
+        default=False,
+        parent=wind,
+    )
 
     layout.addWidget(combo)
     layout.addWidget(combo_edit)

@@ -7,13 +7,15 @@ from function2widgets.widgets.base import CommonParameterWidget
 
 
 class PlainTextEdit(CommonParameterWidget):
-    SET_DEFAULT_ON_INIT = False
+    HIDE_USE_DEFAULT_CHECKBOX = True
+    SET_DEFAULT_ON_INIT = True
 
     def __init__(
         self,
         default: Optional[str] = None,
         stylesheet: Optional[str] = None,
         set_default_on_init: Optional[bool] = None,
+        hide_use_default_checkbox: Optional[bool] = None,
         parent: Optional[QWidget] = None,
     ):
         self._value_widget: Optional[QPlainTextEdit] = None
@@ -22,6 +24,7 @@ class PlainTextEdit(CommonParameterWidget):
             default=default,
             stylesheet=stylesheet,
             set_default_on_init=set_default_on_init,
+            hide_use_default_checkbox=hide_use_default_checkbox,
             parent=parent,
         )
 
@@ -47,7 +50,8 @@ class PlainTextEdit(CommonParameterWidget):
 
 
 class SourceCodeEdit(CommonParameterWidget):
-    SET_DEFAULT_ON_INIT = False
+    HIDE_USE_DEFAULT_CHECKBOX = True
+    SET_DEFAULT_ON_INIT = True
 
     def __init__(
         self,
@@ -55,6 +59,7 @@ class SourceCodeEdit(CommonParameterWidget):
         default: Optional[str] = None,
         stylesheet: Optional[str] = None,
         set_default_on_init: Optional[bool] = None,
+        hide_use_default_checkbox: Optional[bool] = None,
         parent: Optional[QWidget] = None,
     ):
 
@@ -65,6 +70,7 @@ class SourceCodeEdit(CommonParameterWidget):
             default=default,
             stylesheet=stylesheet,
             set_default_on_init=set_default_on_init,
+            hide_use_default_checkbox=hide_use_default_checkbox,
             parent=parent,
         )
 
@@ -112,7 +118,7 @@ def __test_main():
     print(f"value: {edit.get_value()}")
     print()
 
-    edit2 = PlainTextEdit(default=None, parent=win, set_default_on_init=True)
+    edit2 = PlainTextEdit(default="1234", parent=win)
 
     code_edit = SourceCodeEdit(default=None, parent=win)
     print(f"value: {code_edit.get_value()}")

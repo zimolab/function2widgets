@@ -1,6 +1,5 @@
 import abc
 import copy
-import json
 from typing import Any, Optional
 
 from PyQt6.QtWidgets import (
@@ -16,14 +15,9 @@ from PyQt6.QtWidgets import (
     QPlainTextEdit,
 )
 
-from function2widgets.common import remove_tuple_element
 from function2widgets.widget import InvalidValueError
 from function2widgets.widgets._sourcecodeedit import _SourceCodeEdit, DEFAULT_CONFIGS
 from function2widgets.widgets.base import CommonParameterWidget
-
-_NoneType = type(None)
-
-JsonTopLevelTypes = (dict, list, tuple, int, str, float, bool, _NoneType)
 
 
 class BaseSourceCodeEditDialog(QDialog):
@@ -100,15 +94,12 @@ class UniversalSourceCodeEditDialog(BaseSourceCodeEditDialog):
             obj = ""
         self._code_edit.setText(obj)
 
-    def get_value(self, empty_as_none: bool = False, *args, **kwargs) -> Optional[str]:
-        text = self._code_edit.text()
-        if not text:
-            return None
-        else:
-            return text
+    def get_value(self, *args, **kwargs) -> str:
+        return self._code_edit.text()
 
 
 class BaseSourceCodeEditor(CommonParameterWidget):
+    HIDE_USE_DEFAULT_CHECKBOX = True
     SET_DEFAULT_ON_INIT = True
 
     def __init__(
@@ -120,6 +111,7 @@ class BaseSourceCodeEditor(CommonParameterWidget):
         default: Any = None,
         stylesheet: Optional[str] = None,
         set_default_on_init: Optional[bool] = None,
+        hide_use_default_checkbox: Optional[bool] = None,
         parent: Optional[QWidget] = None,
     ):
 
@@ -129,17 +121,19 @@ class BaseSourceCodeEditor(CommonParameterWidget):
         self._value_widget: Optional[QPushButton] = None
         self._display_widget: Optional[QPlainTextEdit] = None
         self._display_current_value = display_current_value
+        self._display_widget_text_tpl: str = QApplication.tr("{}")
 
         self._current_value = default
 
         self._configs = configs
         self._edit_button_text = edit_button_text or QApplication.tr("Edit/View")
-        self._window_title = window_title or QApplication.tr("Code Editor")
+        self._window_title = window_title or QApplication.tr("Editor")
 
         super().__init__(
             default=default,
             stylesheet=stylesheet,
             set_default_on_init=set_default_on_init,
+            hide_use_default_checkbox=hide_use_default_checkbox,
             parent=parent,
         )
 
@@ -167,11 +161,13 @@ class BaseSourceCodeEditor(CommonParameterWidget):
 
     def _on_use_default_checkbox_toggled(self, checked):
         super()._on_use_default_checkbox_toggled(checked)
-        if checked:
-            self._update_current_value_display(self.default)
+        # if checked:
+        #     self._update_current_value_display(self.default)
 
     def _update_current_value_display(self, value):
-        self._display_widget.setPlainText(f"value: {value}\n" f"type: {type(value)}")
+        self._display_widget.setPlainText(
+            self._display_widget_text_tpl.format(str(value))
+        )
 
     def get_value(self, *args, **kwargs) -> Any:
         if self._is_use_default():
@@ -203,16 +199,19 @@ class BaseSourceCodeEditor(CommonParameterWidget):
 
 
 class UniversalSourceCodeEditor(BaseSourceCodeEditor):
-    SET_DEFAULT_ON_INIT = False
+    HIDE_USE_DEFAULT_CHECKBOX = True
+    SET_DEFAULT_ON_INIT = True
 
     def __init__(
         self,
+        default: Optional[str] = "",
         configs: dict = None,
         edit_button_text: str = None,
         window_title: str = None,
         display_current_value: bool = True,
-        default: Optional[str] = None,
         stylesheet: Optional[str] = None,
+        set_default_on_init: Optional[bool] = None,
+        hide_use_default_checkbox: Optional[bool] = None,
         parent: Optional[QWidget] = None,
     ):
         if default is not None and not isinstance(default, str):
@@ -226,6 +225,8 @@ class UniversalSourceCodeEditor(BaseSourceCodeEditor):
             display_current_value=display_current_value,
             default=default,
             stylesheet=stylesheet,
+            set_default_on_init=set_default_on_init,
+            hide_use_default_checkbox=hide_use_default_checkbox,
             parent=parent,
         )
 
@@ -243,289 +244,3 @@ class UniversalSourceCodeEditor(BaseSourceCodeEditor):
         )
         dialog.set_value(self._current_value)
         return dialog
-
-
-class JsonEditDialog(BaseSourceCodeEditDialog):
-    def __init__(
-        self,
-        top_level_types: tuple,
-        configs: dict = None,
-        window_title: str = None,
-        parent=None,
-    ):
-        self._current_value = None
-        self._top_level_types = top_level_types
-
-        super().__init__(configs=configs, window_title=window_title, parent=parent)
-
-    def set_value(self, value: Any, indent=4, ensure_ascii=False, *args, **kwargs):
-        if not isinstance(value, self._top_level_types):
-            raise InvalidValueError(
-                self.tr(
-                    f"value '{value}' is not  one of the following types: {self._top_level_types}"
-                )
-            )
-
-        try:
-            json_str = json.dumps(
-                value, indent=indent, ensure_ascii=ensure_ascii, *args, **kwargs
-            )
-        except BaseException as e:
-            raise InvalidValueError() from e
-        self._current_value = value
-        self._code_edit.setText(json_str)
-
-    def get_value(self, *args, **kwargs) -> Any:
-        text = self._code_edit.text()
-        try:
-            obj = json.loads(text, *args, **kwargs)
-        except BaseException as e:
-            raise InvalidValueError(self.tr(f"json deserialization error: {e}"))
-        if not isinstance(obj, self._top_level_types):
-            raise InvalidValueError(
-                self.tr(
-                    f"current source is not one of the following types: {self._top_level_types}"
-                )
-            )
-        self._current_value = obj
-        return obj
-
-    @property
-    def current_value(self) -> Any:
-        return self._current_value
-
-    def on_confirm(self):
-        try:
-            self.get_value()
-        except BaseException as e:
-            QMessageBox.critical(self, self.tr("Error"), str(e))
-            return
-        else:
-            self.accept()
-
-
-class JsonEditor(BaseSourceCodeEditor):
-    SET_DEFAULT_ON_INIT = False
-
-    def __init__(
-        self,
-        top_level_types: tuple = JsonTopLevelTypes,
-        default: Any = None,
-        configs: dict = None,
-        edit_button_text: str = None,
-        window_title: str = None,
-        display_current_value: bool = True,
-        stylesheet: Optional[str] = None,
-        set_default_on_init: Optional[bool] = None,
-        parent: Optional[QWidget] = None,
-    ):
-
-        if configs is None:
-            configs = DEFAULT_CONFIGS.copy()
-        configs["Lexer"] = "JSON"
-
-        if default is not None:
-            self._top_level_types = remove_tuple_element(top_level_types, _NoneType)
-        else:
-            self._top_level_types = top_level_types
-
-        if not isinstance(default, self._top_level_types):
-            raise InvalidValueError(
-                QApplication.tr(
-                    f"default value '{default}' is not one of the following types: {self._top_level_types}"
-                )
-            )
-
-        super().__init__(
-            configs=configs,
-            edit_button_text=edit_button_text,
-            window_title=window_title,
-            display_current_value=display_current_value,
-            default=default,
-            stylesheet=stylesheet,
-            set_default_on_init=set_default_on_init,
-            parent=parent,
-        )
-
-    def source_code_dialog(self) -> JsonEditDialog:
-        dialog = JsonEditDialog(
-            top_level_types=self._top_level_types,
-            configs=self._configs,
-            window_title=self._window_title,
-            parent=self,
-        )
-        dialog.set_value(self._current_value)
-        return dialog
-
-    def fetch_result_from_dialog(self, dialog: JsonEditDialog):
-        return dialog.current_value
-
-    def get_value(self, *args, **kwargs) -> Any:
-        return super().get_value(*args, **kwargs)
-
-    def set_value(self, value: Any, *args, **kwargs):
-        super().set_value(value, *args, **kwargs)
-
-
-class ListEditor(JsonEditor):
-    SET_DEFAULT_ON_INIT = False
-
-    TYPE_RESTRICTIONS = (list, _NoneType)
-
-    def __init__(
-        self,
-        default: list = None,
-        configs: dict = None,
-        edit_button_text: str = None,
-        window_title: str = None,
-        display_current_value: bool = True,
-        stylesheet: Optional[str] = None,
-        set_default_on_init: Optional[bool] = None,
-        parent: Optional[QWidget] = None,
-    ):
-        super().__init__(
-            top_level_types=self.TYPE_RESTRICTIONS,
-            default=default,
-            configs=configs,
-            edit_button_text=edit_button_text,
-            window_title=window_title,
-            display_current_value=display_current_value,
-            stylesheet=stylesheet,
-            set_default_on_init=set_default_on_init,
-            parent=parent,
-        )
-
-    def get_value(self, *args, **kwargs) -> Optional[list]:
-        return super().get_value(*args, **kwargs)
-
-    def set_value(self, value: Optional[list], *args, **kwargs):
-        if isinstance(value, (tuple, set)):
-            value = list(value)
-        super().set_value(value, *args, **kwargs)
-
-
-class TupleEditor(JsonEditor):
-    SET_DEFAULT_ON_INIT = False
-    TYPE_RESTRICTIONS = (list, tuple, _NoneType)
-
-    def __init__(
-        self,
-        default: tuple = None,
-        configs: dict = None,
-        edit_button_text: str = None,
-        window_title: str = None,
-        display_current_value: bool = True,
-        stylesheet: Optional[str] = None,
-        set_default_on_init: Optional[bool] = None,
-        parent: Optional[QWidget] = None,
-    ):
-        super().__init__(
-            top_level_types=self.TYPE_RESTRICTIONS,
-            configs=configs,
-            default=default,
-            edit_button_text=edit_button_text,
-            window_title=window_title,
-            display_current_value=display_current_value,
-            stylesheet=stylesheet,
-            set_default_on_init=set_default_on_init,
-            parent=parent,
-        )
-
-    def set_value(self, value: Optional[tuple], *args, **kwargs):
-        if isinstance(value, list):
-            value = tuple(value)
-        super().set_value(value, *args, **kwargs)
-
-    def get_value(self, *args, **kwargs) -> Optional[tuple]:
-        value = super().get_value(*args, **kwargs)
-        if value is None:
-            return None
-        elif isinstance(value, list):
-            return tuple(value)
-        elif isinstance(value, tuple):
-            return value
-        else:
-            raise InvalidValueError(
-                self.tr(
-                    f"value '{value}' is not one of the following types: {self._top_level_types}"
-                )
-            )
-
-
-class DictEditor(JsonEditor):
-    SET_DEFAULT_ON_INIT = False
-    TYPE_RESTRICTIONS = (dict, _NoneType)
-
-    def __init__(
-        self,
-        default: dict = None,
-        configs: dict = None,
-        edit_button_text: str = None,
-        window_title: str = None,
-        display_current_value: bool = True,
-        stylesheet: Optional[str] = None,
-        set_default_on_init: Optional[bool] = None,
-        parent: Optional[QWidget] = None,
-    ):
-        super().__init__(
-            top_level_types=self.TYPE_RESTRICTIONS,
-            default=default,
-            configs=configs,
-            edit_button_text=edit_button_text,
-            window_title=window_title,
-            display_current_value=display_current_value,
-            stylesheet=stylesheet,
-            set_default_on_init=set_default_on_init,
-            parent=parent,
-        )
-
-    def get_value(self, *args, **kwargs) -> Optional[dict]:
-        return super().get_value(*args, **kwargs)
-
-    def set_value(self, value: Optional[dict], *args, **kwargs):
-        super().set_value(value, *args, **kwargs)
-
-
-def __test_main():
-    from PyQt6.QtWidgets import QApplication, QWidget
-
-    app = QApplication([])
-    wind = QWidget()
-    layout = QVBoxLayout(wind)
-    wind.setLayout(layout)
-
-    source_code_editor = UniversalSourceCodeEditor(
-        default=None, stylesheet="QCheckBox{background-color: red}", parent=wind
-    )
-    source_code_editor.set_label("UniversalSourceCodeEditor")
-
-    json_editor = JsonEditor(default=123, display_current_value=True, parent=wind)
-    json_editor.set_label("JsonEditor")
-
-    json_editor2 = ListEditor(
-        default=[1, 2, 3], display_current_value=True, parent=wind
-    )
-    json_editor2.set_label("ListEditor")
-    # a = [1, 2, 3]
-    # print(id(a))
-    # json_editor2.set_value(a)
-    # b = json_editor2.get_value()
-    # print(id(b))
-
-    json_editor3 = DictEditor(default=None, parent=wind, set_default_on_init=True)
-    json_editor3.set_label("DictEditor")
-
-    json_editor4 = TupleEditor(default=(1, 2, 3), parent=wind)
-    json_editor4.set_label("TupleEditor")
-
-    layout.addWidget(source_code_editor)
-    layout.addWidget(json_editor)
-    layout.addWidget(json_editor2)
-    layout.addWidget(json_editor3)
-    layout.addWidget(json_editor4)
-    wind.show()
-    app.exec()
-
-
-if __name__ == "__main__":
-    __test_main()
