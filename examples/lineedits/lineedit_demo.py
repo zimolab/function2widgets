@@ -4,7 +4,7 @@ from function2widgets.widgets import LineEdit
 if __name__ == "__main__":
     with ExampleContext() as ctx:
         # create parameter widgets
-        lineedit_1 = LineEdit(placeholder="input some text here")
+        lineedit_1 = LineEdit(default=None, placeholder="input some text here")
         lineedit_1.set_label("lineedit_1")
         lineedit_1.set_docstring("<b>this is a line edit!</b>")
 

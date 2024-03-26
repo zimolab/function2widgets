@@ -282,7 +282,7 @@ def __test_main():
     )
     files_path_edit.set_label("FilesPathEdit")
 
-    dir_path_edit = DirPathEdit(default=None, placeholder="select dir path", parent=win)
+    dir_path_edit = DirPathEdit(placeholder="select dir path", parent=win)
     dir_path_edit.set_label("DirPathEdit")
 
     save_dir_path_edit = DirPathEdit(

@@ -16,7 +16,7 @@ ECHO_MODES = {
 
 
 class LineEdit(CommonParameterWidget):
-    SET_DEFAULT_ON_INIT = False
+    SET_DEFAULT_ON_INIT = True
     HIDE_USE_DEFAULT_CHECKBOX = True
 
     def __init__(

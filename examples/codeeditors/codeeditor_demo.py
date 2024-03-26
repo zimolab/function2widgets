@@ -5,7 +5,6 @@ if __name__ == "__main__":
     with ExampleContext() as ctx:
         # create parameter widgets
         codeeditor = UniversalSourceCodeEditor(
-            default=None,
             edit_button_text="Edit/View",
             window_title="Code Editor",
         )
