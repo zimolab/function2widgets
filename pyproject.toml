@@ -13,7 +13,7 @@ repository = "https://github.com/zimolab/function2widgets"
 documentation = "https://github.com/zimolab/function2widgets"
 
 [tool.poetry.dependencies]
-python = ">=3.8"
+python = ">=3.8, <4.0"
 pyqt6 = "^6.6.1"
 pyqt6-qscintilla = "^2.14.1"
 docstring-parser = "^0.16"
