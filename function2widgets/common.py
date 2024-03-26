@@ -1,4 +1,5 @@
 import ast
+import logging
 import os.path
 import warnings
 from typing import Any, Optional
@@ -60,5 +61,6 @@ def safe_eval(literal: str) -> str:
     try:
         return str(ast.literal_eval(literal))
     except BaseException as e:
-        warnings.warn(f"failed to eval {literal}: {e}")
+        # warnings.warn(f"failed to eval {literal}: {e}")
+        logging.debug(f"failed to eval {literal}: {e}, return as is instead")
         return str(literal)
