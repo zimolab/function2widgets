@@ -1,3 +1,4 @@
+import ast
 import os.path
 import warnings
 from typing import Any, Optional
@@ -52,3 +53,12 @@ def remove_suffix(text: str, suffix: str) -> str:
         return text[: -len(suffix)]
     else:
         return text
+
+
+def safe_eval(literal: str) -> str:
+    literal = literal.strip()
+    try:
+        return str(ast.literal_eval(literal))
+    except BaseException as e:
+        warnings.warn(f"failed to eval {literal}: {e}")
+        return str(literal)

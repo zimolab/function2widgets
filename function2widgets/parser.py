@@ -11,7 +11,7 @@ import tomli
 from PyQt6.QtWidgets import QApplication
 from docstring_parser import Docstring, DocstringParam
 
-from function2widgets.common import safe_pop, remove_prefix, remove_suffix
+from function2widgets.common import safe_pop, remove_prefix, remove_suffix, safe_eval
 from function2widgets.description import (
     FunctionDescription,
     WidgetDescription,
@@ -84,7 +84,7 @@ def normalize_typing_annotation_str(
         type_extras_str = match_result.group(2).strip()
         type_extras_str = remove_prefix(type_extras_str, "[")
         type_extras_str = remove_suffix(type_extras_str, "]")
-        type_extras = [ast.literal_eval(x.strip()) for x in type_extras_str.split(",")]
+        type_extras = [safe_eval(x) for x in type_extras_str.split(",")]
     else:
         type_extras = None
     return basic_typing_name, type_extras
@@ -628,7 +628,7 @@ def __test_main():
         def func2(
             self,
             labels: typing.Literal["a", "b", "c"],
-            path: str,
+            path: Dict[str, Any],
             opt: typing.Literal["opt1", "opt2", "opt3"] = "opt1",
         ):
             """
