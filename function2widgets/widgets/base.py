@@ -148,6 +148,10 @@ class CommonParameterWidget(BaseParameterWidget):
         return self._use_default_checkbox.isChecked()
 
     def _set_use_default(self):
+        if self._hide_use_default_checkbox or (
+            not self._use_default_checkbox.isVisible()
+        ):
+            return
         self._use_default_checkbox.setChecked(True)
 
     def _unset_use_default(self):
