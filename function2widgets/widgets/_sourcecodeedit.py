@@ -149,12 +149,9 @@ class _CodeEditConfigurator(object):
 class _SourceCodeEdit(QsciScintilla):
 
     def __init__(self, configs: dict = None, parent=None):
-
+        super().__init__(parent=parent)
         if configs is None:
             configs = DEFAULT_CONFIGS
-
-        super().__init__(parent=parent)
-
         self._configurator = _CodeEditConfigurator(self)
         self.apply_configs(configs)
 

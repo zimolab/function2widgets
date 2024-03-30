@@ -1,176 +1,201 @@
 import abc
-import logging
-from typing import Any, Optional
+import copy
+import dataclasses
+from typing import Any, Optional, cast
 
-from PyQt6.QtWidgets import QWidget, QGridLayout, QLabel, QCheckBox, QHBoxLayout
+from PyQt6.QtCore import Qt
+from PyQt6.QtWidgets import (
+    QWidget,
+    QLabel,
+    QCheckBox,
+    QVBoxLayout,
+    QSpacerItem,
+    QSizePolicy,
+    QFrame,
+)
 
-from function2widgets.widget import BaseParameterWidget, InvalidValueError
+from function2widgets.widget import BaseParameterWidget, WidgetArgs
+
+
+@dataclasses.dataclass(frozen=True)
+class CommonParameterWidgetArgs(WidgetArgs):
+    parameter_name: str
+    default: Any
+    label: Optional[str] = None
+    description: Optional[str] = None
+    stylesheet: Optional[str] = None
+    set_default_on_init: Optional[bool] = None
+    hide_default_widget: Optional[bool] = None
+    default_widget_text: Optional[str] = None
+    separate_line: bool = True
 
 
 class CommonParameterWidget(BaseParameterWidget):
-    HIDE_USE_DEFAULT_CHECKBOX = False
 
-    def __init__(
-        self,
-        default: Any,
-        stylesheet: str,
-        set_default_on_init: Optional[bool],
-        hide_use_default_checkbox: Optional[bool],
-        parent: Optional[QWidget],
-    ):
-        """
-        Note:
-        1. if 'set_default_on_init' is None, it will be set to class field SET_DEFAULT_ON_INIT
-        2. if 'hide_use_default_checkbox' is None, it will be set to class field HIDE_USE_DEFAULT_CHECKBOX
-        3. 'set_default_on_init' will be set to True if 'default' is not None and 'hide_use_default_checkbox' is True
-        4. 'hide_use_default_checkbox' will be set to False if 'default' is None
+    _WidgetArgsClass = CommonParameterWidgetArgs
 
-        :param default:
-        :param stylesheet:
-        :param set_default_on_init:
-        :param hide_use_default_checkbox:
-        :param parent:
-        """
-        if set_default_on_init is None:
-            logging.debug("set_default_on_init will be set to SET_DEFAULT_ON_INIT")
-            set_default_on_init = self.SET_DEFAULT_ON_INIT
+    OBJ_ID_LAYOUT = "_CPW_main_layout"
+    OBJ_ID_CENTER_WIDGET = "_CPW_center_widget"
+    OBJ_ID_LABEL_WIDGET = "_CPW_label_widget"
+    OBJ_ID_DESCRIPTION_WIDGET = "_CPW_description_widget"
+    OBJ_ID_DEFAULT_WIDGET = "_CPW_default_widget"
+    OBJ_ID_SEPARATE_LINE = "_CPW_separate_line_widget"
 
-        if hide_use_default_checkbox is None:
-            logging.debug(
-                "hide_use_default_checkbox will be set to HIDE_USE_DEFAULT_CHECKBOX"
-            )
-            hide_use_default_checkbox = self.HIDE_USE_DEFAULT_CHECKBOX
+    def __init__(self, args: CommonParameterWidgetArgs, parent: Optional[QWidget]):
 
-        self._hide_use_default_checkbox = hide_use_default_checkbox
+        super().__init__(args=args, parent=parent)
 
-        if default is None:
-            logging.debug(
-                "hide_use_default_checkbox will be set to False because default is None"
-            )
-            self._hide_use_default_checkbox = False
-
-        if self._hide_use_default_checkbox and default is not None:
-            logging.debug(
-                "set_set_default_on_init will be set to True because hide_use_default_checkbox is True and default is not None"
-            )
-            set_default_on_init = True
-
-        super().__init__(
-            default=default,
-            stylesheet=stylesheet,
-            set_default_on_init=set_default_on_init,
-            parent=parent,
-        )
-
-        self._layout_main = QGridLayout(self)
-        self._label_widget = QLabel(self)
-        self._label_widget.setText(self.tr("parameter name"))
-        self._docstring_widget = QLabel(self)
+        self._layout = QVBoxLayout(self)
         self._center_widget = QWidget(self)
-        self._use_default_checkbox = QCheckBox(self)
+        self._label_widget = QLabel(self)
+        self._description_widget = QLabel(self)
+        self._default_widget = QCheckBox(self)
 
-        self.setup_use_default_checkbox()
-        self.setup_layout()
+        self._setup_label_widget()
+        self._setup_description_widget()
+        self._setup_default_widget()
+        self._setup_layout()
         self.setup_center_widget(self._center_widget)
+        self.set_label(self._args.label)
+        self.set_description(self._args.description)
 
-    def set_label(self, label_text):
-        self.label_widget.setText(label_text)
-
-    def get_label(self):
-        return self.label_widget.text()
-
-    def set_docstring(self, docstring: str):
-        self.docstring_widget.setText(docstring)
-
-    def get_docstring(self) -> str:
-        return self.docstring_widget.text()
-
-    def show_label(self, show: bool):
-        self.label_widget.setVisible(show is True)
-
-    def show_docstring(self, show):
-        self.docstring_widget.setVisible(show is True)
-
-    def setup_use_default_checkbox(self):
-        self._use_default_checkbox.setText(
-            self.tr("default({})".format(repr(self.default)))
-        )
-        self._use_default_checkbox.setEnabled(True)
-        # noinspection PyUnresolvedReferences
-        self._use_default_checkbox.toggled.connect(
-            self._on_use_default_checkbox_toggled
-        )
-        if self._hide_use_default_checkbox:
-            self._use_default_checkbox.setVisible(False)
-
-    def _on_use_default_checkbox_toggled(self, checked):
-        if self._hide_use_default_checkbox:
+    def set_value(self, value: Any):
+        value = copy.deepcopy(value)
+        if not self._pre_set_value(value):
             return
-        if checked:
-            self._center_widget.setEnabled(False)
-        else:
-            self._center_widget.setEnabled(True)
+        self.set_value_to_widget(value)
 
-    @property
-    def label_widget(self) -> QLabel:
-        return self._label_widget
-
-    @property
-    def docstring_widget(self) -> QLabel:
-        return self._docstring_widget
-
-    def setup_layout(self):
-        self._layout_main.setObjectName("layout_main")
-        self._label_widget.setObjectName("label_widget")
-        self._docstring_widget.setObjectName("docstring_widget")
-        self._center_widget.setObjectName("center_widget")
-
-        self._use_default_checkbox.setObjectName("checkbox_use_default")
-        checkboxes_layout = QHBoxLayout(self)
-        checkboxes_layout.addWidget(self._use_default_checkbox)
-        self._use_default_checkbox.setChecked(False)
-
-        # label_widget在第一行第一列
-        self._layout_main.addWidget(self._label_widget, 0, 0, 1, 1)
-        # checkboxes_layout在第一行第二列
-        self._layout_main.addLayout(checkboxes_layout, 0, 1, 1, 1)
-        # center_widget占满第二行
-        self._layout_main.addWidget(self._center_widget, 1, 0, 1, 2)
-        # docstring_widget占满第三行
-        self._layout_main.addWidget(self._docstring_widget, 2, 0, 1, 2)
-        self.setLayout(self._layout_main)
+    def get_value(self) -> Any:
+        if self._is_use_default():
+            return self._args.default
+        return copy.deepcopy(self.get_value_from_widget())
 
     @abc.abstractmethod
     def setup_center_widget(self, center_widget: QWidget):
         pass
 
-    def _is_use_default(self) -> bool:
-        return self._use_default_checkbox.isChecked()
+    @abc.abstractmethod
+    def set_value_to_widget(self, value: Any):
+        pass
 
-    def _set_use_default(self):
-        if self._hide_use_default_checkbox or (
-            not self._use_default_checkbox.isVisible()
-        ):
+    @abc.abstractmethod
+    def get_value_from_widget(self) -> Any:
+        pass
+
+    @property
+    def _args(self) -> CommonParameterWidgetArgs:
+        return cast(CommonParameterWidgetArgs, super()._args)
+
+    def set_label(self, label: str):
+        if not label:
+            self._label_widget.setText("")
+            self._label_widget.hide()
+        else:
+            self._label_widget.setText(label)
+            self._label_widget.show()
+
+    def get_label(self) -> str:
+        return self._label_widget.text()
+
+    def set_description(self, desc: str):
+        if not desc:
+            self._description_widget.setText("")
+            self._description_widget.hide()
+        else:
+            self._description_widget.setText(desc)
+            self._description_widget.show()
+
+    def get_description(self) -> str:
+        return self._description_widget.text()
+
+    def _setup_default_widget(self):
+        if self._args.default_widget_text is None:
+            text = "{}"
+        else:
+            text = self._args.default_widget_text
+        self._default_widget.setText(text.format(self._args.default))
+        # noinspection PyUnresolvedReferences
+        self._default_widget.toggled.connect(self._on_default_widget_state_changed)
+        self._default_widget.setHidden(self._args.hide_default_widget)
+
+    def _setup_label_widget(self):
+        self._label_widget.setWordWrap(True)
+        self._label_widget.setAlignment(
+            Qt.AlignmentFlag.AlignLeading
+            | Qt.AlignmentFlag.AlignLeft
+            | Qt.AlignmentFlag.AlignTop
+        )
+
+    def _setup_description_widget(self):
+        self._description_widget.setWordWrap(True)
+        self._description_widget.setAlignment(
+            Qt.AlignmentFlag.AlignLeading
+            | Qt.AlignmentFlag.AlignLeft
+            | Qt.AlignmentFlag.AlignTop
+        )
+
+    def _on_default_widget_state_changed(self, checked: bool):
+        if self._args.hide_default_widget:
             return
-        self._use_default_checkbox.setChecked(True)
+        self._center_widget.setEnabled(not checked)
 
-    def _unset_use_default(self):
-        self._use_default_checkbox.setChecked(False)
+    def _setup_layout(self):
+        cls = self.__class__
+        self.setLayout(self._layout)
+
+        self._layout.setObjectName(cls.OBJ_ID_LAYOUT)
+        self._label_widget.setObjectName(cls.OBJ_ID_LABEL_WIDGET)
+        self._description_widget.setObjectName(cls.OBJ_ID_DESCRIPTION_WIDGET)
+        self._center_widget.setObjectName(cls.OBJ_ID_CENTER_WIDGET)
+        self._default_widget.setObjectName(cls.OBJ_ID_DEFAULT_WIDGET)
+
+        self._layout.setContentsMargins(0, 0, 0, 0)
+        self._layout.addWidget(self._label_widget)
+        self._layout.addWidget(self._center_widget)
+        self._layout.addWidget(self._default_widget)
+        self._layout.addWidget(self._description_widget)
+        if self._args.separate_line:
+            line = self._create_separate_line()
+            self._layout.addWidget(line)
+        spacer = QSpacerItem(
+            0, 0, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding
+        )
+        self._layout.addSpacerItem(spacer)
+
+    def _is_use_default(self) -> bool:
+        if self._args.hide_default_widget or self._default_widget.isHidden():
+            return False
+        return self._default_widget.isChecked()
+
+    def _use_default(self):
+        if self._args.hide_default_widget or self._default_widget.isHidden():
+            return
+        self._default_widget.setChecked(True)
+
+    def _unuse_default(self):
+        if self._args.hide_default_widget or self._default_widget.isHidden():
+            return
+        self._default_widget.setChecked(False)
 
     def _pre_set_value(self, value: Any) -> bool:
-        if value is None:
-            if self.default is None:
-                self._set_use_default()
-                return False
-            else:
-                raise InvalidValueError(
-                    self.tr(
-                        "invalid value: value cannot be None unless default value is None"
-                    )
-                )
+        if value is None and self._args.default is not None:
+            raise ValueError(
+                f"value cannot be None unless the default value is set to None(default={self.default})"
+            )
 
-        if value == self.default:
-            self._set_use_default()
+        if value is None and self._args.default is None:
+            self._use_default()
+            return False
+
+        if value == self._args.default:
+            self._use_default()
         else:
-            self._unset_use_default()
+            self._unuse_default()
         return True
+
+    def _create_separate_line(self) -> QFrame:
+        separate_line = QFrame(self)
+        separate_line.setObjectName(self.__class__.OBJ_ID_SEPARATE_LINE)
+        separate_line.setFrameShape(QFrame.Shape.HLine)
+        separate_line.setFrameShadow(QFrame.Shadow.Sunken)
+        return separate_line

@@ -96,7 +96,7 @@ class ExampleContext(object):
             widget = item.widget()
             if not isinstance(widget, BaseParameterWidget):
                 continue
-            values[widget.get_label()] = widget.get_value()
+            values[widget.parameter_name] = widget.get_value()
         msg = "current parameter values:\n\n"
         for key, value in values.items():
             msg += f"{key}: {value}\n"

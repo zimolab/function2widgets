@@ -53,9 +53,9 @@ pip install function2widgets
 
 单行输入框，用于输入字符串、数字等，包含：`LineEdit`、`IntLineEdit`、`FloatLineEdit`等具体实现。
 
-源码参考：[function2widgets.widgets.lineedit](./function2widgets/widgets/lineedit.py)
+源码参考：[function2widgets.widgets.lineedit](function2widgets/widgets/lineedit/stredit.py)
 
-例子参考：[examples/lineedits/](./examples/lineedits/)
+例子参考：[examples/lineedits/](examples/lineedit/)
 
 文档参考：[lineedits.md](./docs/lineedits)
 
@@ -65,7 +65,7 @@ pip install function2widgets
 
 源码参考：[function2widgets.widgets.numberedit](./function2widgets/widgets/numberedit.py)
 
-例子参考：[examples/numberedits/](./examples/numberedits/)
+例子参考：[examples/numberedits/](examples/numberinput/)
 
 文档参考：[numberedits.md](./docs/numberedits.md)
 
@@ -76,7 +76,7 @@ pip install function2widgets
 
 源码参考：[function2widgets.widgets.pathedit](./function2widgets/widgets/pathedit.py)
 
-例子参考：[examples/pathedits/](./examples/pathedits/)
+例子参考：[examples/pathedits/](examples/pathedit/)
 
 文档参考：[pathedits.md](./docs/pathedits.md)
 
@@ -84,9 +84,9 @@ pip install function2widgets
 
 选择组件，包含：`IntEdit`、`FloatEdit`等具体实现。
 
-源码参考：[function2widgets.widgets.selectwidget](./function2widgets/widgets/selectwidget.py)
+源码参考：[function2widgets.widgets.selectwidget](function2widgets/widgets/selectwidget/selectwidget.py)
 
-例子参考：[examples/selectwidgets/](./examples/selectwidgets/)
+例子参考：[examples/selectwidgets/](examples/selectwidget/)
 
 文档参考：[selectwidgets.md](./docs/selectwidgets.md)
 
@@ -96,7 +96,7 @@ pip install function2widgets
 
 源码参考：[function2widgets.widgets.textedit](./function2widgets/widgets/textedit.py)
 
-例子参考：[examples/textedits/](./examples/textedits/)
+例子参考：[examples/textedits/](examples/textedit/)
 
 文档参考：[textedits.md](./docs/textedits.md)
 
@@ -104,9 +104,9 @@ pip install function2widgets
 
 基于QsciScintilla实现的代码编辑器组件，包含：`CodeEdit`、`PythonCodeEdit`等具体实现。
 
-源码参考：[function2widgets.widgets.codeeditor](./function2widgets/widgets/codeeditor.py)
+源码参考：[function2widgets.widgets.codeeditor](function2widgets/widgets/editor/codeeditor.py)
 
-例子参考：[examples/codeeditors/](./examples/codeeditors/)
+例子参考：[examples/codeeditors/](examples/codeeditor/)
 
 文档参考：[codeeditors.md](./docs/codeeditors.md)
 

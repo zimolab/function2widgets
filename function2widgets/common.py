@@ -1,8 +1,14 @@
 import ast
 import logging
 import os.path
+import re
 import warnings
-from typing import Any, Optional
+from typing import Any, Optional, List, Dict
+
+import tomli
+
+
+TYPING_ANNOTATION_PATTERN = re.compile(r"^(typing\..+?)(\[.+])*$")
 
 
 class NotRegisteredError(Exception):
@@ -64,3 +70,29 @@ def safe_eval(literal: str) -> str:
         # warnings.warn(f"failed to eval {literal}: {e}")
         logging.debug(f"failed to eval {literal}: {e}, return as is instead")
         return str(literal)
+
+
+def load_toml(toml_str: str, error_on_fail: bool = True) -> Dict[str, Any]:
+    try:
+        return tomli.loads(toml_str)
+    except BaseException as e:
+        if error_on_fail:
+            raise e
+        return {}
+
+
+def parse_type_info(annotation_str: str) -> (str, Optional[List[str]]):
+    annotation_str = annotation_str.strip()
+    result = re.match(TYPING_ANNOTATION_PATTERN, annotation_str)
+    if not result:
+        return annotation_str, None
+    typename = result.group(1).strip()
+    if result.group(2):
+        type_extras = result.group(2).strip()
+        type_extras = remove_prefix(type_extras, "[")
+        type_extras = remove_suffix(type_extras, "]")
+        type_extras = type_extras.strip()
+        type_extras = [safe_eval(x) for x in type_extras.split(",")]
+    else:
+        type_extras = None
+    return typename, type_extras

@@ -1,5 +1,6 @@
 import abc
-from typing import Any, Optional
+import dataclasses
+from typing import Any, Optional, Type, Dict
 
 from PyQt6.QtWidgets import QWidget
 
@@ -8,65 +9,104 @@ class InvalidValueError(ValueError):
     pass
 
 
+@dataclasses.dataclass(frozen=True)
+class WidgetArgs(object):
+    parameter_name: str
+    default: Any
+    label: Optional[str]
+    description: Optional[str]
+    stylesheet: Optional[str]
+    set_default_on_init: Optional[bool]
+    hide_default_widget: Optional[bool]
+    default_widget_text: Optional[str]
+
+    @classmethod
+    def new(cls, kwargs: Dict[str, Any]) -> "WidgetArgs":
+        return cls(**kwargs)
+
+
 class BaseParameterWidget(QWidget):
     """
-    参数控件基类：函数参数所对应的控件类型均必须继承自此类，用于实现参数控件的通用功能
+    base class of all parameter widgets
     """
 
-    SET_DEFAULT_ON_INIT: bool = False
+    SET_DEFAULT_ON_INIT: bool = True
+    HIDE_DEFAULT_WIDGET: bool = False
 
-    def __init__(
-        self,
-        default: Any,
-        stylesheet: Optional[str],
-        set_default_on_init: Optional[bool],
-        parent: Optional[QWidget],
-    ):
+    _WidgetArgsClass = WidgetArgs
+
+    def __init__(self, args: WidgetArgs, parent: Optional[QWidget]):
         super().__init__(parent)
-        self._default = default
-        self._parameter_name: Optional[str] = None
-        if set_default_on_init is None:
-            self._set_default_on_init = self.SET_DEFAULT_ON_INIT
-        else:
-            self._set_default_on_init = set_default_on_init
 
-        if stylesheet is not None:
-            self.setStyleSheet(stylesheet)
+        """
+        Note:
+        1. if 'set_default_on_init' is None, it will be set to class field SET_DEFAULT_ON_INIT
+        2. if 'hide_default_widget' is None, it will be set to class field HIDE_DEFAULT_WIDGET
+        3. 'set_default_on_init' will be set to True if 'default' is not None and 'hide_default_widget' is True
+        4. 'hide_default_widget' will be set to False if 'default' is None
+        5. 'label' will be set to 'parameter_name', if it is set to None
+        """
+        # 1
+        if args.set_default_on_init is None:
+            set_default_on_init = self.__class__.SET_DEFAULT_ON_INIT
+        else:
+            set_default_on_init = args.set_default_on_init
+        # 2
+        if args.hide_default_widget is None:
+            hide_default_widget = self.__class__.HIDE_DEFAULT_WIDGET
+        else:
+            hide_default_widget = args.hide_default_widget
+        # 3
+        if args.default is not None and hide_default_widget is True:
+            set_default_on_init = True
+        # 4
+        if args.default is None:
+            hide_default_widget = False
+        # 5
+        if args.label is None:
+            label = args.parameter_name
+        else:
+            label = args.label
+
+        self.__args = dataclasses.replace(
+            args,
+            label=label,
+            set_default_on_init=set_default_on_init,
+            hide_default_widget=hide_default_widget,
+        )
+
+        if self.__args.stylesheet is not None:
+            self.setStyleSheet(self.__args.stylesheet)
+
+    @property
+    def _args(self) -> WidgetArgs:
+        """
+        this is for internal use, do not access in user code
+        :return:
+        """
+        return self.__args
 
     @property
     def parameter_name(self) -> Optional[str]:
         """
-        获取参数名称
+        get the parameter name
         :return:
         """
-        return self._parameter_name
-
-    @parameter_name.setter
-    def parameter_name(self, parameter_name: Optional[str]):
-        """
-        设置参数名称
-        :param parameter_name:
-        :return:
-        """
-        self._parameter_name = parameter_name
+        return self._args.parameter_name
 
     @abc.abstractmethod
-    def get_value(self, *args, **kwargs) -> Any:
+    def get_value(self) -> Any:
         """
-        抽象方法：获取参数值
-        :param args:
-        :param kwargs:
+        abstract method: get the value of the parameter
         :return:
         """
         pass
 
     @abc.abstractmethod
-    def set_value(self, value: Any, *args, **kwargs):
+    def set_value(self, value: Any):
         """
-        抽象方法：设置参数值
+        abstract method: get the value to the parameter
         :param value:
-        :param args:
-        :param kwargs:
         :return:
         """
         pass
@@ -74,59 +114,49 @@ class BaseParameterWidget(QWidget):
     @property
     def default(self) -> Any:
         """
-        获取参数默认值
+        get the default value of the parameter
         :return:
         """
-        return self._default
+        return self._args.default
 
     @abc.abstractmethod
-    def set_label(self, label_text: str):
+    def set_label(self, label: Optional[str]):
         """
-        设置参数标签文本
-        :param label_text:
+        set the label of the parameter
+        :param label:
         :return:
         """
         pass
 
     @abc.abstractmethod
-    def get_label(self) -> str:
+    def get_label(self) -> Optional[str]:
         """
-        获取参数标签文本
+        get the label of the parameter
         :return:
         """
         pass
 
     @abc.abstractmethod
-    def set_docstring(self, docstring: str):
+    def set_description(self, desc: Optional[str]):
         """
-        设置参数文档字符串
-        :param docstring:
+        set the description of the parameter
+        :param desc:
         :return:
         """
         pass
 
     @abc.abstractmethod
-    def get_docstring(self) -> str:
+    def get_description(self) -> Optional[str]:
         """
-        获取参数文档字符串
+        get the description of the parameter
         :return:
         """
         pass
 
-    @abc.abstractmethod
-    def show_label(self, show: bool):
+    @classmethod
+    def widget_args_class(cls) -> Type[WidgetArgs]:
         """
-        设置是否显示参数的标签
-        :param show:
+        get the WidgetArgs class which can be used to initialize the parameter widget
         :return:
         """
-        pass
-
-    @abc.abstractmethod
-    def show_docstring(self, show: bool):
-        """
-        设置是否显示参数的文档字符串、
-        :param show:
-        :return:
-        """
-        pass
+        return cls._WidgetArgsClass
