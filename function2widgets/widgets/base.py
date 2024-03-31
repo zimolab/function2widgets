@@ -9,8 +9,6 @@ from PyQt6.QtWidgets import (
     QLabel,
     QCheckBox,
     QVBoxLayout,
-    QSpacerItem,
-    QSizePolicy,
     QFrame,
 )
 
