@@ -13,7 +13,7 @@ from function2widgets.widgets.base import (
 class ComboBoxEditArgs(CommonParameterWidgetArgs):
     parameter_name: str
     default: Optional[str] = None
-    items: List[str] = None
+    items: List[str] = dataclasses.field(default_factory=list)
 
 
 class ComboBoxEdit(CommonParameterWidget):
@@ -23,7 +23,7 @@ class ComboBoxEdit(CommonParameterWidget):
     _WidgetArgsClass = ComboBoxEditArgs
 
     def __init__(self, args: ComboBoxEditArgs, parent: Optional[QWidget] = None):
-        if not args.items:
+        if args.items is None:
             raise ValueError(f"items must be specified")
 
         self._value_widget: Optional[QComboBox] = None

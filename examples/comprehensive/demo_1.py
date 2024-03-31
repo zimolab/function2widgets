@@ -3,7 +3,21 @@ from function2widgets.factory import ParameterWidgetFactory
 from function2widgets.parser.function_parser import FunctionInfoParser
 
 
-def demo1(a: int, b: float, c: bool, d: str, e: list, f: tuple, g: dict, h: any):
+def demo1(
+    a: int, b: float, c: bool, d: str, e: list, f: tuple, g: dict = None, h: any = 100
+):
+    """
+
+    :param a:  param a
+    :param b:  <b>param b</b><br><font color=red><b>rich text here</b></font>
+    :param c:
+    :param d:
+    :param e:
+    :param f:
+    :param g:
+    :param h:
+    :return:
+    """
     pass
 
 

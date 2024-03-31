@@ -10,6 +10,7 @@ from function2widgets.widgets.lineedit.stredit import LineEditArgs, LineEdit
 
 @dataclasses.dataclass(frozen=True)
 class FloatLineEditArgs(LineEditArgs):
+    parameter_name: str
     default: Optional[float] = 0.0
     max_value: Optional[float] = None
     min_value: Optional[float] = None

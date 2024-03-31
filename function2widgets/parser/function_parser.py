@@ -1,4 +1,3 @@
-import dataclasses
 import inspect
 import typing
 from collections import OrderedDict
@@ -42,7 +41,7 @@ DEFAULT_WIDGET_TYPES = {
 
 
 TYPENAME_FOR_EMPTY = "any"
-DEFAULT_FOR_EMPTY = None
+DEFAULT_FOR_EMPTY = inspect.Parameter.empty
 FALLBACK_WIDGET_TYPE = DEFAULT_WIDGET_TYPES["any"]
 
 DEFAULT_WIDGET_FOR_LITERALS = ComboBox.__name__
@@ -158,9 +157,10 @@ class FunctionInfoParser(object):
             else:
                 widget_class = ComboBoxEdit.__name__
                 widget_args["items"] = []
-
+        # set common args for all widgets
         widget_args["parameter_name"] = param_info.name
-        widget_args["default"] = param_info.default
+        if param_info.default is not DEFAULT_FOR_EMPTY:
+            widget_args["default"] = param_info.default
         widget_args["label"] = param_info.name
         widget_args["description"] = param_info.description
         widget_args["stylesheet"] = None

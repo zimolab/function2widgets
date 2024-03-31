@@ -20,6 +20,7 @@ ECHO_MODES = {
 
 @dataclasses.dataclass(frozen=True)
 class LineEditArgs(CommonParameterWidgetArgs):
+    parameter_name: str
     default: Optional[str] = ""
     placeholder: Optional[str] = ""
     clear_button: bool = False

@@ -3,7 +3,7 @@ from typing import Dict, Any
 
 from function2widgets.common import load_toml
 
-WIDGET_CONFIGS_START_TAG = "@begin"
+WIDGET_CONFIGS_START_TAG = "@widgets"
 WIDGET_CONFIGS_END_TAG = "@end"
 
 WIDGET_CONFIGS_BLOCK_PATTERN = (
