@@ -79,17 +79,3 @@ class ParameterWidgetFactory(object):
         widget_args_class: Type[WidgetArgs] = widget_class.widget_args_class()
         widget_args = widget_args_class.new(kwargs=kwargs)
         return widget_class(args=widget_args, parent=None)
-
-
-if __name__ == "__main__":
-
-    def a(arg1: int, arg2: str):
-        pass
-
-    app = QApplication([])
-
-    p = FunctionInfoParser()
-    info = p.parse(a)
-    f = ParameterWidgetFactory()
-    widgets = f.create_widgets_for_function(info)
-    print(widgets)
