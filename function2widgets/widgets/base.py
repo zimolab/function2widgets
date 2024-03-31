@@ -157,10 +157,10 @@ class CommonParameterWidget(BaseParameterWidget):
         if self._args.separate_line:
             line = self._create_separate_line()
             self._layout.addWidget(line)
-        spacer = QSpacerItem(
-            0, 0, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding
-        )
-        self._layout.addSpacerItem(spacer)
+        # spacer = QSpacerItem(
+        #     0, 0, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding
+        # )
+        # self._layout.addSpacerItem(spacer)
 
     def _is_use_default(self) -> bool:
         if self._args.hide_default_widget or self._default_widget.isHidden():
