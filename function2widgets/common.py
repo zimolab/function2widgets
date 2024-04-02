@@ -3,10 +3,11 @@ import logging
 import os.path
 import re
 import warnings
+from datetime import datetime
 from typing import Any, Optional, List, Dict
 
 import tomli
-
+from PyQt6.QtCore import QDateTime, QDate, QTime
 
 TYPING_ANNOTATION_PATTERN = re.compile(r"^(typing\..+?)(\[.+])*$")
 
@@ -96,3 +97,15 @@ def parse_type_info(annotation_str: str) -> (str, Optional[List[str]]):
     else:
         type_extras = None
     return typename, type_extras
+
+
+def to_datetime(datetime_str: str, datetime_format: str) -> QDateTime:
+    return QDateTime.fromString(datetime_str, datetime_format)
+
+
+def to_date(date_str: str, date_format: str) -> QDate:
+    return QDate.fromString(date_str, date_format)
+
+
+def to_time(time_str: str, time_format: str) -> QTime:
+    return QTime.fromString(time_str, time_format)

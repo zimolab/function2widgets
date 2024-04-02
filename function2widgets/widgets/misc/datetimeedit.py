@@ -9,6 +9,7 @@ from function2widgets.widgets.base import (
     CommonParameterWidget,
     CommonParameterWidgetArgs,
 )
+from function2widgets.common import to_datetime
 
 DEFAULT_DISPLAY_FORMAT = "yyyy/M/d H:mm"
 
@@ -30,9 +31,9 @@ DEFAULT_TIME_SPEC = TIME_SPEC_TIMEZONE
 @dataclasses.dataclass(frozen=True)
 class DateTimeEditArgs(CommonParameterWidgetArgs):
     parameter_name: str
-    default: Optional[datetime] = datetime.now()
-    min_datetime: Optional[datetime] = None
-    max_datetime: Optional[datetime] = None
+    default: Union[datetime, QDateTime, str, None] = datetime.now()
+    min_datetime: Union[datetime, QDateTime, str, None] = None
+    max_datetime: Union[datetime, QDateTime, str, None] = None
     display_format: str = DEFAULT_DISPLAY_FORMAT
     calendar_popup: bool = False
     time_spec: str = DEFAULT_TIME_SPEC
@@ -59,9 +60,8 @@ class DateTimeEdit(CommonParameterWidget):
     def setup_center_widget(self, center_widget: QWidget):
         self._value_widget = QDateTimeEdit(center_widget)
 
-        display_format = self._args.display_format
-        if display_format:
-            self._value_widget.setDisplayFormat(display_format)
+        display_format = self._args.display_format or DEFAULT_DISPLAY_FORMAT
+        self._value_widget.setDisplayFormat(display_format)
 
         calendar_popup = self._args.calendar_popup
         self._value_widget.setCalendarPopup(calendar_popup is True)
@@ -73,10 +73,14 @@ class DateTimeEdit(CommonParameterWidget):
         self._value_widget.setTimeSpec(time_spec)
 
         max_datetime = self._args.max_datetime
+        if isinstance(max_datetime, str) and max_datetime:
+            max_datetime = to_datetime(max_datetime, display_format)
         if max_datetime:
             self._value_widget.setMaximumDateTime(QDateTime(max_datetime))
 
         min_datetime = self._args.min_datetime
+        if isinstance(min_datetime, str) and min_datetime:
+            min_datetime = to_datetime(min_datetime, display_format)
         if min_datetime:
             self._value_widget.setMinimumDateTime(QDateTime(min_datetime))
 
@@ -87,16 +91,21 @@ class DateTimeEdit(CommonParameterWidget):
         center_widget_layout.addWidget(self._value_widget)
 
     def set_value(self, value: Union[datetime, QDateTime, None]):
-        if not isinstance(value, (datetime, QDateTime)) and value is not None:
-            raise TypeError(f"value must be datetime or QDateTime, got {type(value)}")
-        if isinstance(value, datetime):
-            value = QDateTime(value)
+        if not isinstance(value, (datetime, QDateTime, str)) and value is not None:
+            raise TypeError(
+                f"value must be datetime or QDateTime or a datetime string, got {type(value)}"
+            )
+        # if isinstance(value, datetime):
+        #     value = QDateTime(value)d
+        display_format = self._args.display_format or DEFAULT_DISPLAY_FORMAT
+        if isinstance(value, str):
+            value = to_datetime(value, display_format)
         super().set_value(value)
 
     def get_value(self) -> Optional[datetime]:
         return super().get_value()
 
-    def set_value_to_widget(self, value: QDateTime):
+    def set_value_to_widget(self, value: Union[datetime, QDateTime]):
         self._value_widget.setDateTime(value)
 
     def get_value_from_widget(self) -> datetime:

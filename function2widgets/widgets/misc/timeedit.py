@@ -5,22 +5,23 @@ from typing import Optional, cast, Union
 from PyQt6.QtCore import Qt, QTime
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QTimeEdit
 
+from function2widgets.common import to_time
 from function2widgets.widgets.base import (
     CommonParameterWidget,
     CommonParameterWidgetArgs,
 )
 from function2widgets.widgets.misc.datetimeedit import DEFAULT_TIME_SPEC, TIME_SPECS
 
-DEFAULT_DISPLAY_FORMAT = "H:mm"
+DEFAULT_DISPLAY_FORMAT = "HH:mm"
 
 
 @dataclasses.dataclass(frozen=True)
 class TimeEditArgs(CommonParameterWidgetArgs):
     parameter_name: str
-    default: Optional[time] = datetime.now().time()
+    default: Union[time, QTime, str, None] = datetime.now().time()
     display_format: str = DEFAULT_DISPLAY_FORMAT
-    min_time: Optional[time] = None
-    max_time: Optional[time] = None
+    min_time: Union[time, QTime, str, None] = None
+    max_time: Union[time, QTime, str, None] = None
     time_spec: str = DEFAULT_TIME_SPEC
 
 
@@ -45,9 +46,8 @@ class TimeEdit(CommonParameterWidget):
     def setup_center_widget(self, center_widget: QWidget):
         self._value_widget = QTimeEdit(center_widget)
 
-        display_format = self._args.display_format
-        if display_format:
-            self._value_widget.setDisplayFormat(display_format)
+        display_format = self._args.display_format or DEFAULT_DISPLAY_FORMAT
+        self._value_widget.setDisplayFormat(display_format)
 
         time_spec = self._args.time_spec
         if not time_spec:
@@ -56,10 +56,14 @@ class TimeEdit(CommonParameterWidget):
         self._value_widget.setTimeSpec(time_spec)
 
         min_time = self._args.min_time
+        if isinstance(min_time, str) and min_time:
+            min_time = to_time(min_time, display_format)
         if min_time:
             self._value_widget.setMinimumTime(min_time)
 
         max_time = self._args.max_time
+        if isinstance(max_time, str) and max_time:
+            max_time = to_time(max_time, display_format)
         if max_time:
             self._value_widget.setMaximumTime(max_time)
 
@@ -70,8 +74,13 @@ class TimeEdit(CommonParameterWidget):
         center_widget_layout.addWidget(self._value_widget)
 
     def set_value(self, value: Union[time, QTime, None]):
-        if not isinstance(value, (time, QTime)) and value is not None:
-            raise TypeError(f"value must be time or QTime, got {type(value)}")
+        if not isinstance(value, (time, QTime, str)) and value is not None:
+            raise TypeError(
+                f"value must be time or QTime or a time string, got {type(value)}"
+            )
+        display_format = self._args.display_format or DEFAULT_DISPLAY_FORMAT
+        if isinstance(value, str):
+            value = to_time(value, display_format)
         super().set_value(value)
 
     def get_value(self) -> Optional[time]:

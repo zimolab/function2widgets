@@ -5,6 +5,7 @@ from typing import Optional, cast, Union
 from PyQt6.QtCore import Qt, QDate
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QDateEdit
 
+from function2widgets.common import to_date
 from function2widgets.widgets.base import (
     CommonParameterWidget,
     CommonParameterWidgetArgs,
@@ -17,10 +18,10 @@ DEFAULT_DISPLAY_FORMAT = "yyyy/M/d"
 @dataclasses.dataclass(frozen=True)
 class DateEditArgs(CommonParameterWidgetArgs):
     parameter_name: str
-    default: Optional[date] = datetime.now().date()
+    default: Union[date, QDate, str, None] = datetime.now().date()
     display_format: str = DEFAULT_DISPLAY_FORMAT
-    min_date: Optional[date] = None
-    max_date: Optional[date] = None
+    min_date: Union[date, QDate, str, None] = None
+    max_date: Union[date, QDate, str, None] = None
     calendar_popup: bool = False
     time_spec: str = DEFAULT_TIME_SPEC
 
@@ -46,9 +47,8 @@ class DateEdit(CommonParameterWidget):
     def setup_center_widget(self, center_widget: QWidget):
         self._value_widget = QDateEdit(center_widget)
 
-        display_format = self._args.display_format
-        if display_format:
-            self._value_widget.setDisplayFormat(display_format)
+        display_format = self._args.display_format or DEFAULT_DISPLAY_FORMAT
+        self._value_widget.setDisplayFormat(display_format)
 
         time_spec = self._args.time_spec
         if not time_spec:
@@ -57,10 +57,14 @@ class DateEdit(CommonParameterWidget):
         self._value_widget.setTimeSpec(time_spec)
 
         min_date = self._args.min_date
+        if isinstance(min_date, str) and min_date:
+            min_date = to_date(min_date, display_format)
         if min_date:
             self._value_widget.setMinimumDate(min_date)
 
         max_date = self._args.max_date
+        if isinstance(max_date, str) and max_date:
+            max_date = to_date(max_date, display_format)
         if max_date:
             self._value_widget.setMaximumDate(max_date)
 
@@ -73,8 +77,13 @@ class DateEdit(CommonParameterWidget):
         center_widget_layout.addWidget(self._value_widget)
 
     def set_value(self, value: Union[date, QDate, None]):
-        if not isinstance(value, (date, QDate)) and value is not None:
-            raise TypeError(f"value must be date or QDate, got {type(value)}")
+        if not isinstance(value, (date, QDate, str)) and value is not None:
+            raise TypeError(
+                f"value must be date or QDate or a date string, got {type(value)}"
+            )
+        display_format = self._args.display_format or DEFAULT_DISPLAY_FORMAT
+        if isinstance(value, str):
+            value = to_date(value, display_format)
         super().set_value(value)
 
     def get_value(self) -> Optional[date]:

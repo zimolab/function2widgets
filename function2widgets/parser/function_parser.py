@@ -1,6 +1,7 @@
 import inspect
 import typing
 from collections import OrderedDict
+from datetime import datetime, date, time
 from typing import Any
 
 from function2widgets.info import (
@@ -22,6 +23,9 @@ from function2widgets.widgets import (
     ComboBox,
     JsonEditor,
     ComboBoxEdit,
+    DateTimeEdit,
+    DateEdit,
+    TimeEdit,
 )
 
 DEFAULT_WIDGET_TYPES = {
@@ -32,7 +36,9 @@ DEFAULT_WIDGET_TYPES = {
     list.__name__: ListEditor.__name__,
     tuple.__name__: TupleEditor.__name__,
     dict.__name__: DictEditor.__name__,
-    str(typing.Literal): ComboBox.__name__,
+    datetime.__name__: DateTimeEdit.__name__,
+    date.__name__: DateEdit.__name__,
+    time.__name__: TimeEdit.__name__,
     str(typing.Union): JsonEditor.__name__,
     str(typing.Optional): JsonEditor.__name__,
     str(typing.Any): JsonEditor.__name__,
