@@ -11,7 +11,7 @@ if __name__ == "__main__":
             display_current_value=False,
         )
         editor = DictEditor(args)
-        editor.set_value([1, 2, 3])
+        # editor.set_value([1, 2, 3])
 
         args_2 = DictEditorArgs(
             parameter_name="arg2",
