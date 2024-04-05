@@ -21,6 +21,7 @@ if __name__ == "__main__":
         )
 
         editor2 = ListEditor(args_2)
+        # editor2.set_value({})
 
         # add parameter widgets to the layout
         ctx.add_widget(editor)

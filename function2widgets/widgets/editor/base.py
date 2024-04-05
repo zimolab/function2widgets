@@ -111,7 +111,7 @@ class BaseCodeEditor(CommonParameterWidget):
 
         self._value_widget: Optional[QPushButton] = None
         self._display_widget: Optional[QPlainTextEdit] = None
-        self._display_widget_text_tpl: str = QApplication.tr("{}")
+        self._display_widget_text_tpl: str = "{}"
 
         self._current_value = args.default
 
@@ -158,7 +158,8 @@ class BaseCodeEditor(CommonParameterWidget):
         return super().get_value()
 
     def set_value(self, value: Any):
-        self._update_current_value_display(value)
+        if self._args.display_current_value:
+            self._update_current_value_display(value)
         super().set_value(value)
 
     def get_value_from_widget(self) -> Any:

@@ -125,3 +125,15 @@ class JsonEditor(BaseCodeEditor):
 
     def fetch_result_from_dialog(self, dialog: JsonEditorDialog):
         return dialog.current_value
+
+    def set_value(self, value: Any):
+        if not isinstance(value, self._args.top_level_types):
+            raise InvalidValueError(
+                self.tr(
+                    f"value '{value}' is not one of the following types: {self._args.top_level_types}"
+                )
+            )
+        super().set_value(value)
+
+    def get_value(self) -> Any:
+        return super().get_value()

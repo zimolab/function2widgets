@@ -45,7 +45,7 @@ class CodeEditor(BaseCodeEditor):
     def get_value(self) -> Optional[str]:
         return super().get_value()
 
-    def set_value(self, value: Optional[str], *args, **kwargs):
+    def set_value(self, value: Optional[str]):
         if value is not None and not isinstance(value, str):
             raise ValueError(self.tr(f"value must be str, got {type(value)}"))
         super().set_value(value)
