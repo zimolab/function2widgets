@@ -4,7 +4,7 @@ from typing import Type, Any, Dict, Optional
 
 from PyQt6 import Qsci
 from PyQt6.Qsci import QsciScintilla, QsciLexer
-from PyQt6.QtGui import QFont
+from PyQt6.QtGui import QFont, QColor
 
 AUTO_INDENT = True
 INDENT_WIDTH = 4
@@ -15,7 +15,7 @@ WRAP_MODE = "WrapWord"
 FOLD_STYLE = "BoxTree"
 FONT = "Consolas"
 FONT_SIZE = 12
-
+ENABLE_LINE_NUMBER = True
 
 DEFAULT_CONFIGS = {
     "AutoIndent": AUTO_INDENT,
@@ -30,6 +30,7 @@ DEFAULT_CONFIGS = {
     "Folding": FOLD_STYLE,
     "Font": "Consolas",
     "_FontSize": FONT_SIZE,
+    "ShowLineNumber": ENABLE_LINE_NUMBER,
 }
 
 
@@ -82,7 +83,7 @@ class _CodeEditConfigurator(object):
         self._target = target
         self._raise_exception = raise_exception
 
-        self.configvalue_mappers = {
+        self.config_value_mappers = {
             "EolMode": self.map_eol_mode,
             "WrapMode": self.map_wrap_mode,
             "Lexer": self.map_lexer,
@@ -92,28 +93,29 @@ class _CodeEditConfigurator(object):
         }
 
     def apply_configs(self, configs: Dict[str, Any]):
-        for configname, configvalue in configs.items():
-            if configname.startswith("_"):
+        for config_name, config_value in configs.items():
+            if config_name.startswith("_"):
                 continue
-            if configname not in self.configvalue_mappers:
-                self.apply_config(configname, configvalue)
+            if config_name not in self.config_value_mappers:
+                self.apply_config(config_name, config_value)
                 continue
-            map_func = self.configvalue_mappers[configname]
-            configvalue = map_func(configvalue, configs)
-            self.apply_config(configname, configvalue)
 
-    def apply_config(self, configname: str, configvalue: Any):
-        if configvalue is None:
+            map_func = self.config_value_mappers[config_name]
+            config_value = map_func(config_value, configs)
+            self.apply_config(config_name, config_value)
+
+    def apply_config(self, config_name: str, config_value: Any):
+        if config_value is None:
             return
-        config_func = getattr(self._target, f"set{configname}", None)
+        config_func = getattr(self._target, f"set{config_name}", None)
         if not callable(config_func):
-            message = f"unknown config: {configname}"
+            message = f"unknown config: {config_name}"
             if self._raise_exception:
                 raise ValueError(message)
             else:
-                warnings.warn(f"unknown config: {configname}")
+                warnings.warn(f"unknown config: {config_name}")
             return
-        config_func(configvalue)
+        config_func(config_value)
 
     def map_eol_mode(
         self, raw_value: str, configs: dict = None
@@ -155,26 +157,15 @@ class _SourceCodeEdit(QsciScintilla):
         self._configurator = _CodeEditConfigurator(self)
         self.apply_configs(configs)
 
+    # noinspection PyPep8Naming
+    def setShowLineNumber(self, show: bool):
+        if show:
+            self.setMarginsFont(QFont("Courier New", 10))  # 行号字体
+            self.setMarginLineNumbers(0, True)  # 设置标号为0的页边显示行号
+            self.setMarginWidth(0, "0000")  # 行号宽度
+            self.setMarkerForegroundColor(QColor("#FFFFFF"), 0)
+        else:
+            self.setMarginLineNumbers(0, False)  # 设置标号为0的页边显示行号
+
     def apply_configs(self, configs: dict):
         self._configurator.apply_configs(configs)
-
-
-def __test_main():
-    from PyQt6.QtWidgets import QApplication
-
-    print(_all_lexers())
-
-    my_configs = DEFAULT_CONFIGS.copy()
-    my_configs["EolMode"] = "Windows"
-    my_configs["Lexer"] = "JSON"
-
-    app = QApplication([])
-    code_edit = _SourceCodeEdit(configs=my_configs)
-    code_edit.resize(800, 600)
-    code_edit.show()
-
-    app.exec()
-
-
-if __name__ == "__main__":
-    __test_main()
