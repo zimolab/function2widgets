@@ -3,6 +3,7 @@ from typing import Optional, List, cast
 
 from PyQt6.QtWidgets import QWidget, QButtonGroup, QGridLayout, QRadioButton
 
+from function2widgets.widget import InvalidValueError
 from function2widgets.widgets.base import (
     CommonParameterWidget,
     CommonParameterWidgetArgs,
@@ -82,7 +83,7 @@ class RadioButtonGroup(CommonParameterWidget):
             return
 
         if value is not None and value not in self._args.items:
-            raise ValueError(f"value must be one of {self._args.items}")
+            raise InvalidValueError(f"value must be one of {self._args.items}")
         super().set_value(value)
 
     def set_value_to_widget(self, value: str):

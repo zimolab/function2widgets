@@ -3,6 +3,7 @@ from typing import Optional, List, cast
 
 from PyQt6.QtWidgets import QWidget, QGridLayout, QCheckBox
 
+from function2widgets.widget import InvalidValueError
 from function2widgets.widgets.base import (
     CommonParameterWidget,
     CommonParameterWidgetArgs,
@@ -73,8 +74,8 @@ class CheckBoxGroup(CommonParameterWidget):
                 checkbox.setChecked(False)
 
     def set_value(self, value: Optional[List[str]]):
-        if value is not None and not isinstance(value, list):
-            raise ValueError(f"value must be a list, got {type(value)}")
+        if not isinstance(value, list) and value is not None:
+            raise InvalidValueError(f"value must be a list, got {type(value)}")
         super().set_value(value)
 
     def get_value(self) -> Optional[List[str]]:

@@ -1,5 +1,5 @@
 import dataclasses
-from typing import Optional, cast
+from typing import Optional, cast, Any
 
 from PyQt6.QtWidgets import QWidget, QCheckBox, QApplication, QVBoxLayout
 
@@ -46,6 +46,17 @@ class CheckBox(CommonParameterWidget):
         center_widget.setLayout(center_widget_layout)
 
         center_widget_layout.addWidget(self._checkbox)
+
+    def set_value(self, value: Optional[bool]):
+        if value is not None:
+            value = bool(value)
+        super().set_value(value)
+
+    def get_value(self) -> Optional[bool]:
+        ret = super().get_value()
+        if ret is not None:
+            ret = bool(ret)
+        return ret
 
     def set_value_to_widget(self, value: bool):
         self._checkbox.setChecked(value is True)

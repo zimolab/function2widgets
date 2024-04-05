@@ -45,10 +45,18 @@ class LineEdit(CommonParameterWidget):
         if self._args.set_default_on_init:
             self.set_value(self._args.default)
 
-    def set_value_to_widget(self, value: Any):
+    def get_value(self) -> str:
+        return super().get_value()
+
+    def set_value(self, value: Any):
+        if not isinstance(value, str) and value is not None:
+            value = str(value)
+        super().set_value(value)
+
+    def set_value_to_widget(self, value: str):
         if value is None:
             value = ""
-        self._value_widget.setText(str(value))
+        self._value_widget.setText(value)
 
     def get_value_from_widget(self) -> str:
         return self._value_widget.text()

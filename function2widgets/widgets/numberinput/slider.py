@@ -4,6 +4,7 @@ from typing import Optional, cast
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QSlider, QWidget, QLabel, QVBoxLayout
 
+from function2widgets.widget import InvalidValueError
 from function2widgets.widgets.base import (
     CommonParameterWidget,
     CommonParameterWidgetArgs,
@@ -114,6 +115,8 @@ class Slider(CommonParameterWidget):
         return super().get_value()
 
     def set_value(self, value: Optional[int]):
+        if not isinstance(value, int) and value is not None:
+            raise InvalidValueError(f"value must be an int number, got {type(value)}")
         super().set_value(value)
 
     def set_value_to_widget(self, value: int):

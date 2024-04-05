@@ -3,6 +3,7 @@ from typing import Optional, List, cast
 
 from PyQt6.QtWidgets import QWidget, QComboBox, QVBoxLayout
 
+from function2widgets.widget import InvalidValueError
 from function2widgets.widgets.base import (
     CommonParameterWidgetArgs,
     CommonParameterWidget,
@@ -50,7 +51,7 @@ class ComboBoxEdit(CommonParameterWidget):
 
     def set_value(self, value: str):
         if value is not None and not isinstance(value, str):
-            raise TypeError(f"value must be str, got {type(value)}")
+            raise InvalidValueError(f"value must be str, got {type(value)}")
         super().set_value(value)
 
     def get_value(self) -> Optional[str]:

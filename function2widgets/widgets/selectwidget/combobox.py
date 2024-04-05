@@ -3,6 +3,7 @@ from typing import Optional, List, Union, Tuple, cast, Any
 
 from PyQt6.QtWidgets import QWidget, QComboBox, QVBoxLayout
 
+from function2widgets.widget import InvalidValueError
 from function2widgets.widgets.base import (
     CommonParameterWidget,
     CommonParameterWidgetArgs,
@@ -68,7 +69,7 @@ class ComboBox(CommonParameterWidget):
 
     def set_value(self, value: Optional[str]):
         if value is not None and value not in self._items_with_data.keys():
-            raise ValueError(f"value {value} is not in items")
+            raise InvalidValueError(f"value {value} is not in items")
         super().set_value(value)
 
     def set_value_to_widget(self, value: Optional[str]):

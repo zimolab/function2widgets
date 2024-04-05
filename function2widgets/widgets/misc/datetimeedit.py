@@ -5,6 +5,7 @@ from typing import Optional, cast, Union
 from PyQt6.QtCore import Qt, QDateTime
 from PyQt6.QtWidgets import QWidget, QDateTimeEdit, QVBoxLayout
 
+from function2widgets.widget import InvalidValueError
 from function2widgets.widgets.base import (
     CommonParameterWidget,
     CommonParameterWidgetArgs,
@@ -92,11 +93,9 @@ class DateTimeEdit(CommonParameterWidget):
 
     def set_value(self, value: Union[datetime, QDateTime, None]):
         if not isinstance(value, (datetime, QDateTime, str)) and value is not None:
-            raise TypeError(
+            raise InvalidValueError(
                 f"value must be datetime or QDateTime or a datetime string, got {type(value)}"
             )
-        # if isinstance(value, datetime):
-        #     value = QDateTime(value)d
         display_format = self._args.display_format or DEFAULT_DISPLAY_FORMAT
         if isinstance(value, str):
             value = to_datetime(value, display_format)

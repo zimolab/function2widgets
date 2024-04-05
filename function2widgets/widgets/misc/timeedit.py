@@ -6,6 +6,7 @@ from PyQt6.QtCore import Qt, QTime
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QTimeEdit
 
 from function2widgets.common import to_time
+from function2widgets.widget import InvalidValueError
 from function2widgets.widgets.base import (
     CommonParameterWidget,
     CommonParameterWidgetArgs,
@@ -75,7 +76,7 @@ class TimeEdit(CommonParameterWidget):
 
     def set_value(self, value: Union[time, QTime, None]):
         if not isinstance(value, (time, QTime, str)) and value is not None:
-            raise TypeError(
+            raise InvalidValueError(
                 f"value must be time or QTime or a time string, got {type(value)}"
             )
         display_format = self._args.display_format or DEFAULT_DISPLAY_FORMAT

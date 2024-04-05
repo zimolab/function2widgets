@@ -20,7 +20,7 @@ class TupleEditor(JsonEditor):
 
     _WidgetArgsClass = TupleEditorArgs
 
-    TYPE_RESTRICTIONS = (list, tuple, _NoneType)
+    TYPE_RESTRICTIONS = (list, set, tuple, _NoneType)
 
     def __init__(self, args: TupleEditorArgs, parent: Optional[QWidget] = None):
         args = dataclasses.replace(args, top_level_types=self.TYPE_RESTRICTIONS)
@@ -32,7 +32,7 @@ class TupleEditor(JsonEditor):
         return cast(TupleEditorArgs, super()._args)
 
     def set_value(self, value: Optional[tuple]):
-        if isinstance(value, list):
+        if isinstance(value, (list, set)):
             value = tuple(value)
         super().set_value(value)
 
@@ -40,7 +40,7 @@ class TupleEditor(JsonEditor):
         value = super().get_value()
         if value is None:
             return None
-        elif isinstance(value, list):
+        elif isinstance(value, (list, set)):
             return tuple(value)
         elif isinstance(value, tuple):
             return value

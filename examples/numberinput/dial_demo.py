@@ -21,6 +21,9 @@ if __name__ == "__main__":
             value_suffix=" %",
         )
         dial1 = Dial(args)
+        # dial1.set_value(50)
+        # value should be int
+        # dial1.set_value("50")
 
         args2 = DialArgs(
             parameter_name="arg2",

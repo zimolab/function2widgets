@@ -11,6 +11,7 @@ from PyQt6.QtWidgets import (
     QApplication,
 )
 
+from function2widgets.widget import InvalidValueError
 from function2widgets.widgets.base import (
     CommonParameterWidget,
     CommonParameterWidgetArgs,
@@ -91,6 +92,8 @@ class PathEdit(CommonParameterWidget):
         return super().get_value()
 
     def set_value(self, value: Optional[str]):
+        if value is not None and not isinstance(value, str):
+            raise InvalidValueError(f"value must be str, not {type(value)}")
         super().set_value(value)
 
     def set_value_to_widget(self, value: str):

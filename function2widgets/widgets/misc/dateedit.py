@@ -6,6 +6,7 @@ from PyQt6.QtCore import Qt, QDate
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QDateEdit
 
 from function2widgets.common import to_date
+from function2widgets.widget import InvalidValueError
 from function2widgets.widgets.base import (
     CommonParameterWidget,
     CommonParameterWidgetArgs,
@@ -78,7 +79,7 @@ class DateEdit(CommonParameterWidget):
 
     def set_value(self, value: Union[date, QDate, None]):
         if not isinstance(value, (date, QDate, str)) and value is not None:
-            raise TypeError(
+            raise InvalidValueError(
                 f"value must be date or QDate or a date string, got {type(value)}"
             )
         display_format = self._args.display_format or DEFAULT_DISPLAY_FORMAT
