@@ -80,7 +80,7 @@ class FunctionInfoParser(object):
 
         if not raw_docstring_as_description:
             tmp = func_docstring_info.get_function_description()
-            if tmp:
+            if tmp is not None:
                 func_info.description = tmp
         return func_info
 
