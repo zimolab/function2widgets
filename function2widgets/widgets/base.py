@@ -202,19 +202,15 @@ class CommonParameterWidget(BaseParameterWidget):
 
         self._layout.setContentsMargins(0, 0, 0, 0)
 
-        description_pos = (
-            self._args.description_position or self.DEFAULT_DESCRIPTION_POS
-        )
-
         self._layout.addWidget(self._label_widget)
 
-        if description_pos == POS_TOP:
+        if self._args.description_position == POS_TOP:
             self._layout.addWidget(self._description_widget)
 
         self._layout.addWidget(self._center_widget)
         self._layout.addWidget(self._default_widget)
 
-        if description_pos != POS_TOP:
+        if self._args.description_position != POS_TOP:
             self._layout.addWidget(self._description_widget)
 
         if self._args.separate_line:
