@@ -3,7 +3,7 @@ import typing
 from typing import Optional, List, Any
 
 from function2widgets.common import parse_type_info
-from function2widgets.info import ParameterInfo, ParameterWidgetInfo
+from function2widgets.info import ParameterInfo
 
 TYPE_FOR_VARARGS = list.__name__
 TYPE_FOR_KWARGS = dict.__name__

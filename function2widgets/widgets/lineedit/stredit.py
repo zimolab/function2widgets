@@ -31,7 +31,7 @@ class LineEditArgs(CommonParameterWidgetArgs):
 
 class LineEdit(CommonParameterWidget):
     SET_DEFAULT_ON_INIT = True
-    HIDE_DEFAULT_WIDGET = True
+    HIDE_DEFAULT_VALUE_WIDGET = True
 
     _WidgetArgsClass = LineEditArgs
 

@@ -8,7 +8,7 @@ def demo1(
 ):
     """
 
-    :param a:  param a
+    :param a: the output destination of encoded output file.the output destination of encoded output file
     :param b:  <b>param b</b><br><font color=red><b>rich text here</b></font>
     :param c:
     :param d:

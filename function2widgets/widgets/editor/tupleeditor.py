@@ -15,7 +15,7 @@ class TupleEditorArgs(JsonEditorArgs):
 
 
 class TupleEditor(JsonEditor):
-    HIDE_DEFAULT_WIDGET = True
+    HIDE_DEFAULT_VALUE_WIDGET = True
     SET_DEFAULT_ON_INIT = True
 
     _WidgetArgsClass = TupleEditorArgs

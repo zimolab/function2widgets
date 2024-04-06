@@ -27,7 +27,7 @@ class CodeEditorArgs(BaseCodeEditorArgs):
 
 
 class CodeEditor(BaseCodeEditor):
-    HIDE_DEFAULT_WIDGET = True
+    HIDE_DEFAULT_VALUE_WIDGET = True
     SET_DEFAULT_ON_INIT = True
 
     _WidgetArgsClass = CodeEditorArgs

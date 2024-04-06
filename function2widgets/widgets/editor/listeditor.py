@@ -1,5 +1,5 @@
 import dataclasses
-from typing import Optional, cast, Any
+from typing import Optional, cast
 
 from PyQt6.QtWidgets import QWidget
 
@@ -15,7 +15,7 @@ class ListEditorArgs(JsonEditorArgs):
 
 
 class ListEditor(JsonEditor):
-    HIDE_DEFAULT_WIDGET = True
+    HIDE_DEFAULT_VALUE_WIDGET = True
     SET_DEFAULT_ON_INIT = True
 
     _WidgetArgsClass = ListEditorArgs

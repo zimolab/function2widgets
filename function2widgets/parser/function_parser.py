@@ -171,8 +171,8 @@ class FunctionInfoParser(object):
         widget_args["description"] = param_info.description
         widget_args["stylesheet"] = None
         widget_args["set_default_on_init"] = None
-        widget_args["hide_default_widget"] = None
-        widget_args["default_widget_text"] = None
+        widget_args["hide_default_value_widget"] = None
+        widget_args["default_value_description"] = None
 
         param_widget_info = ParameterWidgetInfo(
             widget_class=widget_class, widget_args=widget_args

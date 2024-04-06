@@ -1,5 +1,5 @@
 import dataclasses
-from typing import Optional, cast, Any
+from typing import Optional, cast
 
 from PyQt6.QtWidgets import QWidget, QCheckBox, QApplication, QVBoxLayout
 
@@ -20,7 +20,7 @@ class CheckBoxArgs(CommonParameterWidgetArgs):
 
 class CheckBox(CommonParameterWidget):
     SET_DEFAULT_ON_INIT = True
-    HIDE_DEFAULT_WIDGET = True
+    HIDE_DEFAULT_VALUE_WIDGET = True
 
     _WidgetArgsClass = CheckBoxArgs
 

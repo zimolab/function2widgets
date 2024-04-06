@@ -21,7 +21,7 @@ class RadioButtonGroupArgs(CommonParameterWidgetArgs):
 
 
 class RadioButtonGroup(CommonParameterWidget):
-    HIDE_DEFAULT_WIDGET = True
+    HIDE_DEFAULT_VALUE_WIDGET = True
     SET_DEFAULT_ON_INIT = True
 
     _WidgetArgsClass = RadioButtonGroupArgs

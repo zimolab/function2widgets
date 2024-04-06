@@ -5,7 +5,7 @@ if __name__ == "__main__":
     with ExampleContext() as ctx:
         # create parameter widgets
         args = LineEditArgs(
-            default="1234", parameter_name="arg1", hide_default_widget=False
+            default="1234", parameter_name="arg1", hide_default_value_widget=False
         )
         lineedit_1 = LineEdit(args)
         lineedit_1.set_label("lineedit_1")

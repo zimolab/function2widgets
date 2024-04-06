@@ -17,8 +17,8 @@ class WidgetArgs(object):
     description: Optional[str]
     stylesheet: Optional[str]
     set_default_on_init: Optional[bool]
-    hide_default_widget: Optional[bool]
-    default_widget_text: Optional[str]
+    hide_default_value_widget: Optional[bool]
+    default_value_description: Optional[str]
 
     @classmethod
     def new(cls, kwargs: Dict[str, Any]) -> "WidgetArgs":
@@ -31,7 +31,7 @@ class BaseParameterWidget(QWidget):
     """
 
     SET_DEFAULT_ON_INIT: bool = True
-    HIDE_DEFAULT_WIDGET: bool = False
+    HIDE_DEFAULT_VALUE_WIDGET: bool = False
 
     _WidgetArgsClass = WidgetArgs
 
@@ -41,9 +41,9 @@ class BaseParameterWidget(QWidget):
         """
         Note:
         1. if 'set_default_on_init' is None, it will be set to class field SET_DEFAULT_ON_INIT
-        2. if 'hide_default_widget' is None, it will be set to class field HIDE_DEFAULT_WIDGET
-        3. 'set_default_on_init' will be set to True if 'default' is not None and 'hide_default_widget' is True
-        4. 'hide_default_widget' will be set to False if 'default' is None
+        2. if 'hide_default_value_widget' is None, it will be set to class field HIDE_DEFAULT_VALUE_WIDGET
+        3. 'set_default_on_init' will be set to True if 'default' is not None and 'hide_default_value_widget' is True
+        4. 'hide_value_default_widget' will be set to False if 'default' is None
         5. 'label' will be set to 'parameter_name', if it is set to None
         """
         # 1
@@ -52,16 +52,16 @@ class BaseParameterWidget(QWidget):
         else:
             set_default_on_init = args.set_default_on_init
         # 2
-        if args.hide_default_widget is None:
-            hide_default_widget = self.__class__.HIDE_DEFAULT_WIDGET
+        if args.hide_default_value_widget is None:
+            hide_default_value_widget = self.__class__.HIDE_DEFAULT_VALUE_WIDGET
         else:
-            hide_default_widget = args.hide_default_widget
+            hide_default_value_widget = args.hide_default_value_widget
         # 3
-        if args.default is not None and hide_default_widget is True:
+        if args.default is not None and hide_default_value_widget is True:
             set_default_on_init = True
         # 4
         if args.default is None:
-            hide_default_widget = False
+            hide_default_value_widget = False
         # 5
         if args.label is None:
             label = args.parameter_name
@@ -72,7 +72,7 @@ class BaseParameterWidget(QWidget):
             args,
             label=label,
             set_default_on_init=set_default_on_init,
-            hide_default_widget=hide_default_widget,
+            hide_default_value_widget=hide_default_value_widget,
         )
 
         if self.__args.stylesheet is not None:
