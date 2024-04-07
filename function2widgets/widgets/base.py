@@ -4,7 +4,6 @@ import dataclasses
 from typing import Any, Optional, cast
 
 from PyQt6.QtCore import Qt
-from PyQt6.QtGui import QCursor
 from PyQt6.QtWidgets import (
     QWidget,
     QLabel,
@@ -19,12 +18,10 @@ POS_TOP = 0
 POS_BOTTOM = 1
 
 LABEL_STYLESHEET = """QLabel{
-    font-family:Arial;
     font-weight:600;
 }"""
 
 DESCRIPTION_STYLESHEET = """QLabel{
-    font-family:Arial;
     font-weight: 300;
     color: #424242;
 }"""
