@@ -26,7 +26,9 @@ from function2widgets.widgets import (
     DateTimeEdit,
     DateEdit,
     TimeEdit,
+    ColorEdit,
 )
+from function2widgets.widgets.misc import Color
 
 DEFAULT_WIDGET_TYPES = {
     bool.__name__: CheckBox.__name__,
@@ -39,6 +41,7 @@ DEFAULT_WIDGET_TYPES = {
     datetime.__name__: DateTimeEdit.__name__,
     date.__name__: DateEdit.__name__,
     time.__name__: TimeEdit.__name__,
+    Color.__name__: ColorEdit.__name__,
     str(typing.Union): JsonEditor.__name__,
     str(typing.Optional): JsonEditor.__name__,
     str(typing.Any): JsonEditor.__name__,

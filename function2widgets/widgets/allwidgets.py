@@ -14,7 +14,7 @@ from function2widgets.widgets.selectwidget import (
 )
 from function2widgets.widgets.textedit import PlainTextEdit, CodeEdit
 from function2widgets.widgets.editor.tupleeditor import TupleEditor
-from function2widgets.widgets.misc import DateTimeEdit, DateEdit, TimeEdit
+from function2widgets.widgets.misc import DateTimeEdit, DateEdit, TimeEdit, ColorEdit
 
 BASIC_PARAMETER_WIDGETS = {
     LineEdit.__name__: LineEdit,
@@ -42,4 +42,5 @@ BASIC_PARAMETER_WIDGETS = {
     DateEdit.__name__: DateEdit,
     TimeEdit.__name__: TimeEdit,
     DateTimeEdit.__name__: DateTimeEdit,
+    ColorEdit.__name__: ColorEdit,
 }

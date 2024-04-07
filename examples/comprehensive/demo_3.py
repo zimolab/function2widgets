@@ -3,9 +3,10 @@ from datetime import datetime, date, time
 from examples.context import ExampleContext
 from function2widgets.factory import ParameterWidgetFactory
 from function2widgets.parser.function_parser import FunctionInfoParser
+from function2widgets.widgets.misc import Color
 
 
-def demo3(a: datetime, b: date, c: time):
+def demo3(a: datetime, b: date, c: time, d: Color):
     """
     @widgets
     [a]
@@ -24,6 +25,9 @@ def demo3(a: datetime, b: date, c: time):
     display_format = "HH:mm"
     min_time = "8:30"
     max_time = "17:30"
+
+    [d]
+    with_alpha=false
 
     @end
 
