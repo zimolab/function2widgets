@@ -1,11 +1,15 @@
 from examples.context import ExampleContext
 from function2widgets.widgets.misc import ColorEdit, ColorEditArgs
+from function2widgets.widgets import Color
 
 if __name__ == "__main__":
     with ExampleContext() as ctx:
         # create parameter widgets
         args = ColorEditArgs(
-            parameter_name="arg1", with_alpha=True, display_format="hex"
+            parameter_name="arg1",
+            default=Color.from_color_name("red"),
+            with_alpha=True,
+            display_format="hex",
         )
         edit = ColorEdit(args)
 
