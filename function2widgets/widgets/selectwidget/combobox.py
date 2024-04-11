@@ -41,7 +41,7 @@ class ComboBox(CommonParameterWidget):
                 raise ValueError("items must be a list of str or Tuple[str, Any]")
 
         if args.default not in self._items_with_data and args.default is not None:
-            raise ValueError(f"default value {args.default} is not in items")
+            raise ValueError(f"default value '{args.default}' is not in items")
 
         self._value_widget: Optional[QComboBox] = None
 
