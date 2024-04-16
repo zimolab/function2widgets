@@ -42,10 +42,10 @@ class CommonParameterWidgetArgs(WidgetArgs):
     description_position: Optional[int] = None
     description_text_indent: Optional[int] = None
     description_stylesheet: Optional[str] = None
+    open_external_link: bool = False
 
 
 class CommonParameterWidget(BaseParameterWidget):
-
     _WidgetArgsClass = CommonParameterWidgetArgs
 
     OBJ_ID_LAYOUT = "_CPW_main_layout"
@@ -182,6 +182,7 @@ class CommonParameterWidget(BaseParameterWidget):
         self._description_widget.setIndent(indent)
         self._description_widget.setWordWrap(True)
         self._description_widget.setStyleSheet(self._args.description_stylesheet)
+        self._description_widget.setOpenExternalLinks(self._args.open_external_link is True)
 
     def _on_default_widget_state_changed(self, checked: bool):
         if self._args.hide_default_value_widget:
