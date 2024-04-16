@@ -42,7 +42,7 @@ class CommonParameterWidgetArgs(WidgetArgs):
     description_position: Optional[int] = None
     description_text_indent: Optional[int] = None
     description_stylesheet: Optional[str] = None
-    open_external_link: bool = False
+    open_external_link: bool = True
 
 
 class CommonParameterWidget(BaseParameterWidget):
