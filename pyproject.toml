@@ -18,7 +18,6 @@ pyqt6 = "^6.6.1"
 pyqt6-qscintilla = "^2.14.1"
 docstring-parser = "^0.16"
 tomli = "^2.0.1"
-tomli-w = "^1.0.0"
 
 
 [tool.poetry.group.dev.dependencies]
