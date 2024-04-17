@@ -1,5 +1,5 @@
 from examples.context import ExampleContext
-from function2widgets.widgets.numberinput import Slider, SliderArgs
+from function2widgets import SliderArgs, Slider
 
 if __name__ == "__main__":
     with ExampleContext() as ctx:

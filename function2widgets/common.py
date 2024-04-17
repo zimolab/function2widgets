@@ -19,16 +19,16 @@ class AlreadyRegisteredError(Exception):
     pass
 
 
-def safe_pop(target: dict, key: str, *more_keys: str):
+def safe_del(target: dict, key: str, *more_keys: str) -> dict:
     if not more_keys:
         if key in target:
-            target.pop(key)
+            del target[key]
         return target
 
-    all_keys = [key, *more_keys]
+    all_keys = {key, *more_keys}
     for k in all_keys:
         if k in target:
-            target.pop(k)
+            del target[k]
     return target
 
 

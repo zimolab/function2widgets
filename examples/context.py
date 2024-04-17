@@ -10,7 +10,7 @@ from PyQt6.QtWidgets import (
     QMessageBox,
 )
 
-from function2widgets.widget import BaseParameterWidget
+from function2widgets import BaseParameterWidget
 
 
 class ExampleContext(object):

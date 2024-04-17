@@ -1,5 +1,5 @@
 from examples.context import ExampleContext
-from function2widgets.widgets.selectwidget import RadioButtonGroupArgs, RadioButtonGroup
+from function2widgets import RadioButtonGroupArgs, RadioButtonGroup
 
 if __name__ == "__main__":
     with ExampleContext() as ctx:

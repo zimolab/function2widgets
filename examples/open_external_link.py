@@ -1,11 +1,12 @@
 from examples.context import ExampleContext
-from function2widgets.widgets.lineedit import LineEditArgs, LineEdit
+from function2widgets import LineEdit, LineEditArgs
 
 if __name__ == "__main__":
     with ExampleContext() as ctx:
         # create parameter widgets
         args = LineEditArgs(
-            default="1234", parameter_name="arg1",
+            default="1234",
+            parameter_name="arg1",
             hide_default_value_widget=False,
             description="hello world，<a href='https://www.baidu.com'>baidu</a>",
             open_external_link=False,

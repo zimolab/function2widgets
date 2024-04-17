@@ -1,9 +1,5 @@
 from examples.context import ExampleContext
-from function2widgets.widgets.pathedit import (
-    PathEdit,
-    PathEditArgs,
-    PATH_TYPE_OPEN_FILES,
-)
+from function2widgets import PathEditArgs, PATH_TYPE_OPEN_FILES, PathEdit
 
 if __name__ == "__main__":
     with ExampleContext() as ctx:

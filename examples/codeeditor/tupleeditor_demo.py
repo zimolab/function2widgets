@@ -1,5 +1,5 @@
 from examples.context import ExampleContext
-from function2widgets.widgets.editor import TupleEditorArgs, TupleEditor
+from function2widgets import TupleEditorArgs, TupleEditor
 
 if __name__ == "__main__":
     with ExampleContext() as ctx:

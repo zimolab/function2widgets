@@ -1,9 +1,7 @@
 from datetime import datetime, date, time
 
 from examples.context import ExampleContext
-from function2widgets.factory import ParameterWidgetFactory
-from function2widgets.parser.function_parser import FunctionInfoParser
-from function2widgets.widgets.misc import Color
+from function2widgets import FunctionInfoParser, ParameterWidgetFactory, Color
 
 
 def demo3(a: datetime, b: date, c: time, d: Color):

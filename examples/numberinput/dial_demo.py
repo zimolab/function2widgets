@@ -1,5 +1,5 @@
 from examples.context import ExampleContext
-from function2widgets.widgets.numberinput import DialArgs, Dial
+from function2widgets import DialArgs, Dial
 
 if __name__ == "__main__":
     with ExampleContext() as ctx:

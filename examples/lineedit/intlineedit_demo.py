@@ -1,5 +1,5 @@
 from examples.context import ExampleContext
-from function2widgets.widgets.lineedit import IntLineEdit
+from function2widgets import IntLineEdit
 
 with ExampleContext() as ctx:
     args = IntLineEdit._WidgetArgsClass(

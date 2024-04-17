@@ -1,5 +1,5 @@
 from examples.context import ExampleContext
-from function2widgets.widgets.misc import DateTimeEditArgs, DateTimeEdit
+from function2widgets import DateTimeEditArgs, DateTimeEdit
 
 if __name__ == "__main__":
     with ExampleContext() as ctx:

@@ -8,7 +8,7 @@ from function2widgets.common import (
 )
 from function2widgets.info import ParameterInfo, FunctionInfo
 from function2widgets.parser.function_parser import FunctionInfoParser
-from function2widgets.widget import BaseParameterWidget, WidgetArgs
+from function2widgets.widget import BaseParameterWidget, BaseWidgetArgs
 from function2widgets.widgets.allwidgets import BASIC_PARAMETER_WIDGETS
 
 
@@ -76,6 +76,6 @@ class ParameterWidgetFactory(object):
 
     def _create_widget(self, widget_class_name: str, **kwargs) -> BaseParameterWidget:
         widget_class = self.get_widget_class(widget_class_name)
-        widget_args_class: Type[WidgetArgs] = widget_class.widget_args_class()
+        widget_args_class: Type[BaseWidgetArgs] = widget_class.widget_args_class()
         widget_args = widget_args_class.new(kwargs=kwargs)
         return widget_class(args=widget_args, parent=None)

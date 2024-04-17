@@ -1,5 +1,5 @@
 from examples.context import ExampleContext
-from function2widgets.widgets.lineedit import FloatLineEdit
+from function2widgets import FloatLineEdit
 
 with ExampleContext() as ctx:
     # create parameter widgets
@@ -24,7 +24,7 @@ with ExampleContext() as ctx:
         decimals=5,
         scientific_notation=False,
         placeholder="Enter an integer",
-        hide_default_widget=False,
+        hide_default_value_widget=True,
     )
     float_lineedit2 = FloatLineEdit(args2)
     float_lineedit2.set_label("float_lineedit2")

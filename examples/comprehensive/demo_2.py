@@ -1,8 +1,7 @@
 from typing import Literal
 
 from examples.context import ExampleContext
-from function2widgets.factory import ParameterWidgetFactory
-from function2widgets.parser.function_parser import FunctionInfoParser
+from function2widgets import FunctionInfoParser, ParameterWidgetFactory
 
 
 def demo2(

@@ -1,5 +1,5 @@
 from examples.context import ExampleContext
-from function2widgets.widgets.numberinput import FloatSpinBox, FloatSpinBoxArgs
+from function2widgets import FloatSpinBoxArgs, FloatSpinBox
 
 if __name__ == "__main__":
     with ExampleContext() as ctx:

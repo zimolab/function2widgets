@@ -1,5 +1,5 @@
 from examples.context import ExampleContext
-from function2widgets.widgets.textedit import CodeEditArgs, CodeEdit
+from function2widgets import CodeEditArgs, CodeEdit
 
 if __name__ == "__main__":
     with ExampleContext() as ctx:

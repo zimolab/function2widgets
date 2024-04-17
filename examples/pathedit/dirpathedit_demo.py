@@ -1,8 +1,5 @@
 from examples.context import ExampleContext
-from function2widgets.widgets.pathedit import (
-    DirPathEditArgs,
-    DirPathEdit,
-)
+from function2widgets import DirPathEditArgs, DirPathEdit
 
 if __name__ == "__main__":
     with ExampleContext() as ctx:

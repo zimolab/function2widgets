@@ -1,6 +1,5 @@
 from examples.context import ExampleContext
-from function2widgets.widgets.misc import ColorEdit, ColorEditArgs
-from function2widgets.widgets import Color
+from function2widgets import ColorEditArgs, Color, ColorEdit
 
 if __name__ == "__main__":
     with ExampleContext() as ctx:

@@ -10,7 +10,7 @@ class InvalidValueError(ValueError):
 
 
 @dataclasses.dataclass(frozen=True)
-class WidgetArgs(object):
+class BaseWidgetArgs(object):
     parameter_name: str
     default: Any
     label: Optional[str]
@@ -21,7 +21,7 @@ class WidgetArgs(object):
     default_value_description: Optional[str]
 
     @classmethod
-    def new(cls, kwargs: Dict[str, Any]) -> "WidgetArgs":
+    def new(cls, kwargs: Dict[str, Any]) -> "BaseWidgetArgs":
         return cls(**kwargs)
 
 
@@ -33,9 +33,9 @@ class BaseParameterWidget(QWidget):
     SET_DEFAULT_ON_INIT: bool = True
     HIDE_DEFAULT_VALUE_WIDGET: bool = False
 
-    _WidgetArgsClass = WidgetArgs
+    _WidgetArgsClass = BaseWidgetArgs
 
-    def __init__(self, args: WidgetArgs, parent: Optional[QWidget]):
+    def __init__(self, args: BaseWidgetArgs, parent: Optional[QWidget]):
         super().__init__(parent)
 
         """
@@ -79,7 +79,7 @@ class BaseParameterWidget(QWidget):
             self.setStyleSheet(self.__args.stylesheet)
 
     @property
-    def _args(self) -> WidgetArgs:
+    def _args(self) -> BaseWidgetArgs:
         """
         this is for internal use, do not access in user code
         :return:
@@ -154,7 +154,7 @@ class BaseParameterWidget(QWidget):
         pass
 
     @classmethod
-    def widget_args_class(cls) -> Type[WidgetArgs]:
+    def widget_args_class(cls) -> Type[BaseWidgetArgs]:
         """
         get the WidgetArgs class which can be used to initialize the parameter widget
         :return:

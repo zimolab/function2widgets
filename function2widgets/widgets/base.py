@@ -12,7 +12,7 @@ from PyQt6.QtWidgets import (
     QFrame,
 )
 
-from function2widgets.widget import BaseParameterWidget, WidgetArgs
+from function2widgets.widget import BaseParameterWidget, BaseWidgetArgs
 
 POS_TOP = 0
 POS_BOTTOM = 1
@@ -28,7 +28,7 @@ DESCRIPTION_STYLESHEET = """QLabel{
 
 
 @dataclasses.dataclass(frozen=True)
-class CommonParameterWidgetArgs(WidgetArgs):
+class CommonParameterWidgetArgs(BaseWidgetArgs):
     parameter_name: str
     default: Any
     label: Optional[str] = None
@@ -182,7 +182,9 @@ class CommonParameterWidget(BaseParameterWidget):
         self._description_widget.setIndent(indent)
         self._description_widget.setWordWrap(True)
         self._description_widget.setStyleSheet(self._args.description_stylesheet)
-        self._description_widget.setOpenExternalLinks(self._args.open_external_link is True)
+        self._description_widget.setOpenExternalLinks(
+            self._args.open_external_link is True
+        )
 
     def _on_default_widget_state_changed(self, checked: bool):
         if self._args.hide_default_value_widget:

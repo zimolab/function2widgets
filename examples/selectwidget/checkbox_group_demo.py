@@ -1,5 +1,5 @@
 from examples.context import ExampleContext
-from function2widgets.widgets.selectwidget import CheckBoxGroupArgs, CheckBoxGroup
+from function2widgets import CheckBoxGroupArgs, CheckBoxGroup
 
 if __name__ == "__main__":
     with ExampleContext() as ctx:

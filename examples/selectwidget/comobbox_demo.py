@@ -1,5 +1,5 @@
 from examples.context import ExampleContext
-from function2widgets.widgets.selectwidget import ComboBoxArgs, ComboBox
+from function2widgets import ComboBoxArgs, ComboBox
 
 if __name__ == "__main__":
     with ExampleContext() as ctx:

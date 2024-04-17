@@ -1,5 +1,5 @@
 from examples.context import ExampleContext
-from function2widgets.widgets.editor import DictEditor, DictEditorArgs
+from function2widgets import DictEditorArgs, DictEditor
 
 if __name__ == "__main__":
     with ExampleContext() as ctx:
