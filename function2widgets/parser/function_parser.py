@@ -4,6 +4,9 @@ from collections import OrderedDict
 from datetime import datetime, date, time
 from typing import Any
 
+from PyQt6.QtCore import QDateTime, QDate, QTime
+from PyQt6.QtGui import QColor
+
 from function2widgets.info import (
     FunctionInfo,
     FunctionDocstringInfo,
@@ -39,9 +42,13 @@ DEFAULT_WIDGET_TYPES = {
     tuple.__name__: TupleEditor.__name__,
     dict.__name__: DictEditor.__name__,
     datetime.__name__: DateTimeEdit.__name__,
+    QDateTime.__name__: DateTimeEdit.__name__,
     date.__name__: DateEdit.__name__,
+    QDate.__name__: DateEdit.__name__,
     time.__name__: TimeEdit.__name__,
+    QTime.__name__: TimeEdit.__name__,
     Color.__name__: ColorEdit.__name__,
+    QColor.__name__: ColorEdit.__name__,
     str(typing.Union): JsonEditor.__name__,
     str(typing.Optional): JsonEditor.__name__,
     str(typing.Any): JsonEditor.__name__,
