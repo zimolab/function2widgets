@@ -14,11 +14,11 @@ documentation = "https://github.com/zimolab/function2widgets"
 
 [tool.poetry.dependencies]
 python = ">=3.8, <4.0"
-pyqt6 = ">=6.4.2"
 pyqt6-qscintilla = "^2.14.1"
 docstring-parser = "^0.16"
 tomli = "^2.0.1"
-
+pyqt6 = ">=6.4.0, <6.6.1"
+pyqt6-qt6 = ">=6.4.0, <6.6.1"
 
 [tool.poetry.group.dev.dependencies]
 black = "^24.2.0"
